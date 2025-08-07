@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-API Chat</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --openai-color: #10a37f;
+            --groq-color: #f55036;
+            --cerebras-color: #000000;
+            --sambanova-color: #00aeef;
+            --anthropic-color: #d9dae8;
+            --openrouter-color: #000000;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-gray);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            background: var(--light-gray);
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        nav a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chat-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .settings-container {
+            width: 300px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .provider-select {
+            padding: 8px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        .compare-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .compare-toggle input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: var(--light-gray);
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background: #e3f2fd;
+            align-self: flex-start;
+        }
+
+        .message-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .provider-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: white;
+            margin-right: 5px;
+        }
+
+        .openai-tag { background: var(--openai-color); }
+        .groq-tag { background: var(--groq-color); }
+        .cerebras-tag { background: var(--cerebras-color); }
+        .sambanova-tag { background: var(--sambanova-color); }
+        .anthropic-tag { background: var(--anthropic-color); color: black; }
+        .openrouter-tag { background: var(--openrouter-color); }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        .send-button {
+            padding: 12px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .send-button:hover {
+            opacity: 0.9;
+        }
+
+        .compare-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .compare-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-group label {
+            font-weight: bold;
+        }
+
+        .setting-group input, .setting-group select, .setting-group textarea {
+            padding: 8px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+        }
+
+        .setting-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-group input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .provider-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-connected { background: var(--success-color); }
+        .status-disconnected { background: var(--error-color); }
+        .status-checking { background: var(--warning-color); }
+
+        .api-key-input {
+            position: relative;
+        }
+
+        .api-key-input input {
+            width: 100%;
+        }
+
+        .api-key-toggle {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            cursor: pointer;
+        }
+
+        .test-button {
+            padding: 6px 12px;
+            background: #ddd;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .test-button:hover {
+            background: #ccc;
+        }
+
+        .test-result {
+            font-size: 0.8rem;
+            padding: 5px;
+        }
+
+        .test-success {
+            color: var(--success-color);
+        }
+
+        .test-error {
+            color: var(--error-color);
+        }
+
+        .usage-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .usage-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 15px;
+        }
+
+        .usage-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .usage-card {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background: var(--light-gray);
+        }
+
+        .usage-card h3 {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .settings-container {
+                width: 100%;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multi-API Chat</h1>
+            <p>One interface, multiple AI providers, optimized performance and costs</p>
+        </header>
+        
+        <nav>
+            <a href="index.html" class="active">Chat</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="operations.html">Operations</a>
+            <a href="automation.html">Automation</a>
+            <a href="devices.html">Devices</a>
+        </nav>
+        
+        <div class="main-layout">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <select id="providerSelect" class="provider-select">
+                        <option value="">Select Provider</option>
+                    </select>
+                    <div class="compare-toggle">
+                        <input type="checkbox" id="compareMode">
+                        <label for="compareMode">Compare Mode</label>
+                    </div>
+                </div>
+                
+                <div class="chat-history" id="chatHistory">
+                    <!-- Messages will be displayed here -->
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" id="messageInput" class="message-input" placeholder="Type your message here...">
+                    <button id="sendButton" class="send-button">Send</button>
+                </div>
+                
+                <div class="compare-container" id="compareContainer" style="display: none;">
+                    <div class="compare-header">Compare Responses</div>
+                    <div id="compareResults"></div>
+                </div>
+            </div>
+            
+            <div class="settings-container">
+                <h2>Settings</h2>
+                
+                <div class="setting-group">
+                    <label for="defaultProvider">Default Provider</label>
+                    <select id="defaultProvider"></select>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="fallbackProvider">Fallback Provider</label>
+                    <select id="fallbackProvider">
+                        <option value="">None</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="temperature">Temperature</label>
+                    <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+                    <span id="temperatureValue">0.7</span>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="maxTokens">Max Tokens</label>
+                    <input type="range" id="maxTokens" min="100" max="4000" step="100" value="1000">
+                    <span id="maxTokensValue">1000</span>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="systemPrompt">System Prompt</label>
+                    <textarea id="systemPrompt">You are a helpful AI assistant.</textarea>
+                </div>
+                
+                <div class="toggle-group">
+                    <input type="checkbox" id="autoFallback" checked>
+                    <label for="autoFallback">Auto-Fallback</label>
+                </div>
+                
+                <div class="toggle-group">
+                    <input type="checkbox" id="usageAnalytics" checked>
+                    <label for="usageAnalytics">Usage Analytics</label>
+                </div>
+                
+                <button id="saveSettings" class="send-button">Save Settings</button>
+                
+                <h3 style="margin-top: 20px;">Provider Configuration</h3>
+                <div id="providerConfig"></div>
+                
+                <button id="testAllProviders" class="test-button">Test All Providers</button>
+            </div>
+        </div>
+        
+        <div class="usage-container">
+            <div class="usage-header">Usage Analytics</div>
+            <div class="usage-stats" id="usageStats"></div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            providers: {},
+            settings: {},
+            messages: [],
+            usage: {}
+        };
+
+        // DOM Elements
+        const elements = {
+            providerSelect: document.getElementById('providerSelect'),
+            defaultProvider: document.getElementById('defaultProvider'),
+            fallbackProvider: document.getElementById('fallbackProvider'),
+            compareMode: document.getElementById('compareMode'),
+            chatHistory: document.getElementById('chatHistory'),
+            messageInput: document.getElementById('messageInput'),
+            sendButton: document.getElementById('sendButton'),
+            compareContainer: document.getElementById('compareContainer'),
+            compareResults: document.getElementById('compareResults'),
+            temperature: document.getElementById('temperature'),
+            temperatureValue: document.getElementById('temperatureValue'),
+            maxTokens: document.getElementById('maxTokens'),
+            maxTokensValue: document.getElementById('maxTokensValue'),
+            systemPrompt: document.getElementById('systemPrompt'),
+            autoFallback: document.getElementById('autoFallback'),
+            usageAnalytics: document.getElementById('usageAnalytics'),
+            saveSettings: document.getElementById('saveSettings'),
+            providerConfig: document.getElementById('providerConfig'),
+            testAllProviders: document.getElementById('testAllProviders'),
+            usageStats: document.getElementById('usageStats')
+        };
+
+        // Initialize the application
+        async function init() {
+            try {
+                // Load providers and settings
+                await loadProviders();
+                await loadSettings();
+                await loadUsage();
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Populate provider dropdowns
+                populateProviderDropdowns();
+                
+                // Render provider configuration UI
+                renderProviderConfig();
+                
+                // Render usage statistics
+                renderUsageStats();
+            } catch (error) {
+                console.error('Failed to initialize application:', error);
+            }
+        }
+
+        // Load providers from backend
+        async function loadProviders() {
+            const response = await fetch('http://localhost:8002/api/providers');
+            state.providers = await response.json();
+        }
+
+        // Load settings from backend
+        async function loadSettings() {
+            const response = await fetch('http://localhost:8002/api/settings');
+            state.settings = await response.json();
+        }
+
+        // Load usage statistics from backend
+        async function loadUsage() {
+            const response = await fetch('http://localhost:8002/api/usage');
+            state.usage = await response.json();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Send message on button click
+            elements.sendButton.addEventListener('click', sendMessage);
+            
+            // Send message on Enter key
+            elements.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Test all providers
+            elements.testAllProviders.addEventListener('click', testAllProviders);
+            
+            // Save settings
+            elements.saveSettings.addEventListener('click', saveSettings);
+            
+            // Temperature slider
+            elements.temperature.addEventListener('input', () => {
+                elements.temperatureValue.textContent = elements.temperature.value;
+            });
+            
+            // Max tokens slider
+            elements.maxTokens.addEventListener('input', () => {
+                elements.maxTokensValue.textContent = elements.maxTokens.value;
+            });
+            
+            // Compare mode toggle
+            elements.compareMode.addEventListener('change', () => {
+                elements.compareContainer.style.display = elements.compareMode.checked ? 'block' : 'none';
+            });
+        }
+
+        // Populate provider dropdowns
+        function populateProviderDropdowns() {
+            // Clear existing options
+            elements.providerSelect.innerHTML = '<option value="">Select Provider</option>';
+            elements.defaultProvider.innerHTML = '';
+            elements.fallbackProvider.innerHTML = '<option value="">None</option>';
+            
+            // Add providers to dropdowns
+            for (const [id, provider] of Object.entries(state.providers)) {
+                if (provider.enabled) {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = provider.name;
+                    
+                    elements.providerSelect.appendChild(option.cloneNode(true));
+                    elements.defaultProvider.appendChild(option.cloneNode(true));
+                    
+                    const fallbackOption = document.createElement('option');
+                    fallbackOption.value = id;
+                    fallbackOption.textContent = provider.name;
+                    elements.fallbackProvider.appendChild(fallbackOption);
+                }
+            }
+            
+            // Set default provider selection
+            elements.defaultProvider.value = state.settings.default_provider || '';
+            elements.fallbackProvider.value = state.settings.fallback_provider || '';
+        }
+
+        // Render provider configuration UI
+        function renderProviderConfig() {
+            elements.providerConfig.innerHTML = '';
+            
+            for (const [id, provider] of Object.entries(state.providers)) {
+                const providerDiv = document.createElement('div');
+                providerDiv.className = 'setting-group';
+                providerDiv.innerHTML = `
+                    <label>${provider.name}</label>
+                    <div class="provider-status">
+                        <div class="status-indicator status-${provider.status}"></div>
+                        <span>${provider.status}</span>
+                    </div>
+                    <div class="api-key-input">
+                        <input type="password" id="apiKey-${id}" value="${provider.api_key}" placeholder="API Key">
+                    </div>
+                    <input type="text" id="model-${id}" value="${provider.model}" placeholder="Model">
+                    <div class="toggle-group">
+                        <input type="checkbox" id="enabled-${id}" ${provider.enabled ? 'checked' : ''}>
+                        <label for="enabled-${id}">Enabled</label>
+                    </div>
+                    <button class="test-button" onclick="testProvider('${id}')">Test</button>
+                    <div id="test-result-${id}" class="test-result"></div>
+                `;
+                elements.providerConfig.appendChild(providerDiv);
+            }
+        }
+
+        // Send message function
+        async function sendMessage() {
+            const message = elements.messageInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to chat history
+            addMessageToHistory('user', message);
+            elements.messageInput.value = '';
+            
+            // Get selected provider
+            const providerId = elements.providerSelect.value || state.settings.default_provider;
+            
+            if (elements.compareMode.checked) {
+                // Compare mode
+                await compareMessage(message);
+            } else {
+                // Single provider mode
+                try {
+                    const response = await fetch('http://localhost:8002/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            provider: providerId,
+                            system_prompt: state.settings.system_prompt
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        addMessageToHistory('error', `Error: ${data.error}`);
+                    } else {
+                        addMessageToHistory('ai', data.response, data);
+                    }
+                } catch (error) {
+                    addMessageToHistory('error', `Error: ${error.message}`);
+                }
+            }
+        }
+
+        // Compare message across providers
+        async function compareMessage(message) {
+            try {
+                const response = await fetch('http://localhost:8002/api/chat/compare', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+                
+                const results = await response.json();
+                renderCompareResults(results);
+            } catch (error) {
+                elements.compareResults.innerHTML = `<div class="message error-message">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Render compare results
+        function renderCompareResults(results) {
+            elements.compareResults.innerHTML = '';
+            
+            for (const result of results) {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'message ai-message';
+                
+                if (result.error) {
+                    resultDiv.innerHTML = `
+                        <div class="provider-tag ${result.provider}-tag">${state.providers[result.provider].name}</div>
+                        <div>Error: ${result.error}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="provider-tag ${result.provider}-tag">${state.providers[result.provider].name}</div>
+                        <div>${result.response}</div>
+                        <div class="message-meta">
+                            Tokens: ${result.tokens} | Response Time: ${result.response_time.toFixed(2)}s
+                        </div>
+                    `;
+                }
+                
+                elements.compareResults.appendChild(resultDiv);
+            }
+        }
+
+        // Add message to chat history
+        function addMessageToHistory(role, content, metadata = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+            
+            if (role === 'user') {
+                messageDiv.innerHTML = `
+                    <div>${content}</div>
+                    <div class="message-meta">You</div>
+                `;
+            } else if (role === 'ai') {
+                const providerId = metadata.provider;
+                const providerName = state.providers[providerId].name;
+                messageDiv.innerHTML = `
+                    <div class="provider-tag ${providerId}-tag">${providerName}</div>
+                    <div>${content}</div>
+                    <div class="message-meta">
+                        Tokens: ${metadata.tokens} | Response Time: ${metadata.response_time.toFixed(2)}s
+                        ${metadata.fallback_used ? ' (Fallback used)' : ''}
+                    </div>
+                `;
+            } else if (role === 'error') {
+                messageDiv.innerHTML = `
+                    <div>${content}</div>
+                    <div class="message-meta">Error</div>
+                `;
+            }
+            
+            elements.chatHistory.appendChild(messageDiv);
+            elements.chatHistory.scrollTop = elements.chatHistory.scrollHeight;
+        }
+
+        // Test provider connection
+        async function testProvider(providerId) {
+            const testResultElement = document.getElementById(`test-result-${providerId}`);
+            testResultElement.textContent = 'Testing...';
+            testResultElement.className = 'test-result';
+            
+            try {
+                const response = await fetch(`http://localhost:8002/api/providers/${providerId}/test`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    testResultElement.textContent = 'Connected successfully!';
+                    testResultElement.className = 'test-result test-success';
+                } else {
+                    testResultElement.textContent = 'Connection failed!';
+                    testResultElement.className = 'test-result test-error';
+                }
+                
+                // Update provider status
+                state.providers[providerId].status = data.success ? 'connected' : 'error';
+                state.providers[providerId].last_checked = new Date().toISOString();
+                
+                // Refresh UI
+                renderProviderConfig();
+                populateProviderDropdowns();
+            } catch (error) {
+                testResultElement.textContent = `Error: ${error.message}`;
+                testResultElement.className = 'test-result test-error';
+            }
+        }
+
+        // Test all providers
+        async function testAllProviders() {
+            try {
+                const response = await fetch('http://localhost:8002/api/providers/test-all', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                // Update provider statuses
+                for (const [providerId, success] of Object.entries(data)) {
+                    state.providers[providerId].status = success ? 'connected' : 'error';
+                    state.providers[providerId].last_checked = new Date().toISOString();
+                }
+                
+                // Refresh UI
+                renderProviderConfig();
+                populateProviderDropdowns();
+            } catch (error) {
+                console.error('Failed to test all providers:', error);
+            }
+        }
+
+        // Save settings
+        async function saveSettings() {
+            // Update settings state
+            state.settings.default_provider = elements.defaultProvider.value;
+            state.settings.fallback_provider = elements.fallbackProvider.value || null;
+            state.settings.temperature = parseFloat(elements.temperature.value);
+            state.settings.max_tokens = parseInt(elements.maxTokens.value);
+            state.settings.system_prompt = elements.systemPrompt.value;
+            state.settings.features.auto_fallback = elements.autoFallback.checked;
+            state.settings.features.usage_analytics = elements.usageAnalytics.checked;
+            
+            // Update provider configurations
+            for (const [id, provider] of Object.entries(state.providers)) {
+                provider.api_key = document.getElementById(`apiKey-${id}`).value;
+                provider.model = document.getElementById(`model-${id}`).value;
+                provider.enabled = document.getElementById(`enabled-${id}`).checked;
+            }
+            
+            try {
+                // Save settings to backend
+                await fetch('http://localhost:8002/api/settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(state.settings)
+                });
+                
+                // Save providers to backend
+                for (const [id, provider] of Object.entries(state.providers)) {
+                    await fetch(`http://localhost:8002/api/providers/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(provider)
+                    });
+                }
+                
+                alert('Settings saved successfully!');
+                
+                // Refresh UI
+                populateProviderDropdowns();
+            } catch (error) {
+                alert(`Error saving settings: ${error.message}`);
+            }
+        }
+
+        // Render usage statistics
+        function renderUsageStats() {
+            elements.usageStats.innerHTML = '';
+            
+            // Get today's date for filtering
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Display usage for each provider
+            for (const [providerId, provider] of Object.entries(state.providers)) {
+                if (!provider.enabled) continue;
+                
+                const usageCard = document.createElement('div');
+                usageCard.className = 'usage-card';
+                
+                let requests = 0;
+                let tokens = 0;
+                
+                // Aggregate usage data
+                for (const [date, dateUsage] of Object.entries(state.usage)) {
+                    if (dateUsage[providerId]) {
+                        requests += dateUsage[providerId].requests;
+                        tokens += dateUsage[providerId].tokens;
+                    }
+                }
+                
+                usageCard.innerHTML = `
+                    <h3>${provider.name}</h3>
+                    <div>Requests: ${requests}</div>
+                    <div>Tokens: ${tokens}</div>
+                `;
+                
+                elements.usageStats.appendChild(usageCard);
+            }
+        }
+
+        // Initialize application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

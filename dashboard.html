@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Multi-API Chat</title>
+    <style>
+        .page-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .page-link {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .page-link:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .page-link h3 {
+            margin-top: 0;
+        }
+        
+        .page-link p {
+            color: #666;
+        }
+        
+        .router-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .router-page-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --openai-color: #10a37f;
+            --groq-color: #f55036;
+            --cerebras-color: #000000;
+            --sambanova-color: #00aeef;
+            --anthropic-color: #d9dae8;
+            --openrouter-color: #000000;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-gray);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            background: var(--light-gray);
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        nav a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .card-header h2 {
+            color: var(--primary-color);
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .router-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-online {
+            background: var(--success-color);
+        }
+
+        .status-offline {
+            background: var(--error-color);
+        }
+
+        .status-unknown {
+            background: var(--warning-color);
+        }
+
+        .provider-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .provider-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .provider-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: white;
+            margin-right: 5px;
+        }
+
+        .openai-tag { background: var(--openai-color); }
+        .groq-tag { background: var(--groq-color); }
+        .cerebras-tag { background: var(--cerebras-color); }
+        .sambanova-tag { background: var(--sambanova-color); }
+        .anthropic-tag { background: var(--anthropic-color); color: black; }
+        .openrouter-tag { background: var(--openrouter-color); }
+
+        .status-connected { background: var(--success-color); }
+        .status-disconnected { background: var(--error-color); }
+        .status-checking { background: var(--warning-color); }
+
+        .recent-activity {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+
+        .activity-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .action-button:hover {
+            opacity: 0.9;
+        }
+
+        .action-description {
+            font-size: 0.9rem;
+            font-weight: normal;
+            margin-top: 5px;
+            color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multi-API Chat</h1>
+            <p>GENAI Network Operations Dashboard</p>
+        </header>
+        
+        <nav>
+            <a href="index.html">Chat</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="operations.html">Operations</a>
+            <a href="automation.html">Automation</a>
+            <a href="devices.html">Devices</a>
+        </nav>
+        
+        <div class="dashboard-layout">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>Provider Status</h2>
+                </div>
+                <div class="card-content" id="providerStatus">
+                    <!-- Provider status will be displayed here -->
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>Usage Analytics</h2>
+                </div>
+                <div class="card-content" id="usageAnalytics">
+                    <!-- Usage analytics will be displayed here -->
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>Router Status</h2>
+                </div>
+                <div class="card-content" id="routerStatus">
+                    <!-- Router status will be displayed here -->
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>Recent Activity</h2>
+                </div>
+                <div class="card-content">
+                    <div class="recent-activity">
+                        <div class="activity-item">
+                            <div>Configuration pushed to CORE-RTR-01</div>
+                            <div>2 minutes ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>Network troubleshooting session started</div>
+                            <div>15 minutes ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>Device EDGE-RTR-02 status changed to online</div>
+                            <div>1 hour ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>New provider OpenRouter configured</div>
+                            <div>3 hours ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div>Automation workflow executed for HQ-CORE-01</div>
+                            <div>5 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-content">
+                    <div class="quick-actions">
+                        <button class="action-button" onclick="window.location.href='operations.html'">
+                            Start Operations Session
+                            <div class="action-description">Begin network operations with GENAI assistance</div>
+                        </button>
+                        <button class="action-button" onclick="window.location.href='automation.html'">
+                            Run Automation Workflow
+                            <div class="action-description">Execute configuration push or retrieval workflows</div>
+                        </button>
+                        <button class="action-button" onclick="window.location.href='devices.html'">
+                            Manage Devices
+                            <div class="action-description">Add, remove, or test Cisco router connections</div>
+                        </button>
+                        <button class="action-button" onclick="window.location.href='index.html'">
+                            Multi-Provider Chat
+                            <div class="action-description">Chat with multiple AI providers simultaneously</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            providers: {},
+            usage: {},
+            devices: [
+                {
+                    id: 'router1',
+                    name: 'CORE-RTR-01',
+                    ip: '192.168.1.1',
+                    model: 'ISR4451',
+                    status: 'online'
+                },
+                {
+                    id: 'router2',
+                    name: 'EDGE-RTR-02',
+                    ip: '192.168.1.2',
+                    model: 'ASR1001',
+                    status: 'online'
+                },
+                {
+                    id: 'router3',
+                    name: 'WAN-RTR-03',
+                    ip: '192.168.1.3',
+                    model: 'ISR4321',
+                    status: 'offline'
+                },
+                {
+                    id: 'router4',
+                    name: 'BACKUP-RTR-04',
+                    ip: '192.168.1.4',
+                    model: 'ISR4331',
+                    status: 'online'
+                },
+                {
+                    id: 'hq-core',
+                    name: 'HQ-CORE-01',
+                    ip: '10.0.0.1',
+                    model: 'ASR1002',
+                    status: 'unknown'
+                }
+            ]
+        };
+
+        // DOM Elements
+        const elements = {
+            providerStatus: document.getElementById('providerStatus'),
+            usageAnalytics: document.getElementById('usageAnalytics'),
+            routerStatus: document.getElementById('routerStatus')
+        };
+
+        // Initialize the application
+        async function init() {
+            try {
+                // Load providers and usage data
+                await loadProviders();
+                await loadUsage();
+                
+                // Render dashboard components
+                renderProviderStatus();
+                renderUsageAnalytics();
+                renderRouterStatus();
+            } catch (error) {
+                console.error('Failed to initialize dashboard:', error);
+            }
+        }
+
+        // Load providers from backend
+        async function loadProviders() {
+            try {
+                const response = await fetch('http://localhost:8002/api/providers');
+                state.providers = await response.json();
+            } catch (error) {
+                console.error('Failed to load providers:', error);
+                // Use dummy data for demo
+                state.providers = {
+                    "openai": {
+                        "name": "OpenAI",
+                        "enabled": true,
+                        "api_key": "",
+                        "model": "gpt-4o",
+                        "base_url": "https://api.openai.com/v1",
+                        "status": "connected"
+                    },
+                    "groq": {
+                        "name": "Groq",
+                        "enabled": true,
+                        "api_key": "",
+                        "model": "llama-3.1-70b-versatile",
+                        "base_url": "https://api.groq.com/openai/v1",
+                        "status": "connected"
+                    },
+                    "cerebras": {
+                        "name": "Cerebras",
+                        "enabled": false,
+                        "api_key": "",
+                        "model": "llama-4-scout-wse-3",
+                        "base_url": "https://api.cerebras.ai/v1",
+                        "status": "disconnected"
+                    }
+                };
+            }
+        }
+
+        // Load usage statistics from backend
+        async function loadUsage() {
+            try {
+                const response = await fetch('http://localhost:8002/api/usage');
+                state.usage = await response.json();
+            } catch (error) {
+                console.error('Failed to load usage data:', error);
+                // Use dummy data for demo
+                state.usage = {
+                    "2025-08-07": {
+                        "openai": {
+                            "requests": 12,
+                            "tokens": 4520,
+                            "total_response_time": 15.2
+                        },
+                        "groq": {
+                            "requests": 8,
+                            "tokens": 3210,
+                            "total_response_time": 8.7
+                        }
+                    },
+                    "2025-08-06": {
+                        "openai": {
+                            "requests": 15,
+                            "tokens": 5800,
+                            "total_response_time": 18.5
+                        },
+                        "groq": {
+                            "requests": 10,
+                            "tokens": 3980,
+                            "total_response_time": 11.2
+                        }
+                    }
+                };
+            }
+        }
+
+        // Render provider status
+        function renderProviderStatus() {
+            elements.providerStatus.innerHTML = '';
+            
+            for (const [id, provider] of Object.entries(state.providers)) {
+                if (!provider.enabled) continue;
+                
+                const providerCard = document.createElement('div');
+                providerCard.className = 'provider-card';
+                providerCard.innerHTML = `
+                    <div class="provider-info">
+                        <h3>${provider.name}</h3>
+                        <div>
+                            Model: ${provider.model}
+                        </div>
+                    </div>
+                    <div class="router-status">
+                        <div class="status-indicator status-${provider.status}"></div>
+                        <span>${provider.status}</span>
+                    </div>
+                `;
+                elements.providerStatus.appendChild(providerCard);
+            }
+        }
+
+        // Render usage analytics
+        function renderUsageAnalytics() {
+            elements.usageAnalytics.innerHTML = '';
+            
+            // Calculate totals
+            let totalRequests = 0;
+            let totalTokens = 0;
+            let totalResponseTime = 0;
+            
+            for (const [date, dateUsage] of Object.entries(state.usage)) {
+                for (const [providerId, providerUsage] of Object.entries(dateUsage)) {
+                    totalRequests += providerUsage.requests;
+                    totalTokens += providerUsage.tokens;
+                    totalResponseTime += providerUsage.total_response_time;
+                }
+            }
+            
+            // Create stats cards
+            const requestCard = document.createElement('div');
+            requestCard.className = 'stat-card';
+            requestCard.innerHTML = `
+                <div class="stat-value">${totalRequests}</div>
+                <div class="stat-label">Total Requests</div>
+            `;
+            
+            const tokenCard = document.createElement('div');
+            tokenCard.className = 'stat-card';
+            tokenCard.innerHTML = `
+                <div class="stat-value">${totalTokens.toLocaleString()}</div>
+                <div class="stat-label">Total Tokens</div>
+            `;
+            
+            const responseTimeCard = document.createElement('div');
+            responseTimeCard.className = 'stat-card';
+            responseTimeCard.innerHTML = `
+                <div class="stat-value">${totalResponseTime.toFixed(1)}s</div>
+                <div class="stat-label">Avg Response Time</div>
+            `;
+            
+            elements.usageAnalytics.appendChild(requestCard);
+            elements.usageAnalytics.appendChild(tokenCard);
+            elements.usageAnalytics.appendChild(responseTimeCard);
+        }
+
+        // Render router status
+        function renderRouterStatus() {
+            elements.routerStatus.innerHTML = '';
+            
+            state.devices.forEach(device => {
+                const deviceCard = document.createElement('div');
+                deviceCard.className = 'provider-card';
+                deviceCard.innerHTML = `
+                    <div class="provider-info">
+                        <h3>${device.name}</h3>
+                        <div>IP: ${device.ip}</div>
+                        <div>Model: ${device.model}</div>
+                    </div>
+                    <div class="router-status">
+                        <div class="status-indicator status-${device.status}"></div>
+                        <span>${device.status}</span>
+                    </div>
+                `;
+                elements.routerStatus.appendChild(deviceCard);
+            });
+        }
+
+        // Initialize application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation - Multi-API Chat</title>
+    <style>
+        .workflow-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .workflow-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .workflow-response {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --openai-color: #10a37f;
+            --groq-color: #f55036;
+            --cerebras-color: #000000;
+            --sambanova-color: #00aeef;
+            --anthropic-color: #d9dae8;
+            --openrouter-color: #000000;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-gray);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            background: var(--light-gray);
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        nav a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .automation-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .workflow-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .workflow-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .workflow-card:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .workflow-card h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .selected-workflow {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .selected-workflow h3 {
+            color: white;
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-status {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .step-pending {
+            color: #666;
+        }
+
+        .step-in-progress {
+            color: var(--warning-color);
+        }
+
+        .step-completed {
+            color: var(--success-color);
+        }
+
+        .step-failed {
+            color: var(--error-color);
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .message-input {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .execute-button {
+            padding: 12px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            align-self: flex-end;
+        }
+
+        .execute-button:hover {
+            opacity: 0.9;
+        }
+
+        .config-display {
+            background: #e8f5e9;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .results-display {
+            background: #e3f2fd;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .router-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .router-select {
+            padding: 8px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multi-API Chat</h1>
+            <p>GENAI Network Automation for Cisco Routers</p>
+        </header>
+        
+        <nav>
+            <a href="index.html">Chat</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="operations.html">Operations</a>
+            <a href="automation.html" class="active">Automation</a>
+            <a href="devices.html">Devices</a>
+        </nav>
+        
+        <div class="main-layout">
+            <div class="automation-container">
+                <h2>Cisco Router Automation</h2>
+                
+                <div class="router-selector">
+                    <select id="routerSelect" class="router-select">
+                        <option value="">Select Router</option>
+                        <option value="router1">Router 1 (192.168.1.1)</option>
+                        <option value="router2">Router 2 (192.168.1.2)</option>
+                        <option value="router3">Router 3 (192.168.1.3)</option>
+                        <option value="router4">Router 4 (192.168.1.4)</option>
+                    </select>
+                </div>
+                
+                <div class="workflow-selector">
+                    <h3>Automation Workflows:</h3>
+                    <div class="workflow-card" onclick="selectWorkflow('push')">
+                        <h3>Configuration Push</h3>
+                        <p>Push configurations to routers using natural language</p>
+                    </div>
+                    <div class="workflow-card" onclick="selectWorkflow('retrieve')">
+                        <h3>Configuration Retrieval</h3>
+                        <p>Retrieve and validate router configurations using natural language</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-steps" id="workflowSteps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">Enter natural language request</div>
+                        <div class="step-status step-pending">Pending</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">Translate to Cisco IOS commands</div>
+                        <div class="step-status step-pending">Pending</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">Validate Cisco IOS commands</div>
+                        <div class="step-status step-pending">Pending</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">Push configuration to router</div>
+                        <div class="step-status step-pending">Pending</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">Verify configuration push success</div>
+                        <div class="step-status step-pending">Pending</div>
+                    </div>
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" id="messageInput" class="message-input" placeholder="Example: 'Configure OSPF with process ID 1 and area 0 on interface GigabitEthernet0/0/1'">
+                    <button id="executeButton" class="execute-button">Execute Workflow</button>
+                </div>
+                
+                <div class="config-display" id="configDisplay" style="display: none;">
+                    <h3>Generated Cisco IOS Configuration:</h3>
+                    <div id="generatedConfig"></div>
+                </div>
+                
+                <div class="results-display" id="resultsDisplay" style="display: none;">
+                    <h3>Configuration Push Results:</h3>
+                    <div id="pushResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            selectedRouter: null,
+            selectedWorkflow: null,
+            workflowSteps: document.querySelectorAll('.step-status')
+        };
+
+        // DOM Elements
+        const elements = {
+            routerSelect: document.getElementById('routerSelect'),
+            messageInput: document.getElementById('messageInput'),
+            executeButton: document.getElementById('executeButton'),
+            workflowSteps: document.querySelectorAll('.step-status'),
+            configDisplay: document.getElementById('configDisplay'),
+            generatedConfig: document.getElementById('generatedConfig'),
+            resultsDisplay: document.getElementById('resultsDisplay'),
+            pushResults: document.getElementById('pushResults')
+        };
+
+        // Initialize the application
+        async function init() {
+            try {
+                // Set up event listeners
+                setupEventListeners();
+            } catch (error) {
+                console.error('Failed to initialize application:', error);
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Router selection
+            elements.routerSelect.addEventListener('change', (e) => {
+                state.selectedRouter = e.target.value;
+            });
+            
+            // Execute workflow
+            elements.executeButton.addEventListener('click', executeWorkflow);
+        }
+
+        // Select workflow
+        function selectWorkflow(workflow) {
+            // Remove active class from all workflows
+            document.querySelectorAll('.workflow-card').forEach(card => {
+                card.classList.remove('selected-workflow');
+            });
+            
+            // Add active class to selected workflow
+            event.currentTarget.classList.add('selected-workflow');
+            state.selectedWorkflow = workflow;
+            
+            // Reset workflow steps
+            resetWorkflowSteps();
+        }
+
+        // Reset workflow steps
+        function resetWorkflowSteps() {
+            elements.workflowSteps.forEach(step => {
+                step.textContent = 'Pending';
+                step.className = 'step-status step-pending';
+            });
+            
+            // Hide displays
+            elements.configDisplay.style.display = 'none';
+            elements.resultsDisplay.style.display = 'none';
+        }
+
+        // Execute workflow
+        async function executeWorkflow() {
+            if (!state.selectedRouter) {
+                alert('Please select a router first');
+                return;
+            }
+            
+            if (!state.selectedWorkflow) {
+                alert('Please select a workflow first');
+                return;
+            }
+            
+            const message = elements.messageInput.value.trim();
+            if (!message) {
+                alert('Please enter a natural language request');
+                return;
+            }
+            
+            // Reset workflow steps
+            resetWorkflowSteps();
+            
+            if (state.selectedWorkflow === 'push') {
+                await executePushWorkflow(message);
+            } else if (state.selectedWorkflow === 'retrieve') {
+                await executeRetrieveWorkflow(message);
+            }
+        }
+
+        // Execute push workflow
+        async function executePushWorkflow(message) {
+            // Step 1: Enter natural language request
+            updateStepStatus(0, 'completed');
+            
+            // Step 2: Translate to Cisco IOS commands
+            updateStepStatus(1, 'in-progress');
+            const iosConfig = await translateToIOS(message);
+            updateStepStatus(1, 'completed');
+            
+            // Step 3: Validate Cisco IOS commands
+            updateStepStatus(2, 'in-progress');
+            const isValid = await validateIOSConfig(iosConfig);
+            updateStepStatus(2, isValid ? 'completed' : 'failed');
+            
+            if (!isValid) {
+                alert('Configuration validation failed. Please check the generated configuration.');
+                return;
+            }
+            
+            // Display generated configuration
+            elements.generatedConfig.textContent = iosConfig;
+            elements.configDisplay.style.display = 'block';
+            
+            // Step 4: Push configuration to router
+            updateStepStatus(3, 'in-progress');
+            const pushResult = await pushConfigToRouter(iosConfig);
+            updateStepStatus(3, pushResult.success ? 'completed' : 'failed');
+            
+            // Step 5: Verify configuration push success
+            updateStepStatus(4, pushResult.success ? 'completed' : 'failed');
+            
+            // Display results
+            elements.pushResults.textContent = pushResult.message;
+            elements.resultsDisplay.style.display = 'block';
+        }
+
+        // Execute retrieve workflow
+        async function executeRetrieveWorkflow(message) {
+            // Step 1: Enter natural language request
+            updateStepStatus(0, 'completed');
+            
+            // Step 2: Translate to Cisco IOS commands
+            updateStepStatus(1, 'in-progress');
+            const iosCommand = await translateToIOSCommand(message);
+            updateStepStatus(1, 'completed');
+            
+            // Step 3: Validate Cisco IOS commands
+            updateStepStatus(2, 'in-progress');
+            const isValid = await validateIOSCommand(iosCommand);
+            updateStepStatus(2, isValid ? 'completed' : 'failed');
+            
+            if (!isValid) {
+                alert('Command validation failed.');
+                return;
+            }
+            
+            // Step 4: Execute command on router
+            updateStepStatus(3, 'in-progress');
+            const commandResult = await executeCommandOnRouter(iosCommand);
+            updateStepStatus(3, commandResult.success ? 'completed' : 'failed');
+            
+            // Step 5: Display retrieved results
+            updateStepStatus(4, commandResult.success ? 'completed' : 'failed');
+            
+            // Display results
+            elements.pushResults.textContent = commandResult.output || commandResult.message;
+            elements.resultsDisplay.style.display = 'block';
+        }
+
+        // Update step status
+        function updateStepStatus(stepIndex, status) {
+            const stepElement = elements.workflowSteps[stepIndex];
+            if (!stepElement) return;
+            
+            stepElement.className = `step-status step-${status}`;
+            stepElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        }
+
+        // Translate natural language to Cisco IOS configuration
+        async function translateToIOS(message) {
+            // Simulate translation
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // In a real implementation, this would call the GENAI backend
+            // For this demo, we'll return a sample configuration
+            return `!
+! Sample configuration for: ${message}
+interface GigabitEthernet0/0/1
+description Auto-generated by GENAI
+ip address dhcp
+ip ospf 1 area 0
+no shutdown
+!
+router ospf 1
+router-id 1.1.1.1
+!
+end`;
+        }
+
+        // Translate natural language to Cisco IOS command
+        async function translateToIOSCommand(message) {
+            // Simulate translation
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // In a real implementation, this would call the GENAI backend
+            // For this demo, we'll return a sample command
+            return "show running-config";
+        }
+
+        // Validate Cisco IOS configuration
+        async function validateIOSConfig(config) {
+            // Simulate validation
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // In a real implementation, this would validate the configuration syntax
+            // For this demo, we'll assume it's always valid
+            return true;
+        }
+
+        // Validate Cisco IOS command
+        async function validateIOSCommand(command) {
+            // Simulate validation
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // In a real implementation, this would validate the command syntax
+            // For this demo, we'll assume it's always valid
+            return true;
+        }
+
+        // Push configuration to router
+        async function pushConfigToRouter(config) {
+            // Simulate pushing configuration
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // In a real implementation, this would connect to the actual router
+            // and push the configuration
+            return {
+                success: true,
+                message: "Configuration successfully pushed to router.\n\n" + 
+                         "Interface GigabitEthernet0/0/1 configured with OSPF\n" +
+                         "OSPF process 1 started with area 0\n" +
+                         "Router ID set to 1.1.1.1\n" +
+                         "Configuration applied without errors."
+            };
+        }
+
+        // Execute command on router
+        async function executeCommandOnRouter(command) {
+            // Simulate executing command
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // In a real implementation, this would connect to the actual router
+            // and execute the command, returning the output
+            return {
+                success: true,
+                output: "Building configuration...\n\n" +
+                        "Current configuration : 3456 bytes\n" +
+                        "!\n" +
+                        "version 15.4\n" +
+                        "service timestamps debug datetime msec\n" +
+                        "service timestamps log datetime msec\n" +
+                        "!\n" +
+                        "hostname CORE-RTR-01\n" +
+                        "!\n" +
+                        "interface GigabitEthernet0/0/1\n" +
+                        " description GENAI Demo Interface\n" +
+                        " ip address 192.168.1.1 255.255.255.0\n" +
+                        " ip ospf 1 area 0\n" +
+                        "!\n" +
+                        "router ospf 1\n" +
+                        " router-id 1.1.1.1\n" +
+                        " network 192.168.1.0 0.0.0.255 area 0\n" +
+                        "!\n" +
+                        "end"
+            };
+        }
+
+        // Initialize application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devices - Multi-API Chat</title>
+    <style>
+        .device-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .device-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .device-card p {
+            margin: 5px 0;
+        }
+        
+        .device-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .status-online {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-offline {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-unknown {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --openai-color: #10a37f;
+            --groq-color: #f55036;
+            --cerebras-color: #000000;
+            --sambanova-color: #00aeef;
+            --anthropic-color: #d9dae8;
+            --openrouter-color: #000000;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--dark-gray);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            background: var(--light-gray);
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        nav a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .devices-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .device-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .device-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .device-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-online {
+            background: var(--success-color);
+        }
+
+        .status-offline {
+            background: var(--error-color);
+        }
+
+        .status-unknown {
+            background: var(--warning-color);
+        }
+
+        .device-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .test-button {
+            background: #ddd;
+        }
+
+        .test-button:hover {
+            background: #ccc;
+        }
+
+        .remove-button {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .remove-button:hover {
+            opacity: 0.8;
+        }
+
+        .add-device-form {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .cancel-button {
+            padding: 10px 15px;
+            background: #ddd;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .cancel-button:hover {
+            background: #ccc;
+        }
+
+        .add-button {
+            padding: 10px 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            opacity: 0.9;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-group input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .device-type-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .device-type-option {
+            padding: 10px 15px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .device-type-option.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .device-card {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .device-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multi-API Chat</h1>
+            <p>Cisco Device Management</p>
+        </header>
+        
+        <nav>
+            <a href="index.html">Chat</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="operations.html">Operations</a>
+            <a href="automation.html">Automation</a>
+            <a href="devices.html" class="active">Devices</a>
+        </nav>
+        
+        <div class="main-layout">
+            <div class="devices-container">
+                <h2>Manage Cisco Devices</h2>
+                
+                <div class="device-type-selector">
+                    <div class="device-type-option active" onclick="switchToDeviceType('dummy')">Dummy Devices</div>
+                    <div class="device-type-option" onclick="switchToDeviceType('real')">Real Routers</div>
+                </div>
+                
+                <div class="device-list" id="deviceList">
+                    <!-- Devices will be displayed here -->
+                </div>
+                
+                <div class="add-device-form">
+                    <h3>Add New Device</h3>
+                    <div class="form-group">
+                        <label for="deviceName">Device Name</label>
+                        <input type="text" id="deviceName" placeholder="Enter device name">
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceIP">IP Address</label>
+                        <input type="text" id="deviceIP" placeholder="Enter IP address">
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceModel">Device Model</label>
+                        <select id="deviceModel">
+                            <option value="ISR4451">Cisco ISR 4451</option>
+                            <option value="ISR4321">Cisco ISR 4321</option>
+                            <option value="ISR4331">Cisco ISR 4331</option>
+                            <option value="ASR1001">Cisco ASR 1001-X</option>
+                            <option value="ASR1002">Cisco ASR 1002-X</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceUsername">Username</label>
+                        <input type="text" id="deviceUsername" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="devicePassword">Password</label>
+                        <input type="password" id="devicePassword" placeholder="Enter password">
+                    </div>
+                    <div class="toggle-group">
+                        <input type="checkbox" id="deviceEnabled" checked>
+                        <label for="deviceEnabled">Enabled</label>
+                    </div>
+                    <div class="form-actions">
+                        <button class="cancel-button" onclick="clearForm()">Cancel</button>
+                        <button class="add-button" onclick="addDevice()">Add Device</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            devices: {
+                dummy: [
+                    {
+                        id: 'dummy1',
+                        name: 'CORE-RTR-01',
+                        ip: '192.168.1.1',
+                        model: 'ISR4451',
+                        status: 'online',
+                        enabled: true
+                    },
+                    {
+                        id: 'dummy2',
+                        name: 'EDGE-RTR-02',
+                        ip: '192.168.1.2',
+                        model: 'ASR1001',
+                        status: 'online',
+                        enabled: true
+                    },
+                    {
+                        id: 'dummy3',
+                        name: 'WAN-RTR-03',
+                        ip: '192.168.1.3',
+                        model: 'ISR4321',
+                        status: 'online',
+                        enabled: true
+                    },
+                    {
+                        id: 'dummy4',
+                        name: 'BACKUP-RTR-04',
+                        ip: '192.168.1.4',
+                        model: 'ISR4331',
+                        status: 'offline',
+                        enabled: false
+                    }
+                ],
+                real: [
+                    {
+                        id: 'real1',
+                        name: 'HQ-CORE-01',
+                        ip: '10.0.0.1',
+                        model: 'ASR1002',
+                        status: 'unknown',
+                        enabled: true
+                    }
+                ]
+            },
+            currentDeviceType: 'dummy'
+        };
+
+        // DOM Elements
+        const elements = {
+            deviceList: document.getElementById('deviceList'),
+            deviceName: document.getElementById('deviceName'),
+            deviceIP: document.getElementById('deviceIP'),
+            deviceModel: document.getElementById('deviceModel'),
+            deviceUsername: document.getElementById('deviceUsername'),
+            devicePassword: document.getElementById('devicePassword'),
+            deviceEnabled: document.getElementById('deviceEnabled')
+        };
+
+        // Initialize the application
+        async function init() {
+            try {
+                // Render device list
+                renderDeviceList();
+            } catch (error) {
+                console.error('Failed to initialize application:', error);
+            }
+        }
+
+        // Switch device type
+        function switchToDeviceType(type) {
+            state.currentDeviceType = type;
+            
+            // Update active class
+            document.querySelectorAll('.device-type-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Render device list
+            renderDeviceList();
+        }
+
+        // Render device list
+        function renderDeviceList() {
+            elements.deviceList.innerHTML = '';
+            
+            const devices = state.devices[state.currentDeviceType];
+            
+            if (devices.length === 0) {
+                elements.deviceList.innerHTML = '<p>No devices configured</p>';
+                return;
+            }
+            
+            devices.forEach(device => {
+                const deviceCard = document.createElement('div');
+                deviceCard.className = 'device-card';
+                deviceCard.innerHTML = `
+                    <div class="device-info">
+                        <h3>${device.name}</h3>
+                        <div>IP: ${device.ip}</div>
+                        <div>Model: ${device.model}</div>
+                    </div>
+                    <div class="device-status">
+                        <div class="status-indicator status-${device.status}"></div>
+                        <span>${device.status}</span>
+                    </div>
+                    <div class="device-actions">
+                        <button class="action-button test-button" onclick="testDevice('${device.id}')">Test</button>
+                        <button class="action-button remove-button" onclick="removeDevice('${device.id}')">Remove</button>
+                    </div>
+                `;
+                elements.deviceList.appendChild(deviceCard);
+            });
+        }
+
+        // Add device
+        function addDevice() {
+            const name = elements.deviceName.value.trim();
+            const ip = elements.deviceIP.value.trim();
+            const model = elements.deviceModel.value;
+            
+            if (!name || !ip) {
+                alert('Device name and IP address are required');
+                return;
+            }
+            
+            // Validate IP address format
+            const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+            if (!ipRegex.test(ip)) {
+                alert('Please enter a valid IP address');
+                return;
+            }
+            
+            // Create new device
+            const newDevice = {
+                id: `${state.currentDeviceType}${Date.now()}`,
+                name: name,
+                ip: ip,
+                model: model,
+                status: 'unknown',
+                enabled: elements.deviceEnabled.checked
+            };
+            
+            // Add to device list
+            state.devices[state.currentDeviceType].push(newDevice);
+            
+            // Clear form
+            clearForm();
+            
+            // Render device list
+            renderDeviceList();
+            
+            alert(`Device ${name} added successfully`);
+        }
+
+        // Clear form
+        function clearForm() {
+            elements.deviceName.value = '';
+            elements.deviceIP.value = '';
+            elements.deviceUsername.value = '';
+            elements.devicePassword.value = '';
+            elements.deviceEnabled.checked = true;
+        }
+
+        // Test device
+        async function testDevice(deviceId) {
+            // Find the device
+            const device = state.devices[state.currentDeviceType].find(d => d.id === deviceId);
+            if (!device) return;
+            
+            // Update status to in-progress
+            device.status = 'unknown';
+            renderDeviceList();
+            
+            // Simulate testing
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Update status (random for demo)
+            const statuses = ['online', 'offline'];
+            device.status = statuses[Math.floor(Math.random() * statuses.length)];
+            
+            // Render device list
+            renderDeviceList();
+            
+            alert(`Device ${device.name} test completed. Status: ${device.status}`);
+        }
+
+        // Remove device
+        function removeDevice(deviceId) {
+            // Find the device
+            const deviceIndex = state.devices[state.currentDeviceType].findIndex(d => d.id === deviceId);
+            if (deviceIndex === -1) return;
+            
+            const device = state.devices[state.currentDeviceType][deviceIndex];
+            
+            // Confirm removal
+            if (!confirm(`Are you sure you want to remove device ${device.name}?`)) {
+                return;
+            }
+            
+            // Remove from device list
+            state.devices[state.currentDeviceType].splice(deviceIndex, 1);
+            
+            // Render device list
+            renderDeviceList();
+            
+            alert(`Device ${device.name} removed successfully`);
+        }
+
+        // Initialize application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

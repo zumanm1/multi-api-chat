@@ -1,0 +1,49 @@
+{
+  "providers": {
+    "test_provider": {
+      "name": "Test Provider",
+      "enabled": false,
+      "api_key": "updated_key",
+      "model": "updated_model",
+      "base_url": "http://test.provider.com/v1",
+      "status": "error",
+      "last_checked": "2025-08-07T22:26:38.938343"
+    }
+  },
+  "settings": {
+    "default_provider": "test_provider",
+    "fallback_provider": null,
+    "temperature": 0.7,
+    "max_tokens": 1000,
+    "system_prompt": "You are a test AI assistant.",
+    "features": {
+      "auto_fallback": false,
+      "speed_optimization": false,
+      "cost_optimization": false,
+      "multi_provider_compare": false,
+      "usage_analytics": true
+    }
+  },
+  "devices": {
+    "dummy_router": {
+      "name": "Updated Router",
+      "ip": "192.168.2.1",
+      "model": "Cisco 2900",
+      "username": "",
+      "password": "",
+      "port": 22,
+      "status": "offline",
+      "last_checked": "2025-08-07T22:26:42.562222"
+    },
+    "real_router": {
+      "name": "Real Router",
+      "ip": "192.168.1.2",
+      "model": "Cisco 4500",
+      "username": "admin",
+      "password": "password123",
+      "port": 22,
+      "status": "offline",
+      "last_checked": "2025-08-07T22:26:42.601874"
+    }
+  }
+}

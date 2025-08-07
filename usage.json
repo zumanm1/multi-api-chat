@@ -1,0 +1,9 @@
+{
+  "2025-08-07": {
+    "test_provider": {
+      "requests": 1,
+      "tokens": 42,
+      "total_response_time": 8.296966552734375e-05
+    }
+  }
+}
