@@ -624,7 +624,28 @@
                     <div class="api-key-input">
                         <input type="password" id="apiKey-${id}" value="${provider.api_key}" placeholder="API Key">
                     </div>
-                    <input type="text" id="model-${id}" value="${provider.model}" placeholder="Model">
+                    ${(() => {
+    let modelOptions = [];
+    if (id === 'openai') {
+        modelOptions = [
+            'gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-curie-001'
+        ];
+    } else if (id === 'groq') {
+        modelOptions = [
+            'llama3-70b-8192', 'llama3-8b-8192', 'mixtral-8x7b-32768', 'gemma-7b-it'
+        ];
+    } else if (id === 'openrouter') {
+        modelOptions = [
+            'openrouter/openai/gpt-3.5-turbo', 'openrouter/openai/gpt-4-turbo', 'openrouter/meta-llama/llama-3-70b-instruct', 'openrouter/google/gemma-7b-it', 'openrouter/mistralai/mixtral-8x7b-instruct'
+        ];
+    }
+    if (modelOptions.length > 0) {
+        return `<select id='model-${id}'>` + modelOptions.map(opt => `<option value='${opt}' ${provider.model === opt ? 'selected' : ''}>${opt}</option>`).join('') + `</select>`;
+    } else {
+        return `<input type='text' id='model-${id}' value='${provider.model}' placeholder='Model'>`;
+    }
+})()}
+
                     <div class="toggle-group">
                         <input type="checkbox" id="enabled-${id}" ${provider.enabled ? 'checked' : ''}>
                         <label for="enabled-${id}">Enabled</label>
