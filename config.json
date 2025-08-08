@@ -1,5 +1,53 @@
 {
   "providers": {
+    "openai": {
+      "name": "OpenAI",
+      "enabled": true,
+      "api_key": "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",
+      "model": "gpt-3.5-turbo",
+      "base_url": "https://api.openai.com/v1",
+      "status": "error",
+      "last_checked": "2025-08-08T10:46:19.119947",
+      "last_response": "{\n    \"error\": {\n        \"message\": \"Your account is not active, please check your billing details on our website.\",\n        \"type\": \"billing_not_active\",\n        \"param\": null,\n        \"code\": \"billi"
+    },
+    "groq": {
+      "name": "Groq",
+      "enabled": true,
+      "api_key": "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",
+      "model": "llama-3.1-8b-instant",
+      "base_url": "https://api.groq.com/openai/v1",
+      "status": "connected",
+      "last_checked": "2025-08-08T10:46:19.736211",
+      "last_response": "Hello, World!"
+    },
+    "openrouter": {
+      "name": "OpenRouter",
+      "enabled": true,
+      "api_key": "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",
+      "model": "openai/gpt-3.5-turbo",
+      "base_url": "https://openrouter.ai/api/v1",
+      "status": "connected",
+      "last_checked": "2025-08-08T10:46:21.033424",
+      "last_response": "Hello world!"
+    },
+    "anthropic": {
+      "name": "Anthropic",
+      "enabled": true,
+      "api_key": "sk-ant-test123",
+      "model": "claude-3-sonnet",
+      "base_url": "https://api.anthropic.com/v1/openai",
+      "status": "disconnected",
+      "last_checked": ""
+    },
+    "cerebras": {
+      "name": "Cerebras",
+      "enabled": true,
+      "api_key": "sk-cerebras-test123",
+      "model": "llama-3-70b-wse-3",
+      "base_url": "https://api.cerebras.ai/v1",
+      "status": "disconnected",
+      "last_checked": ""
+    },
     "test_provider": {
       "name": "Test Provider",
       "enabled": false,
@@ -7,7 +55,7 @@
       "model": "updated_model",
       "base_url": "http://test.provider.com/v1",
       "status": "error",
-      "last_checked": "2025-08-07T22:26:38.938343"
+      "last_checked": "2025-08-08T09:59:11.884967"
     }
   },
   "settings": {

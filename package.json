@@ -1,0 +1,26 @@
+{
+  "name": "multi-api-chat",
+  "version": "1.0.0",
+  "description": "A unified chat interface enabling seamless interaction with multiple AI providers through OpenAI-compatible APIs, optimizing performance, cost, and reliability.",
+  "main": "e2e_puppeteer_test.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zumanm1/GENAI-119-best.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zumanm1/GENAI-119-best/issues"
+  },
+  "homepage": "https://github.com/zumanm1/GENAI-119-best#readme",
+  "dependencies": {
+    "puppeteer": "^24.16.0"
+  }
+}

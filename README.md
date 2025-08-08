@@ -28,18 +28,17 @@ The application stores provider configurations in `config.json`. You can:
 
 ### 3. Start Backend Server
 
+To start the backend server (on port 8002), run:
 ```bash
 python backend_server.py
 ```
 
-The backend server will start on `http://localhost:8002`.
-
 ### 4. Start Frontend Server
 
 In a new terminal:
-
 ```bash
-python -m http.server 8001
+bash start_frontend.sh # (serves frontend on port 8001)
+# For E2E test server use: python3 -m http.server 8180
 ```
 
 ### 5. Access Application

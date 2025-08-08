@@ -195,7 +195,20 @@ def chat_with_provider(provider_id, message, system_prompt=None):
         return result
     except Exception as e:
         response_time = time.time() - start_time
-        raise Exception(f"Provider {provider_id} error: {str(e)}")
+        error_msg = str(e)
+        error_type = "unknown"
+        
+        # Detect specific error types
+        if "billing" in error_msg.lower() or "payment" in error_msg.lower():
+            error_type = "billing"
+        elif "rate limit" in error_msg.lower() or "ratelimit" in error_msg.lower():
+            error_type = "rate_limit"
+        elif "authentication" in error_msg.lower() or "api key" in error_msg.lower() or "apikey" in error_msg.lower():
+            error_type = "auth"
+        elif "not found" in error_msg.lower() or "does not exist" in error_msg.lower():
+            error_type = "not_found"
+        
+        raise Exception(f"Provider {provider_id} error: {error_msg}", error_type)
 
 # Usage tracking function
 def track_usage(provider_id, response_time, tokens):
@@ -327,6 +340,11 @@ def test_all_providers():
     return jsonify(results)
 
 @app.route('/api/settings', methods=['GET', 'PUT'])
+@app.route('/api/usage', methods=['GET'])
+def get_usage_api():
+    return jsonify(usage_stats)
+
+@app.route('/api/settings', methods=['GET', 'PUT'])
 def manage_settings():
     if request.method == 'GET':
         return jsonify(settings)
@@ -356,6 +374,21 @@ def chat():
         result = chat_with_provider(provider_id, message, system_prompt)
         return jsonify(result)
     except Exception as e:
+        # Get error details
+        error_msg = str(e)
+        error_type = "unknown"
+        
+        # Check if error_type was passed with the exception
+        if len(e.args) > 1:
+            error_type = e.args[1]
+        
+        # Prepare error response
+        error_response = {
+            "error": error_msg,
+            "error_type": error_type,
+            "provider": provider_id
+        }
+        
         # Try fallback provider if enabled
         if settings['features']['auto_fallback'] and settings['fallback_provider']:
             fallback_id = settings['fallback_provider']
@@ -365,9 +398,25 @@ def chat():
                     result["fallback_used"] = True
                     return jsonify(result)
                 except Exception as fallback_e:
-                    return jsonify({"error": f"Primary provider error: {str(e)}, Fallback provider error: {str(fallback_e)}"}), 500
+                    fallback_error_type = "unknown"
+                    if len(fallback_e.args) > 1:
+                        fallback_error_type = fallback_e.args[1]
+                    
+                    error_response["fallback_error"] = str(fallback_e)
+                    error_response["fallback_error_type"] = fallback_error_type
+                    error_response["fallback_provider"] = fallback_id
+                    return jsonify(error_response), 500
         
-        return jsonify({"error": str(e)}), 500
+        # Set appropriate status code based on error type
+        status_code = 500
+        if error_type == "auth":
+            status_code = 401
+        elif error_type == "not_found":
+            status_code = 404
+        elif error_type == "rate_limit":
+            status_code = 429
+        
+        return jsonify(error_response), status_code
 
 @app.route('/api/chat/compare', methods=['POST'])
 def compare_chat():

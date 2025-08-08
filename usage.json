@@ -1,9 +1,9 @@
 {
-  "2025-08-07": {
-    "test_provider": {
-      "requests": 1,
-      "tokens": 42,
-      "total_response_time": 8.296966552734375e-05
+  "2025-08-08": {
+    "openrouter": {
+      "requests": 2,
+      "tokens": 349,
+      "total_response_time": 4.201685667037964
     }
   }
 }

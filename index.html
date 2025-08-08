@@ -628,15 +628,52 @@
     let modelOptions = [];
     if (id === 'openai') {
         modelOptions = [
-            'gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'text-davinci-003', 'text-curie-001'
+            'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-5-chat',
+            'gpt-4o-2024-11-20', 'gpt-4o-2024-08-06', 'gpt-4o-2024-05-13',
+            'gpt-4o-mini', 'gpt-4-turbo-2024-04-09',
+            'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano',
+            'gpt-3.5-turbo-0125', 'gpt-3.5-turbo-1106', 'gpt-3.5-turbo-instruct-0914',
+            'gpt-oss-120b', 'gpt-oss-20b',
+            'o4-mini', 'text-embedding-3-large'
         ];
     } else if (id === 'groq') {
         modelOptions = [
-            'llama3-70b-8192', 'llama3-8b-8192', 'mixtral-8x7b-32768', 'gemma-7b-it'
+            'llama-3.1-8b-instant', 'llama-3.3-70b-versatile',
+            'meta-llama/llama-guard-4-12b', 'whisper-large-v3',
+            'whisper-large-v3-turbo', 'deepseek-r1-distill-llama-70b',
+            'meta-llama/llama-4-maverick-17b-128e-instruct',
+            'meta-llama/llama-4-scout-17b-16e-instruct',
+            'meta-llama/llama-prompt-guard-2-22m',
+            'meta-llama/llama-prompt-guard-2-86m',
+            'moonshotai/kimi-k2-instruct', 'openai/gpt-oss-120b',
+            'openai/gpt-oss-20b', 'qwen/qwen3-32b',
+            'playai-tts', 'playai-tts-arabic',
+            'compound-beta', 'compound-beta-mini'
+        ];
+    } else if (id === 'anthropic') {
+        modelOptions = [
+            'claude-opus-4', 'claude-sonnet-4', 'claude-3-7-sonnet',
+            'claude-3-5-sonnet', 'claude-3-haiku', 'claude-3-opus',
+            'claude-3-sonnet', 'claude-2.1', 'claude-2.0',
+            'claude-instant-1.2'
+        ];
+    } else if (id === 'cerebras') {
+        modelOptions = [
+            'llama-4-scout-wse-3', 'llama-4-wse-3', 'llama-3-wse-3',
+            'llama-3-70b-wse-3', 'llama-3-8b-wse-3', 'llama-2-70b-wse-3',
+            'llama-2-7b-wse-3', 'mixtral-8x7b-wse-3', 'mistral-7b-wse-3'
         ];
     } else if (id === 'openrouter') {
         modelOptions = [
-            'openrouter/openai/gpt-3.5-turbo', 'openrouter/openai/gpt-4-turbo', 'openrouter/meta-llama/llama-3-70b-instruct', 'openrouter/google/gemma-7b-it', 'openrouter/mistralai/mixtral-8x7b-instruct'
+            'anthropic/claude-opus-4-20250514', 'anthropic/claude-sonnet-4-20250514',
+            'anthropic/claude-3-7-sonnet-20250219', 'google/gemini-2.5-pro-preview',
+            'google/gemini-1.5-flash-latest', 'meta-llama/llama-3-70b-instruct',
+            'meta-llama/llama-3-8b-instruct', 'mistralai/mixtral-8x22b-instruct',
+            'mistralai/mistral-7b-instruct', '01-ai/yi-34b-chat',
+            'deepseek-ai/deepseek-coder-33b-instruct',
+            'mistralai/mistral-small-1-1', 'meta-llama/llama-4-scout-17b-16e-instruct',
+            'mistralai/mixtral-8x7b-instruct', 'openrouter/auto',
+            'mistralai/mistral-7b-v0.1'
         ];
     }
     if (modelOptions.length > 0) {
