@@ -795,6 +795,25 @@
                         <label for="debugMode">Debug Mode (Verbose Logging)</label>
                     </div>
                     
+                    <!-- AI Agent Toggle Section -->
+                    <div class="toggle-group" style="background: linear-gradient(135deg, rgba(88,86,214,0.1) 0%, rgba(175,82,222,0.1) 100%); border: 1px solid var(--apple-indigo);">
+                        <input type="checkbox" id="aiAgentsEnabled" checked>
+                        <label for="aiAgentsEnabled" style="display: flex; align-items: center; gap: 8px;">
+                            <span>🤖</span> AI Agents
+                            <span id="aiAgentStatus" style="margin-left: auto; padding: 4px 12px; background: var(--apple-green); color: white; border-radius: 12px; font-size: 12px; font-weight: 600;">Active</span>
+                        </label>
+                    </div>
+
+                    <!-- AI Agent Status Card -->
+                    <div id="aiAgentCard" class="setting-group" style="background: var(--apple-gray-6); border-radius: var(--border-radius-medium); padding: 20px; margin-top: 16px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span>🎯</span> AI Agent Status
+                        </label>
+                        <div id="aiAgentDetails" style="font-size: 14px; color: var(--apple-gray);">
+                            Loading agent status...
+                        </div>
+                    </div>
+                    
                     <button id="saveSettings" class="save-button">Save Settings</button>
                     <button id="resetSettings" class="reset-button">Reset to Defaults</button>
                 </div>
@@ -1345,6 +1364,110 @@
             // Update provider dropdowns
             populateProviderDropdowns();
         }
+
+        // AI Agent Management
+        let aiAgentInterval = null;
+
+        async function loadAIAgentStatus() {
+            try {
+                const response = await fetch('http://localhost:8002/api/ai-agents/status');
+                const status = await response.json();
+                
+                const checkbox = document.getElementById('aiAgentsEnabled');
+                const statusBadge = document.getElementById('aiAgentStatus');
+                const detailsDiv = document.getElementById('aiAgentDetails');
+                
+                checkbox.checked = status.enabled;
+                
+                if (status.enabled) {
+                    statusBadge.textContent = 'Active';
+                    statusBadge.style.background = 'var(--apple-green)';
+                    detailsDiv.innerHTML = `
+                        <div style="color: var(--apple-green); margin-bottom: 8px;">✓ AI Agents are active and processing requests</div>
+                        <div>Status: ${status.status || 'operational'}</div>
+                        ${status.agent_status ? `<div>Agents: ${JSON.stringify(status.agent_status)}</div>` : ''}
+                    `;
+                } else {
+                    statusBadge.textContent = 'Disabled';
+                    statusBadge.style.background = 'var(--apple-red)';
+                    detailsDiv.innerHTML = `
+                        <div style="color: var(--apple-orange); margin-bottom: 8px;">⚠ AI Agents are currently disabled</div>
+                        <div>Enable agents to unlock intelligent automation features</div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load AI agent status:', error);
+                document.getElementById('aiAgentDetails').innerHTML = 
+                    '<div style="color: var(--apple-red);">Error loading agent status</div>';
+            }
+        }
+
+        async function toggleAIAgents() {
+            const checkbox = document.getElementById('aiAgentsEnabled');
+            const enabled = checkbox.checked;
+            
+            try {
+                const response = await fetch('http://localhost:8002/api/ai-agents/toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ enabled: enabled })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success notification
+                    showNotification(`AI Agents ${enabled ? 'enabled' : 'disabled'} successfully`, 'success');
+                    await loadAIAgentStatus();
+                } else {
+                    // Revert checkbox on failure
+                    checkbox.checked = !enabled;
+                    showNotification('Failed to toggle AI agents', 'error');
+                }
+            } catch (error) {
+                checkbox.checked = !enabled;
+                showNotification('Error toggling AI agents', 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background: ${type === 'success' ? 'var(--apple-green)' : 'var(--apple-red)'};
+                color: white;
+                border-radius: var(--border-radius-medium);
+                box-shadow: var(--shadow-large);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Add event listener for AI toggle
+        document.getElementById('aiAgentsEnabled').addEventListener('change', toggleAIAgents);
+
+        // Auto-refresh AI status every 30 seconds
+        aiAgentInterval = setInterval(loadAIAgentStatus, 30000);
+
+        // Load AI status on page load
+        loadAIAgentStatus();
+
+        // Clean up interval on page unload
+        window.addEventListener('beforeunload', () => {
+            if (aiAgentInterval) clearInterval(aiAgentInterval);
+        });
 
         // Initialize application when page loads
         document.addEventListener('DOMContentLoaded', init);

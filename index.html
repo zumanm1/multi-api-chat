@@ -443,6 +443,12 @@
             font-weight: 500;
         }
 
+        /* AI Agent Indicator Styles */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 0 16px;
@@ -518,6 +524,27 @@
             <a href="devices.html">Devices</a>
             <a href="settings.html">Settings</a>
         </nav>
+        
+        <!-- AI Agent Indicator (add after nav) -->
+        <div id="aiAgentIndicator" style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(88,86,214,0.9);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 200;
+            backdrop-filter: blur(10px);
+        ">
+            <span style="animation: pulse 2s infinite;">🤖</span>
+            <span>AI Agents Active</span>
+        </div>
         
         <div class="main-layout">
             <div class="chat-container">
@@ -919,8 +946,33 @@
             }
         }
 
+        // Check AI agent status
+        async function checkAIAgentStatus() {
+            try {
+                const response = await fetch('http://localhost:8002/api/ai-agents/status');
+                const status = await response.json();
+                
+                const indicator = document.getElementById('aiAgentIndicator');
+                if (status.enabled) {
+                    indicator.style.display = 'flex';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Failed to check AI agent status:', error);
+            }
+        }
+
         // Initialize application when page loads
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await init();
+            
+            // Check AI agent status on page load
+            checkAIAgentStatus();
+            
+            // Periodically check AI agent status
+            setInterval(checkAIAgentStatus, 60000);
+        });
     </script>
 </body>
 </html>

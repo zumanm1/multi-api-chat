@@ -1629,6 +1629,50 @@ def ai_provider_recommendation():
     except Exception as e:
         return jsonify({"error": f"AI provider recommendation error: {str(e)}"}), 500
 
+# AI Agent API Endpoints
+@app.route('/api/ai-agents/status', methods=['GET'])
+def get_ai_agent_status():
+    """Get current AI agent status"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({
+            'enabled': False,
+            'status': 'unavailable',
+            'message': 'AI agents not installed'
+        })
+    
+    status = get_ai_integration_status()
+    return jsonify(status)
+
+@app.route('/api/ai-agents/toggle', methods=['POST'])
+def toggle_ai_agents_endpoint():
+    """Toggle AI agents on/off"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'message': 'AI agents not available'
+        }), 503
+    
+    data = request.get_json()
+    enabled = data.get('enabled', None)
+    
+    result = toggle_ai_agents(enabled)
+    return jsonify(result)
+
+@app.route('/api/ai-agents/process', methods=['POST'])
+def process_ai_request():
+    """Process a request through AI agents"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'response': 'AI agents not available'
+        }), 503
+    
+    data = request.get_json()
+    request_type = data.get('type', 'chat')
+    
+    result = process_ai_request_sync(request_type, data)
+    return jsonify(result)
+
 # Advanced Workflow Endpoints
 @app.route('/api/ai/workflows', methods=['POST'])
 def create_workflow():
