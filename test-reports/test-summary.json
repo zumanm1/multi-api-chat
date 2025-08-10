@@ -1,0 +1,328 @@
+{
+  "generated_at": "2025-08-10T15:19:36.828034",
+  "summary": {
+    "total_tests": 47,
+    "passed": 36,
+    "failed": 10,
+    "errors": 0,
+    "skipped": 1,
+    "success_rate": 76.6,
+    "total_time": 2.629
+  },
+  "backend_tests": {
+    "total": 47,
+    "passed": 36,
+    "failed": 10,
+    "errors": 0,
+    "skipped": 1,
+    "time": 2.629,
+    "test_cases": [
+      {
+        "name": "test_health_endpoint",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.048,
+        "status": "passed"
+      },
+      {
+        "name": "test_health_endpoint_with_ai_agents",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "passed"
+      },
+      {
+        "name": "test_providers_endpoint_get",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_providers_endpoint_structure_validation",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_update_provider_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "passed"
+      },
+      {
+        "name": "test_update_provider_nonexistent",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_update_provider_invalid_data",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_settings_get",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_settings_update",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_settings_partial_update",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "passed"
+      },
+      {
+        "name": "test_chat_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.009,
+        "status": "passed"
+      },
+      {
+        "name": "test_chat_with_model_selection",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.008,
+        "status": "passed"
+      },
+      {
+        "name": "test_chat_missing_message",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_chat_disabled_provider",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_chat_with_fallback",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.008,
+        "status": "failed",
+        "message": "assert 400 == 200\n +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code",
+        "details": "tests/test_comprehensive_backend.py:428: in test_chat_with_fallback\n    assert response.status_code == 200\nE   assert 400 == 200\nE    +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code"
+      },
+      {
+        "name": "test_chat_compare_multiple_providers",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.012,
+        "status": "failed",
+        "message": "AssertionError: assert 1 == 2\n +  where 1 = len([{'model': 'gpt-4o', 'provider': 'openai', 'response': 'Test AI response for unit testing', 'response_time': 0.00011396408081054688, ...}])",
+        "details": "tests/test_comprehensive_backend.py:448: in test_chat_compare_multiple_providers\n    assert len(data) == 2\nE   AssertionError: assert 1 == 2\nE    +  where 1 = len([{'model': 'gpt-4o', 'provider': 'openai', 'response': 'Test AI response for unit testing', 'response_time': 0.00011396408081054688, ...}])"
+      },
+      {
+        "name": "test_test_provider_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.061,
+        "status": "failed",
+        "message": "assert 400 == 200\n +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code",
+        "details": "tests/test_comprehensive_backend.py:464: in test_test_provider_success\n    assert response.status_code == 200\nE   assert 400 == 200\nE    +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code"
+      },
+      {
+        "name": "test_test_provider_failure",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.015,
+        "status": "failed",
+        "message": "assert 400 == 200\n +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code",
+        "details": "tests/test_comprehensive_backend.py:482: in test_test_provider_failure\n    assert response.status_code == 200\nE   assert 400 == 200\nE    +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code"
+      },
+      {
+        "name": "test_test_all_providers",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.048,
+        "status": "passed"
+      },
+      {
+        "name": "test_enhanced_provider_test",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.013,
+        "status": "failed",
+        "message": "assert 400 == 200\n +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code",
+        "details": "tests/test_comprehensive_backend.py:513: in test_enhanced_provider_test\n    assert response.status_code == 200\nE   assert 400 == 200\nE    +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code"
+      },
+      {
+        "name": "test_list_devices",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_add_device_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.012,
+        "status": "passed"
+      },
+      {
+        "name": "test_add_device_missing_required_field",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.004,
+        "status": "passed"
+      },
+      {
+        "name": "test_add_device_duplicate_id",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.008,
+        "status": "passed"
+      },
+      {
+        "name": "test_update_device_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.021,
+        "status": "passed"
+      },
+      {
+        "name": "test_update_device_nonexistent",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_remove_device_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_remove_device_nonexistent",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.007,
+        "status": "passed"
+      },
+      {
+        "name": "test_device_connection_test_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.014,
+        "status": "passed"
+      },
+      {
+        "name": "test_device_connection_test_failure",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.018,
+        "status": "passed"
+      },
+      {
+        "name": "test_send_device_command_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.001,
+        "status": "skipped",
+        "message": "send_command_to_router function not implemented"
+      },
+      {
+        "name": "test_send_device_command_missing_command",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_send_device_command_nonexistent_device",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_usage_endpoint_empty",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_usage_tracking",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_usage_multiple_requests_tracking",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "passed"
+      },
+      {
+        "name": "test_ollama_provider_configuration",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_ollama_models_endpoint_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.006,
+        "status": "passed"
+      },
+      {
+        "name": "test_ollama_models_endpoint_failure",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.01,
+        "status": "passed"
+      },
+      {
+        "name": "test_ollama_pull_model_success",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.01,
+        "status": "passed"
+      },
+      {
+        "name": "test_ai_agents_status_endpoint",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "failed",
+        "message": "AssertionError: assert 'ai_available' in {'available': True, 'status': {'agent_status': {'master_agent': {'average_response_time': 0, 'last_activity': None, 'status': 'active', 'tasks_completed_today': 0, ...}, 'performance_metrics': {'average_agents_per_task': 1, 'complexity_distribution': {'complex': 0, 'moderate': 0, 'simple': 0}, 'success_rate': 100}, 'specialized_agents': {'analytics_agent': {'capabilities': ['data_analysis', 'metrics', 'reporting', 'insights'], 'role': 'Analytics Agent', 'status': 'active'}, 'automation_agent': {'capabilities': ['workflow_automation', 'process_optimization', 'scheduling'], 'role': 'Automation Agent', 'status': 'active'}, 'chat_agent': {'capabilities': ['conversation', 'general_queries', 'user_interaction'], 'role': 'Chat Agent', 'status': 'active'}, 'device_agent': {'capabilities': ['device_management', 'iot', 'monitoring', 'configuration'], 'role': 'Device Agent', 'status': 'active'}, ...}, 'system_status': {'demo_mode': True, 'enabled': True, 'total_agents': 6}}, 'enabled': True, 'status': 'active'}}",
+        "details": "tests/test_comprehensive_backend.py:822: in test_ai_agents_status_endpoint\n    assert \"ai_available\" in data\nE   AssertionError: assert 'ai_available' in {'available': True, 'status': {'agent_status': {'master_agent': {'average_response_time': 0, 'last_activity': None, 'status': 'active', 'tasks_completed_today': 0, ...}, 'performance_metrics': {'average_agents_per_task': 1, 'complexity_distribution': {'complex': 0, 'moderate': 0, 'simple': 0}, 'success_rate': 100}, 'specialized_agents': {'analytics_agent': {'capabilities': ['data_analysis', 'metrics', 'reporting', 'insights'], 'role': 'Analytics Agent', 'status': 'active'}, 'automation_agent': {'capabilities': ['workflow_automation', 'process_optimization', 'scheduling'], 'role': 'Automation Agent', 'status': 'active'}, 'chat_agent': {'capabilities': ['conversation', 'general_queries', 'user_interaction'], 'role': 'Chat Agent', 'status': 'active'}, 'device_agent': {'capabilities': ['device_management', 'iot', 'monitoring', 'configuration'], 'role': 'Device Agent', 'status': 'active'}, ...}, 'system_status': {'demo_mode': True, 'enabled': True, 'total_agents': 6}}, 'enabled': True, 'status': 'active'}}"
+      },
+      {
+        "name": "test_ai_chat_request",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "passed"
+      },
+      {
+        "name": "test_ai_analytics_request",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "failed",
+        "message": "assert 400 == 200\n +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code",
+        "details": "tests/test_comprehensive_backend.py:872: in test_ai_analytics_request\n    assert response.status_code == 200\nE   assert 400 == 200\nE    +  where 400 = <WrapperTestResponse streamed [400 BAD REQUEST]>.status_code"
+      },
+      {
+        "name": "test_ai_requests_when_unavailable",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.002,
+        "status": "passed"
+      },
+      {
+        "name": "test_workflow_create",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.003,
+        "status": "failed",
+        "message": "assert 404 == 200\n +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code",
+        "details": "tests/test_comprehensive_backend.py:914: in test_workflow_create\n    assert response.status_code == 200\nE   assert 404 == 200\nE    +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code"
+      },
+      {
+        "name": "test_workflow_execute",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.004,
+        "status": "failed",
+        "message": "json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "details": "tests/test_comprehensive_backend.py:930: in test_workflow_execute\n    workflow_id = json.loads(create_response.data)[\"workflow_id\"]\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/__init__.py:346: in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/decoder.py:337: in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/decoder.py:355: in raw_decode\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\nE   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "name": "test_workflow_status",
+        "classname": "tests.test_comprehensive_backend.TestBackendServer",
+        "time": 0.006,
+        "status": "failed",
+        "message": "json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "details": "tests/test_comprehensive_backend.py:949: in test_workflow_status\n    workflow_id = json.loads(create_response.data)[\"workflow_id\"]\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/__init__.py:346: in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/decoder.py:337: in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/decoder.py:355: in raw_decode\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\nE   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+      }
+    ]
+  },
+  "frontend_tests": {
+    "error": "Mocha JSON file not found: test-reports/frontend/mocha-results.json"
+  }
+}

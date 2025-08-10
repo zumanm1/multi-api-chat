@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Dashboard - Multi-API Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #4f46e5;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .agent-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .chat-icon { background: linear-gradient(135deg, #10b981, #059669); }
+        .analytics-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .device-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .ops-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .auto-icon { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+        .agent-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .agent-role {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .agent-description {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .agent-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .agent-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .agent-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agent-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .agent-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .response-area {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            display: none;
+        }
+
+        .response-area.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .response-text {
+            color: #1f2937;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .response-meta {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .system-status {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .status-card {
+            text-align: center;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .status-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4f46e5;
+            margin-bottom: 5px;
+        }
+
+        .status-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #ef4444;
+            padding: 10px;
+            background: #fef2f2;
+            border-radius: 8px;
+            border-left: 4px solid #ef4444;
+            margin-top: 10px;
+        }
+
+        .provider-recommendation {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommend-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .recommend-button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .recommend-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .criteria-selector {
+            margin-bottom: 20px;
+        }
+
+        .criteria-checkbox {
+            margin-right: 15px;
+            margin-bottom: 10px;
+        }
+
+        .criteria-label {
+            margin-left: 5px;
+            color: #4b5563;
+        }
+
+        @media (max-width: 768px) {
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Agents Dashboard</h1>
+            <p>Intelligent Multi-Agent System for Multi-API Chat Platform</p>
+        </div>
+
+        <div class="main-content">
+            <!-- System Status -->
+            <div class="system-status">
+                <div class="status-header">
+                    <h2 class="status-title">System Status</h2>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span id="system-status-text">Active</span>
+                    </div>
+                </div>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-number" id="total-agents">5</div>
+                        <div class="status-label">Active Agents</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-number" id="tasks-completed">0</div>
+                        <div class="status-label">Tasks Completed</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-number" id="providers-enabled">4</div>
+                        <div class="status-label">Providers Enabled</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-number" id="uptime">--</div>
+                        <div class="status-label">Uptime (hours)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Provider Recommendation -->
+            <div class="provider-recommendation">
+                <h2 class="status-title">🎯 AI Provider Recommendation</h2>
+                <p style="color: #6b7280; margin-bottom: 20px;">Get AI-powered recommendations for the best provider based on your request and criteria.</p>
+                
+                <div class="criteria-selector">
+                    <label class="criteria-checkbox">
+                        <input type="checkbox" id="speed-criteria" checked>
+                        <span class="criteria-label">Speed</span>
+                    </label>
+                    <label class="criteria-checkbox">
+                        <input type="checkbox" id="cost-criteria" checked>
+                        <span class="criteria-label">Cost</span>
+                    </label>
+                    <label class="criteria-checkbox">
+                        <input type="checkbox" id="quality-criteria" checked>
+                        <span class="criteria-label">Quality</span>
+                    </label>
+                </div>
+                
+                <input type="text" id="recommend-input" class="recommend-input" placeholder="Describe your request (e.g., 'I need to analyze large datasets quickly')">
+                <button onclick="getProviderRecommendation()" class="recommend-button" id="recommend-btn">
+                    Get Recommendation
+                </button>
+                
+                <div id="recommendation-result" class="response-area">
+                    <div class="response-text" id="recommendation-text"></div>
+                    <div class="response-meta" id="recommendation-meta"></div>
+                </div>
+            </div>
+
+            <!-- AI Agents -->
+            <div class="agent-grid">
+                <!-- Chat Agent -->
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-icon chat-icon">💬</div>
+                        <div>
+                            <div class="agent-title">Chat Agent</div>
+                            <div class="agent-role">Conversational Assistant</div>
+                        </div>
+                    </div>
+                    <div class="agent-description">
+                        Handles natural language conversations, provides intelligent responses, and manages chat sessions with context awareness.
+                    </div>
+                    <input type="text" id="chat-input" class="agent-input" placeholder="Ask me anything...">
+                    <button onclick="sendToAgent('chat')" class="agent-button" id="chat-btn">
+                        Send Message
+                    </button>
+                    <div id="chat-response" class="response-area">
+                        <div class="response-text" id="chat-response-text"></div>
+                        <div class="response-meta" id="chat-response-meta"></div>
+                    </div>
+                </div>
+
+                <!-- Analytics Agent -->
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-icon analytics-icon">📊</div>
+                        <div>
+                            <div class="agent-title">Analytics Agent</div>
+                            <div class="agent-role">Data Analyst</div>
+                        </div>
+                    </div>
+                    <div class="agent-description">
+                        Analyzes system performance, usage patterns, provider statistics, and generates insights from operational data.
+                    </div>
+                    <input type="text" id="analytics-input" class="agent-input" placeholder="Analyze system performance...">
+                    <button onclick="sendToAgent('analytics')" class="agent-button" id="analytics-btn">
+                        Analyze Data
+                    </button>
+                    <div id="analytics-response" class="response-area">
+                        <div class="response-text" id="analytics-response-text"></div>
+                        <div class="response-meta" id="analytics-response-meta"></div>
+                    </div>
+                </div>
+
+                <!-- Device Management Agent -->
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-icon device-icon">🔧</div>
+                        <div>
+                            <div class="agent-title">Device Agent</div>
+                            <div class="agent-role">IoT Device Manager</div>
+                        </div>
+                    </div>
+                    <div class="agent-description">
+                        Manages network devices, monitors device status, handles configuration tasks, and troubleshoots connectivity issues.
+                    </div>
+                    <input type="text" id="device-input" class="agent-input" placeholder="Check device status...">
+                    <button onclick="sendToAgent('devices')" class="agent-button" id="device-btn">
+                        Manage Devices
+                    </button>
+                    <div id="device-response" class="response-area">
+                        <div class="response-text" id="device-response-text"></div>
+                        <div class="response-meta" id="device-response-meta"></div>
+                    </div>
+                </div>
+
+                <!-- Operations Agent -->
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-icon ops-icon">⚙️</div>
+                        <div>
+                            <div class="agent-title">Operations Agent</div>
+                            <div class="agent-role">System Operations Manager</div>
+                        </div>
+                    </div>
+                    <div class="agent-description">
+                        Monitors system health, manages infrastructure operations, handles alerts, and ensures platform reliability.
+                    </div>
+                    <input type="text" id="operations-input" class="agent-input" placeholder="Check system health...">
+                    <button onclick="sendToAgent('operations')" class="agent-button" id="operations-btn">
+                        Check Operations
+                    </button>
+                    <div id="operations-response" class="response-area">
+                        <div class="response-text" id="operations-response-text"></div>
+                        <div class="response-meta" id="operations-response-meta"></div>
+                    </div>
+                </div>
+
+                <!-- Automation Agent -->
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-icon auto-icon">🔄</div>
+                        <div>
+                            <div class="agent-title">Automation Agent</div>
+                            <div class="agent-role">Workflow Automation Specialist</div>
+                        </div>
+                    </div>
+                    <div class="agent-description">
+                        Creates and manages automated workflows, schedules tasks, handles routine operations, and optimizes processes.
+                    </div>
+                    <input type="text" id="automation-input" class="agent-input" placeholder="Automate a task...">
+                    <button onclick="sendToAgent('automation')" class="agent-button" id="automation-btn">
+                        Create Automation
+                    </button>
+                    <div id="automation-response" class="response-area">
+                        <div class="response-text" id="automation-response-text"></div>
+                        <div class="response-meta" id="automation-response-meta"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8002';
+        let sessionId = 'session_' + Date.now();
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStatus();
+            setInterval(loadSystemStatus, 30000); // Update every 30 seconds
+        });
+
+        // Load system status
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const health = await response.json();
+                
+                document.getElementById('providers-enabled').textContent = health.providers_enabled || 0;
+                document.getElementById('uptime').textContent = Math.round((health.uptime || 0) / 3600);
+                
+                if (health.ai_agents_available) {
+                    const aiResponse = await fetch(`${API_BASE}/api/ai/status`);
+                    const aiStatus = await aiResponse.json();
+                    
+                    if (aiStatus.status && aiStatus.status.agent_status) {
+                        const agentStatus = aiStatus.status.agent_status;
+                        document.getElementById('total-agents').textContent = agentStatus.total_agents || 5;
+                        document.getElementById('tasks-completed').textContent = agentStatus.tasks_completed || 0;
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load system status:', error);
+            }
+        }
+
+        // Send message to specific agent
+        async function sendToAgent(agentType) {
+            const input = document.getElementById(`${agentType}-input`);
+            const button = document.getElementById(`${agentType}-btn`);
+            const responseArea = document.getElementById(`${agentType}-response`);
+            const responseText = document.getElementById(`${agentType}-response-text`);
+            const responseMeta = document.getElementById(`${agentType}-response-meta`);
+
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<span class="loading"></span>Processing...';
+            responseArea.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/ai/${agentType}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        session_id: sessionId,
+                        context: {}
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    responseText.textContent = result.response || 'No response received';
+                    responseMeta.innerHTML = `
+                        <strong>Agents:</strong> ${(result.agents_involved || []).join(', ')} | 
+                        <strong>Source:</strong> ${result.source || 'unknown'} | 
+                        <strong>Time:</strong> ${new Date(result.timestamp).toLocaleTimeString()}
+                        ${result.capabilities_used && result.capabilities_used.length > 0 ? 
+                          ` | <strong>Capabilities:</strong> ${result.capabilities_used.join(', ')}` : ''}
+                    `;
+                    responseArea.classList.add('show');
+                } else {
+                    showError(responseArea, result.error || 'Unknown error occurred');
+                }
+            } catch (error) {
+                showError(responseArea, `Network error: ${error.message}`);
+            } finally {
+                // Reset button state
+                button.disabled = false;
+                button.textContent = getButtonText(agentType);
+                input.value = '';
+            }
+        }
+
+        // Get provider recommendation
+        async function getProviderRecommendation() {
+            const input = document.getElementById('recommend-input');
+            const button = document.getElementById('recommend-btn');
+            const responseArea = document.getElementById('recommendation-result');
+            const responseText = document.getElementById('recommendation-text');
+            const responseMeta = document.getElementById('recommendation-meta');
+
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Get selected criteria
+            const criteria = [];
+            if (document.getElementById('speed-criteria').checked) criteria.push('speed');
+            if (document.getElementById('cost-criteria').checked) criteria.push('cost');
+            if (document.getElementById('quality-criteria').checked) criteria.push('quality');
+
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<span class="loading"></span>Analyzing...';
+            responseArea.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/ai/providers/recommend`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        criteria: criteria
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    responseText.textContent = result.response || 'No recommendation available';
+                    responseMeta.innerHTML = `
+                        <strong>Criteria:</strong> ${criteria.join(', ')} | 
+                        <strong>Agents:</strong> ${(result.agents_involved || []).join(', ')} | 
+                        <strong>Time:</strong> ${new Date(result.timestamp).toLocaleTimeString()}
+                    `;
+                    responseArea.classList.add('show');
+                } else {
+                    showError(responseArea, result.error || 'Failed to get recommendation');
+                }
+            } catch (error) {
+                showError(responseArea, `Network error: ${error.message}`);
+            } finally {
+                // Reset button state
+                button.disabled = false;
+                button.textContent = 'Get Recommendation';
+                input.value = '';
+            }
+        }
+
+        // Show error message
+        function showError(container, message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(errorDiv);
+            container.classList.add('show');
+        }
+
+        // Get button text for each agent type
+        function getButtonText(agentType) {
+            const buttonTexts = {
+                'chat': 'Send Message',
+                'analytics': 'Analyze Data',
+                'devices': 'Manage Devices',
+                'operations': 'Check Operations',
+                'automation': 'Create Automation'
+            };
+            return buttonTexts[agentType] || 'Send Request';
+        }
+
+        // Handle Enter key in input fields
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const input = e.target;
+                if (input.classList.contains('agent-input')) {
+                    const agentType = input.id.replace('-input', '');
+                    sendToAgent(agentType);
+                } else if (input.id === 'recommend-input') {
+                    getProviderRecommendation();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

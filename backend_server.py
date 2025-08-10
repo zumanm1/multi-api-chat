@@ -10,6 +10,18 @@ import paramiko
 import requests
 from dotenv import load_dotenv
 
+# Import AI Agent Integration
+try:
+    from backend_ai_integration import (
+        process_ai_request_sync,
+        get_ai_integration_status,
+        toggle_ai_agents
+    )
+    AI_AGENTS_AVAILABLE = True
+except ImportError:
+    print("Warning: AI agents not available. Running without AI features.")
+    AI_AGENTS_AVAILABLE = False
+
 app = Flask(__name__)
 CORS(app)
 
@@ -1417,16 +1429,397 @@ def clear_private_env():
             "error": str(e)
         }), 500
 
+# AI Agent Endpoints
+@app.route('/api/ai/chat', methods=['POST'])
+def ai_chat():
+    """AI-enhanced chat endpoint"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json
+    message = data.get('message', '')
+    session_id = data.get('session_id', 'default')
+    context = data.get('context', {})
+    
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    
+    try:
+        result = process_ai_request_sync('chat', {
+            'message': message,
+            'session_id': session_id,
+            'context': context
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI chat error: {str(e)}"}), 500
+
+@app.route('/api/ai/analytics', methods=['POST'])
+def ai_analytics():
+    """AI-enhanced analytics endpoint"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json
+    message = data.get('message', '')
+    context = data.get('context', {})
+    
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    
+    try:
+        # Add current usage stats to context for analytics
+        context['usage_stats'] = usage_stats
+        context['providers'] = providers
+        context['devices'] = devices
+        
+        result = process_ai_request_sync('analytics', {
+            'message': message,
+            'context': context
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI analytics error: {str(e)}"}), 500
+
+@app.route('/api/ai/devices', methods=['POST'])
+def ai_devices():
+    """AI-enhanced device management endpoint"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json
+    message = data.get('message', '')
+    context = data.get('context', {})
+    
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    
+    try:
+        # Add current devices info to context
+        context['devices'] = devices
+        context['device_count'] = len(devices)
+        
+        result = process_ai_request_sync('device', {
+            'message': message,
+            'context': context
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI device management error: {str(e)}"}), 500
+
+@app.route('/api/ai/operations', methods=['POST'])
+def ai_operations():
+    """AI-enhanced operations endpoint"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json
+    message = data.get('message', '')
+    context = data.get('context', {})
+    
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    
+    try:
+        # Add system status to context
+        context['providers_status'] = {k: v['status'] for k, v in providers.items()}
+        context['devices_status'] = {k: v['status'] for k, v in devices.items()}
+        context['uptime'] = time.time() - globals().get('start_time', time.time())
+        
+        result = process_ai_request_sync('operations', {
+            'message': message,
+            'context': context
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI operations error: {str(e)}"}), 500
+
+@app.route('/api/ai/automation', methods=['POST'])
+def ai_automation():
+    """AI-enhanced automation endpoint"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json
+    message = data.get('message', '')
+    context = data.get('context', {})
+    
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    
+    try:
+        # Add automation-relevant context
+        context['available_devices'] = list(devices.keys())
+        context['available_providers'] = [k for k, v in providers.items() if v['enabled']]
+        context['system_features'] = settings.get('features', {})
+        
+        result = process_ai_request_sync('automation', {
+            'message': message,
+            'context': context
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI automation error: {str(e)}"}), 500
+
+@app.route('/api/ai/status', methods=['GET'])
+def ai_status():
+    """Get AI agent system status"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({
+            "available": False,
+            "error": "AI agents are not available",
+            "reason": "AI integration module not found"
+        })
+    
+    try:
+        status = get_ai_integration_status()
+        return jsonify({
+            "available": True,
+            "status": status
+        })
+    except Exception as e:
+        return jsonify({
+            "available": False,
+            "error": str(e)
+        }), 500
+
+@app.route('/api/ai/toggle', methods=['POST'])
+def ai_toggle():
+    """Toggle AI agents on/off"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json or {}
+    enabled = data.get('enabled')
+    
+    try:
+        result = toggle_ai_agents(enabled)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI toggle error: {str(e)}"}), 500
+
+@app.route('/api/ai/providers/recommend', methods=['POST'])
+def ai_provider_recommendation():
+    """Get AI recommendation for best provider based on request"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    data = request.json
+    message = data.get('message', '')
+    criteria = data.get('criteria', ['speed', 'cost', 'quality'])
+    
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    
+    try:
+        # Create context for provider recommendation
+        context = {
+            'available_providers': {k: v for k, v in providers.items() if v['enabled']},
+            'criteria': criteria,
+            'usage_stats': usage_stats,
+            'request_type': 'provider_recommendation'
+        }
+        
+        result = process_ai_request_sync('chat', {
+            'message': f"Recommend the best AI provider for this request based on {', '.join(criteria)}: {message}",
+            'context': context
+        })
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": f"AI provider recommendation error: {str(e)}"}), 500
+
+# Advanced Workflow Endpoints
+@app.route('/api/ai/workflows', methods=['POST'])
+def create_workflow():
+    """Create a new AI workflow"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    try:
+        # Import workflow orchestrator directly to avoid dependency issues
+        import sys
+        import os
+        workflows_path = os.path.join(os.path.dirname(__file__), 'ai_agents', 'workflows')
+        if workflows_path not in sys.path:
+            sys.path.insert(0, workflows_path)
+        from orchestrator import orchestrator, create_simple_workflow, create_analysis_workflow
+        
+        data = request.json
+        workflow_type = data.get('type', 'simple')
+        
+        if workflow_type == 'analysis':
+            message = data.get('message', '')
+            if not message:
+                return jsonify({"error": "Message is required for analysis workflow"}), 400
+            
+            include_recommendations = data.get('include_recommendations', True)
+            workflow = create_analysis_workflow(message, include_recommendations)
+        
+        elif workflow_type == 'simple':
+            name = data.get('name', 'Simple Workflow')
+            tasks = data.get('tasks', [])
+            if not tasks:
+                return jsonify({"error": "Tasks are required for simple workflow"}), 400
+            
+            workflow = create_simple_workflow(name, tasks)
+        
+        else:
+            return jsonify({"error": f"Unknown workflow type: {workflow_type}"}), 400
+        
+        workflow_id = orchestrator.create_workflow(workflow)
+        
+        return jsonify({
+            'workflow_id': workflow_id,
+            'status': 'created',
+            'tasks_count': len(workflow.tasks),
+            'workflow_type': workflow_type
+        })
+        
+    except Exception as e:
+        return jsonify({"error": f"Workflow creation error: {str(e)}"}), 500
+
+@app.route('/api/ai/workflows/<workflow_id>', methods=['GET'])
+def get_workflow_status(workflow_id):
+    """Get status of a specific workflow"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    try:
+        # Import workflow orchestrator directly to avoid dependency issues
+        import sys
+        import os
+        workflows_path = os.path.join(os.path.dirname(__file__), 'ai_agents', 'workflows')
+        if workflows_path not in sys.path:
+            sys.path.insert(0, workflows_path)
+        from orchestrator import orchestrator
+        status = orchestrator.get_workflow_status(workflow_id)
+        return jsonify(status)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": f"Status retrieval error: {str(e)}"}), 500
+
+@app.route('/api/ai/workflows/<workflow_id>/execute', methods=['POST'])
+def execute_workflow(workflow_id):
+    """Execute a workflow"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    try:
+        # Import workflow orchestrator directly to avoid dependency issues
+        import sys
+        import os
+        workflows_path = os.path.join(os.path.dirname(__file__), 'ai_agents', 'workflows')
+        if workflows_path not in sys.path:
+            sys.path.insert(0, workflows_path)
+        from orchestrator import orchestrator
+        import asyncio
+        
+        # Run the async workflow execution
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        result = loop.run_until_complete(orchestrator.execute_workflow(workflow_id))
+        loop.close()
+        
+        return jsonify(result)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": f"Workflow execution error: {str(e)}"}), 500
+
+@app.route('/api/ai/workflows/<workflow_id>/cancel', methods=['POST'])
+def cancel_workflow(workflow_id):
+    """Cancel a running workflow"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    try:
+        # Import workflow orchestrator directly to avoid dependency issues
+        import sys
+        import os
+        workflows_path = os.path.join(os.path.dirname(__file__), 'ai_agents', 'workflows')
+        if workflows_path not in sys.path:
+            sys.path.insert(0, workflows_path)
+        from orchestrator import orchestrator
+        success = orchestrator.cancel_workflow(workflow_id)
+        
+        if success:
+            return jsonify({"status": "cancelled", "workflow_id": workflow_id})
+        else:
+            return jsonify({"error": "Workflow not found or not running"}), 404
+    except Exception as e:
+        return jsonify({"error": f"Workflow cancellation error: {str(e)}"}), 500
+
+@app.route('/api/ai/workflows', methods=['GET'])
+def list_workflows():
+    """List all workflows"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    try:
+        # Import workflow orchestrator directly to avoid dependency issues
+        import sys
+        import os
+        workflows_path = os.path.join(os.path.dirname(__file__), 'ai_agents', 'workflows')
+        if workflows_path not in sys.path:
+            sys.path.insert(0, workflows_path)
+        from orchestrator import orchestrator
+        workflows = orchestrator.get_all_workflows()
+        return jsonify({
+            'workflows': workflows,
+            'count': len(workflows)
+        })
+    except Exception as e:
+        return jsonify({"error": f"Workflow listing error: {str(e)}"}), 500
+
+@app.route('/api/ai/workflows/cleanup', methods=['POST'])
+def cleanup_workflows():
+    """Cleanup old completed workflows"""
+    if not AI_AGENTS_AVAILABLE:
+        return jsonify({"error": "AI agents are not available"}), 503
+    
+    try:
+        # Import workflow orchestrator directly to avoid dependency issues
+        import sys
+        import os
+        workflows_path = os.path.join(os.path.dirname(__file__), 'ai_agents', 'workflows')
+        if workflows_path not in sys.path:
+            sys.path.insert(0, workflows_path)
+        from orchestrator import orchestrator
+        data = request.json or {}
+        older_than_hours = data.get('older_than_hours', 24)
+        
+        cleaned_count = orchestrator.cleanup_completed_workflows(older_than_hours)
+        
+        return jsonify({
+            'cleaned_workflows': cleaned_count,
+            'older_than_hours': older_than_hours
+        })
+    except Exception as e:
+        return jsonify({"error": f"Workflow cleanup error: {str(e)}"}), 500
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     start_time = time.time() if 'start_time' not in globals() else globals()['start_time']
-    return jsonify({
+    health_data = {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "providers_enabled": len([p for p in providers.values() if p["enabled"]]),
         "uptime": time.time() - start_time if 'start_time' in globals() else 0,
-        "env_private_exists": os.path.exists(ENV_PRIVATE_FILE)
-    })
+        "env_private_exists": os.path.exists(ENV_PRIVATE_FILE),
+        "ai_agents_available": AI_AGENTS_AVAILABLE
+    }
+    
+    # Add AI agent status if available
+    if AI_AGENTS_AVAILABLE:
+        try:
+            ai_status = get_ai_integration_status()
+            health_data["ai_agents_status"] = ai_status.get("status", "unknown")
+        except:
+            health_data["ai_agents_status"] = "error"
+    
+    return jsonify(health_data)
 
 # Start server
 if __name__ == '__main__':

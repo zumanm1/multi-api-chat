@@ -1,140 +1,74 @@
 {
   "providers": {
-    "openrouter": {
-      "name": "OpenRouter",
-      "enabled": true,
-      "api_key": "",
-      "model": "meta-llama/llama-4-maverick:free",
-      "base_url": "https://openrouter.ai/api/v1",
+    "test_provider": {
+      "name": "Test Provider",
+      "enabled": false,
+      "api_key": "updated_key_456",
+      "model": "updated-model-v2",
+      "base_url": "http://test.provider.com/v1",
       "status": "disconnected",
       "last_checked": "",
-      "models": [
-        "meta-llama/llama-4-maverick:free",
-        "meta-llama/llama-4-scout:free",
-        "deepseek/deepseek-v3-base:free",
-        "deepseek/deepseek-chat-v3-0324:free",
-        "deepseek/deepseek-r1-zero:free",
-        "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
-        "mistralai/mistral-small-3.1-24b-instruct:free",
-        "nousresearch/deephermes-3-llama-3-8b-preview:free",
-        "qwen/qwen2.5-vl-3b-instruct:free",
-        "moonshotai/kimi-vl-a3b-thinking:free"
-      ]
+      "temperature": 0.8
+    },
+    "openai": {
+      "name": "OpenAI",
+      "enabled": true,
+      "api_key": "sk-test123",
+      "model": "gpt-4o",
+      "base_url": "https://api.openai.com/v1",
+      "status": "connected",
+      "last_checked": "2025-08-10T15:17:45.734346"
     },
     "groq": {
       "name": "Groq",
-      "enabled": true,
+      "enabled": false,
       "api_key": "",
-      "model": "llama-3.1-8b-instant",
+      "model": "llama-3.1-70b-versatile",
       "base_url": "https://api.groq.com/openai/v1",
       "status": "disconnected",
-      "last_checked": "",
-      "models": [
-        "llama-3.1-8b-instant",
-        "llama-3.3-70b-versatile",
-        "gemma2-9b-it",
-        "meta-llama/llama-guard-4-12b",
-        "whisper-large-v3",
-        "whisper-large-v3-turbo",
-        "deepseek-r1-distill-llama-70b",
-        "meta-llama/llama-4-maverick-17b-128e-instruct",
-        "meta-llama/llama-4-scout-17b-16e-instruct",
-        "meta-llama/llama-prompt-guard-2-22m",
-        "meta-llama/llama-prompt-guard-2-86m",
-        "moonshotai/kimi-k2-instruct",
-        "openai/gpt-oss-120b",
-        "openai/gpt-oss-20b",
-        "qwen/qwen3-32b",
-        "playai-tts",
-        "playai-tts-arabic",
-        "compound-beta",
-        "compound-beta-mini"
-      ]
-    },
-    "cerebras": {
-      "name": "Cerebras",
-      "enabled": true,
-      "api_key": "",
-      "model": "llama3.1-8b",
-      "base_url": "https://api.cerebras.ai/v1",
-      "status": "disconnected",
-      "last_checked": "",
-      "models": [
-        "llama3.1-8b",
-        "llama-3.3-70b",
-        "llama-4-scout-17b-16e-instruct",
-        "qwen-3-32b",
-        "qwen-3-235b-a22b-instruct-2507",
-        "qwen-3-235b-a22b-thinking-2507",
-        "qwen-3-coder-480b",
-        "gpt-oss-120b",
-        "deepseek-r1-distill-llama-70b",
-        "cerebras-gpt-13b",
-        "cerebras-gpt-6.7b",
-        "cerebras-gpt-2.7b",
-        "cerebras-gpt-1.3b",
-        "cerebras-gpt-590m",
-        "cerebras-gpt-256m",
-        "cerebras-gpt-111m",
-        "btlm-3b-8k-base",
-        "gigaGPT-111b"
-      ]
+      "last_checked": ""
     },
     "ollama": {
       "name": "Ollama",
       "enabled": true,
       "api_key": "",
-      "model": "llama3",
-      "base_url": "http://localhost:11434/v1",
-      "status": "connection_refused",
-      "last_checked": "2025-08-10T11:06:00.769426",
-      "models": [
-        "llama3",
-        "llama3.1",
-        "llama3.2",
-        "llama3.3",
-        "mistral",
-        "mixtral",
-        "gemma",
-        "gemma2",
-        "phi3",
-        "qwen",
-        "qwen2",
-        "llama-guard-4"
-      ]
+      "model": "llama3:latest",
+      "base_url": "http://192.168.3.10:11434/v1",
+      "status": "connected",
+      "last_checked": "2025-08-10T17:43:03.073919"
     }
   },
   "settings": {
-    "default_provider": "groq",
-    "fallback_provider": null,
+    "default_provider": "test_provider",
+    "fallback_provider": "openai",
     "temperature": 0.7,
-    "max_tokens": 1000,
-    "system_prompt": "You are a helpful AI assistant.",
+    "max_tokens": 2000,
+    "system_prompt": "You are a helpful AI assistant for testing.",
     "features": {
       "auto_fallback": true,
-      "speed_optimization": false,
+      "speed_optimization": true,
       "cost_optimization": false,
-      "multi_provider_compare": false,
+      "multi_provider_compare": true,
       "usage_analytics": true
     }
   },
   "devices": {
+    "test_router": {
+      "name": "Updated Test Router",
+      "ip": "192.168.2.100",
+      "model": "Cisco Test 2900",
+      "username": "newadmin",
+      "password": "testpass123",
+      "port": 22,
+      "status": "offline",
+      "last_checked": "2025-08-10T15:17:45.931245"
+    },
     "dummy_router": {
       "name": "Dummy Router",
       "ip": "192.168.1.1",
-      "model": "Cisco 2900",
+      "model": "Dummy Model",
       "username": "",
       "password": "",
-      "port": 22,
-      "status": "unknown",
-      "last_checked": ""
-    },
-    "real_router": {
-      "name": "Real Router",
-      "ip": "192.168.1.2",
-      "model": "Cisco 4500",
-      "username": "admin",
-      "password": "password123",
       "port": 22,
       "status": "unknown",
       "last_checked": ""
