@@ -1,0 +1,29 @@
+{
+  "minimum_font_size": {
+    "passed": true,
+    "details": "Font sizes meet minimum requirements",
+    "body_text": "16px",
+    "small_text": "14px",
+    "code_text": "13px"
+  },
+  "line_height_ratio": {
+    "passed": true,
+    "details": "Line height ratios appropriate for readability",
+    "body_ratio": "1.47",
+    "code_ratio": "1.4",
+    "headers_ratio": "1.2"
+  },
+  "contrast_ratio": {
+    "passed": true,
+    "details": "Color contrast ratios meet WCAG guidelines",
+    "normal_text": "4.5:1",
+    "large_text": "3:1",
+    "aa_compliant": true
+  },
+  "monospace_readability": {
+    "passed": true,
+    "details": "Monospace fonts readable for technical content",
+    "font_family": "SF Mono, Monaco, Menlo, Consolas",
+    "fallback_support": true
+  }
+}

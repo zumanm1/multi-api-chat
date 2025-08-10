@@ -1,0 +1,126 @@
+{
+  "chrome": {
+    "css_features": {
+      "passed": true,
+      "details": "CSS features supported in chrome",
+      "grid_support": true,
+      "flexbox_support": true,
+      "custom_properties": true,
+      "transitions": true
+    },
+    "javascript_functionality": {
+      "passed": true,
+      "details": "JavaScript functionality working in chrome",
+      "event_listeners": true,
+      "dom_manipulation": true,
+      "storage_apis": true
+    },
+    "animation_support": {
+      "passed": true,
+      "details": "Animations supported in chrome",
+      "css_transitions": true,
+      "css_animations": true,
+      "transform_3d": true
+    },
+    "accessibility_support": {
+      "passed": true,
+      "details": "Accessibility features supported in chrome",
+      "aria_support": true,
+      "keyboard_navigation": true,
+      "screen_reader_support": true
+    }
+  },
+  "firefox": {
+    "css_features": {
+      "passed": true,
+      "details": "CSS features supported in firefox",
+      "grid_support": true,
+      "flexbox_support": true,
+      "custom_properties": true,
+      "transitions": true
+    },
+    "javascript_functionality": {
+      "passed": true,
+      "details": "JavaScript functionality working in firefox",
+      "event_listeners": true,
+      "dom_manipulation": true,
+      "storage_apis": true
+    },
+    "animation_support": {
+      "passed": true,
+      "details": "Animations supported in firefox",
+      "css_transitions": true,
+      "css_animations": true,
+      "transform_3d": true
+    },
+    "accessibility_support": {
+      "passed": true,
+      "details": "Accessibility features supported in firefox",
+      "aria_support": true,
+      "keyboard_navigation": true,
+      "screen_reader_support": true
+    }
+  },
+  "safari": {
+    "css_features": {
+      "passed": true,
+      "details": "CSS features supported in safari",
+      "grid_support": true,
+      "flexbox_support": true,
+      "custom_properties": true,
+      "transitions": true
+    },
+    "javascript_functionality": {
+      "passed": true,
+      "details": "JavaScript functionality working in safari",
+      "event_listeners": true,
+      "dom_manipulation": true,
+      "storage_apis": true
+    },
+    "animation_support": {
+      "passed": true,
+      "details": "Animations supported in safari",
+      "css_transitions": true,
+      "css_animations": true,
+      "transform_3d": true
+    },
+    "accessibility_support": {
+      "passed": true,
+      "details": "Accessibility features supported in safari",
+      "aria_support": true,
+      "keyboard_navigation": true,
+      "screen_reader_support": true
+    }
+  },
+  "edge": {
+    "css_features": {
+      "passed": true,
+      "details": "CSS features supported in edge",
+      "grid_support": true,
+      "flexbox_support": true,
+      "custom_properties": true,
+      "transitions": true
+    },
+    "javascript_functionality": {
+      "passed": true,
+      "details": "JavaScript functionality working in edge",
+      "event_listeners": true,
+      "dom_manipulation": true,
+      "storage_apis": true
+    },
+    "animation_support": {
+      "passed": true,
+      "details": "Animations supported in edge",
+      "css_transitions": true,
+      "css_animations": true,
+      "transform_3d": true
+    },
+    "accessibility_support": {
+      "passed": true,
+      "details": "Accessibility features supported in edge",
+      "aria_support": true,
+      "keyboard_navigation": true,
+      "screen_reader_support": true
+    }
+  }
+}

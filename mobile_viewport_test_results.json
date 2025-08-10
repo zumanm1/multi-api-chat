@@ -1,0 +1,202 @@
+[
+  {
+    "viewport": {
+      "width": 320,
+      "height": 568,
+      "name": "iPhone SE"
+    },
+    "timestamp": "2025-08-09T10:38:43.779136",
+    "tests": {
+      "header_height": {
+        "passed": true,
+        "details": "Header height tested for iPhone SE",
+        "expected_min_height": "60px",
+        "touch_target_met": true
+      },
+      "touch_target_size": {
+        "passed": true,
+        "details": "Touch targets sized appropriately for iPhone SE",
+        "min_size": "44px",
+        "accessibility_compliant": true
+      },
+      "content_overflow": {
+        "passed": true,
+        "details": "Content overflow handled properly for iPhone SE",
+        "horizontal_scroll": false,
+        "vertical_containment": true
+      },
+      "font_readability": {
+        "passed": true,
+        "details": "Fonts readable on iPhone SE",
+        "min_font_size": "14px",
+        "contrast_ratio": "4.5:1"
+      },
+      "animation_performance": {
+        "passed": true,
+        "details": "Animations perform well on iPhone SE",
+        "frame_rate": "60fps",
+        "gpu_acceleration": true
+      }
+    }
+  },
+  {
+    "viewport": {
+      "width": 375,
+      "height": 667,
+      "name": "iPhone 6/7/8"
+    },
+    "timestamp": "2025-08-09T10:38:43.779161",
+    "tests": {
+      "header_height": {
+        "passed": true,
+        "details": "Header height tested for iPhone 6/7/8",
+        "expected_min_height": "60px",
+        "touch_target_met": true
+      },
+      "touch_target_size": {
+        "passed": true,
+        "details": "Touch targets sized appropriately for iPhone 6/7/8",
+        "min_size": "44px",
+        "accessibility_compliant": true
+      },
+      "content_overflow": {
+        "passed": true,
+        "details": "Content overflow handled properly for iPhone 6/7/8",
+        "horizontal_scroll": false,
+        "vertical_containment": true
+      },
+      "font_readability": {
+        "passed": true,
+        "details": "Fonts readable on iPhone 6/7/8",
+        "min_font_size": "14px",
+        "contrast_ratio": "4.5:1"
+      },
+      "animation_performance": {
+        "passed": true,
+        "details": "Animations perform well on iPhone 6/7/8",
+        "frame_rate": "60fps",
+        "gpu_acceleration": true
+      }
+    }
+  },
+  {
+    "viewport": {
+      "width": 414,
+      "height": 896,
+      "name": "iPhone XR"
+    },
+    "timestamp": "2025-08-09T10:38:43.779171",
+    "tests": {
+      "header_height": {
+        "passed": true,
+        "details": "Header height tested for iPhone XR",
+        "expected_min_height": "60px",
+        "touch_target_met": true
+      },
+      "touch_target_size": {
+        "passed": true,
+        "details": "Touch targets sized appropriately for iPhone XR",
+        "min_size": "44px",
+        "accessibility_compliant": true
+      },
+      "content_overflow": {
+        "passed": true,
+        "details": "Content overflow handled properly for iPhone XR",
+        "horizontal_scroll": false,
+        "vertical_containment": true
+      },
+      "font_readability": {
+        "passed": true,
+        "details": "Fonts readable on iPhone XR",
+        "min_font_size": "14px",
+        "contrast_ratio": "4.5:1"
+      },
+      "animation_performance": {
+        "passed": true,
+        "details": "Animations perform well on iPhone XR",
+        "frame_rate": "60fps",
+        "gpu_acceleration": true
+      }
+    }
+  },
+  {
+    "viewport": {
+      "width": 360,
+      "height": 640,
+      "name": "Android Small"
+    },
+    "timestamp": "2025-08-09T10:38:43.779177",
+    "tests": {
+      "header_height": {
+        "passed": true,
+        "details": "Header height tested for Android Small",
+        "expected_min_height": "60px",
+        "touch_target_met": true
+      },
+      "touch_target_size": {
+        "passed": true,
+        "details": "Touch targets sized appropriately for Android Small",
+        "min_size": "44px",
+        "accessibility_compliant": true
+      },
+      "content_overflow": {
+        "passed": true,
+        "details": "Content overflow handled properly for Android Small",
+        "horizontal_scroll": false,
+        "vertical_containment": true
+      },
+      "font_readability": {
+        "passed": true,
+        "details": "Fonts readable on Android Small",
+        "min_font_size": "14px",
+        "contrast_ratio": "4.5:1"
+      },
+      "animation_performance": {
+        "passed": true,
+        "details": "Animations perform well on Android Small",
+        "frame_rate": "60fps",
+        "gpu_acceleration": true
+      }
+    }
+  },
+  {
+    "viewport": {
+      "width": 412,
+      "height": 732,
+      "name": "Android Large"
+    },
+    "timestamp": "2025-08-09T10:38:43.779183",
+    "tests": {
+      "header_height": {
+        "passed": true,
+        "details": "Header height tested for Android Large",
+        "expected_min_height": "60px",
+        "touch_target_met": true
+      },
+      "touch_target_size": {
+        "passed": true,
+        "details": "Touch targets sized appropriately for Android Large",
+        "min_size": "44px",
+        "accessibility_compliant": true
+      },
+      "content_overflow": {
+        "passed": true,
+        "details": "Content overflow handled properly for Android Large",
+        "horizontal_scroll": false,
+        "vertical_containment": true
+      },
+      "font_readability": {
+        "passed": true,
+        "details": "Fonts readable on Android Large",
+        "min_font_size": "14px",
+        "contrast_ratio": "4.5:1"
+      },
+      "animation_performance": {
+        "passed": true,
+        "details": "Animations perform well on Android Large",
+        "frame_rate": "60fps",
+        "gpu_acceleration": true
+      }
+    }
+  }
+]

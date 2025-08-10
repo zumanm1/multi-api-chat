@@ -1,0 +1,14 @@
+Collecting requests
+  Using cached requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+Collecting charset_normalizer<4,>=2 (from requests)
+  Downloading charset_normalizer-3.4.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (36 kB)
+Requirement already satisfied: idna<4,>=2.5 in ./.venv/lib/python3.11/site-packages (from requests) (3.10)
+Collecting urllib3<3,>=1.21.1 (from requests)
+  Using cached urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+Requirement already satisfied: certifi>=2017.4.17 in ./.venv/lib/python3.11/site-packages (from requests) (2025.8.3)
+Using cached requests-2.32.4-py3-none-any.whl (64 kB)
+Downloading charset_normalizer-3.4.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (150 kB)
+Using cached urllib3-2.5.0-py3-none-any.whl (129 kB)
+Installing collected packages: urllib3, charset_normalizer, requests
+
+Successfully installed charset_normalizer-3.4.3 requests-2.32.4 urllib3-2.5.0

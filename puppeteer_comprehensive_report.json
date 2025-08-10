@@ -1,0 +1,155 @@
+{
+  "testSuite": "Puppeteer Responsive Design Testing",
+  "timestamp": "2025-08-09T08:38:49.139Z",
+  "duration": "4.064s",
+  "summary": {
+    "totalCategories": 6,
+    "passedCategories": 0,
+    "failedCategories": 6,
+    "overallPassed": false
+  },
+  "categories": [
+    {
+      "category": "Mobile Viewport Responsiveness",
+      "tests": [
+        {
+          "browser": "chrome",
+          "viewport": "iPhone SE",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:47.216Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "iPhone 12",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:47.385Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "iPhone 12 Pro Max",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:47.543Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "iPad",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:47.711Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "Galaxy S21",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:47.852Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "Pixel 5",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.000Z"
+        }
+      ],
+      "passed": false
+    },
+    {
+      "category": "Touch Interactions",
+      "tests": [
+        {
+          "browser": "chrome",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.149Z"
+        }
+      ],
+      "passed": false
+    },
+    {
+      "category": "Animation Smoothness",
+      "tests": [
+        {
+          "browser": "chrome",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.301Z"
+        }
+      ],
+      "passed": false
+    },
+    {
+      "category": "Long Content Handling",
+      "tests": [
+        {
+          "browser": "chrome",
+          "viewport": "Desktop",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.441Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "Tablet",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.571Z"
+        },
+        {
+          "browser": "chrome",
+          "viewport": "Mobile",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.741Z"
+        }
+      ],
+      "passed": false
+    },
+    {
+      "category": "State Persistence",
+      "tests": [
+        {
+          "browser": "chrome",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:48.894Z"
+        }
+      ],
+      "passed": false
+    },
+    {
+      "category": "Performance Metrics",
+      "tests": [
+        {
+          "browser": "chrome",
+          "passed": false,
+          "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+          "timestamp": "2025-08-09T08:38:49.102Z"
+        }
+      ],
+      "passed": false
+    }
+  ],
+  "testFilesGenerated": [
+    "puppeteer_mobile_test_results.json",
+    "puppeteer_touch_test_results.json",
+    "puppeteer_animation_test_results.json",
+    "puppeteer_content_test_results.json",
+    "puppeteer_persistence_test_results.json",
+    "puppeteer_performance_test_results.json"
+  ],
+  "browsersTestedWith": [
+    "chrome"
+  ],
+  "featuresTestedInclude": [
+    "Mobile viewport responsiveness",
+    "Touch interaction handling",
+    "Animation smoothness",
+    "Long content overflow management",
+    "State persistence across interactions",
+    "Performance metrics monitoring"
+  ]
+}

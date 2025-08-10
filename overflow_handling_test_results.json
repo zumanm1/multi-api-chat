@@ -1,0 +1,32 @@
+{
+  "horizontal_scroll": {
+    "passed": true,
+    "details": "Horizontal scroll handled appropriately",
+    "overflow_x": "auto",
+    "prevents_body_scroll": true
+  },
+  "vertical_truncation": {
+    "passed": true,
+    "details": "Vertical content truncation working",
+    "max_height": "2000px",
+    "scroll_within_container": true
+  },
+  "word_wrapping": {
+    "passed": true,
+    "details": "Word wrapping working correctly",
+    "break_word": true,
+    "preserve_formatting": true
+  },
+  "copy_functionality": {
+    "passed": true,
+    "details": "Copy functionality working",
+    "clipboard_api": true,
+    "fallback_method": true
+  },
+  "performance_large_content": {
+    "passed": true,
+    "details": "Performance acceptable with large content",
+    "render_time": "<100ms",
+    "memory_usage": "acceptable"
+  }
+}

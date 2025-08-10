@@ -4,123 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operations - Multi-API Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="progressive-disclosure.css">
     <style>
-        .device-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .device-card h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        
-        .device-card p {
-            margin: 5px 0;
-        }
-        
-        .device-status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        
-        .status-online {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .status-offline {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-unknown {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        
-        .command-response {
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 10px;
-            white-space: pre-wrap;
-            font-family: monospace;
-        }
-        
-        #device-list {
-            margin-top: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-        
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
+            /* Apple Color Palette */
+            --apple-blue: #007AFF;
+            --apple-gray: #8E8E93;
+            --apple-gray-2: #AEAEB2;
+            --apple-gray-3: #C7C7CC;
+            --apple-gray-4: #D1D1D6;
+            --apple-gray-5: #E5E5EA;
+            --apple-gray-6: #F2F2F7;
+            --apple-black: #1C1C1E;
+            --apple-white: #FFFFFF;
+            --apple-green: #34C759;
+            --apple-red: #FF3B30;
+            --apple-orange: #FF9500;
+            --apple-yellow: #FFCC00;
+            --apple-purple: #AF52DE;
+            --apple-pink: #FF2D92;
+            --apple-teal: #5AC8FA;
+            --apple-indigo: #5856D6;
+            
+            /* Provider Colors */
             --openai-color: #10a37f;
             --groq-color: #f55036;
             --cerebras-color: #000000;
             --sambanova-color: #00aeef;
             --anthropic-color: #d9dae8;
             --openrouter-color: #000000;
-            --light-gray: #f5f5f5;
-            --dark-gray: #333;
-            --border-radius: 8px;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --ollama-color: #000000;
+            
+            /* Apple Design System */
+            --border-radius-small: 6px;
+            --border-radius-medium: 12px;
+            --border-radius-large: 20px;
+            --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-large: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --blur-background: backdrop-filter: saturate(180%) blur(20px);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         * {
@@ -130,241 +55,1146 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--dark-gray);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.47;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            padding: 0 22px;
         }
 
         header {
             text-align: center;
-            color: white;
-            padding: 20px;
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, var(--apple-orange) 0%, var(--apple-red) 100%);
+            margin: -22px -22px 40px -22px;
+            border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+            color: var(--apple-white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: saturate(180%) blur(10px);
+            -webkit-backdrop-filter: saturate(180%) blur(10px);
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
         }
 
         header p {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 400;
             opacity: 0.9;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
         }
 
         nav {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 8px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-medium);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
         }
 
         nav a {
             text-decoration: none;
-            color: var(--dark-gray);
-            padding: 10px 15px;
-            border-radius: var(--border-radius);
-            background: var(--light-gray);
-            font-weight: bold;
+            color: var(--apple-black);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-small);
+            font-weight: 500;
+            font-size: 15px;
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
         }
 
         nav a:hover {
-            opacity: 0.8;
+            background: var(--apple-gray-5);
+            transform: translateY(-1px);
         }
 
         nav a.active {
-            background: var(--primary-color);
-            color: white;
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            box-shadow: var(--shadow-small);
         }
 
         .main-layout {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 32px;
+            margin-bottom: 60px;
         }
 
-        .operations-container {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
+        .operations-panel {
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            padding: 32px;
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            transition: var(--transition-spring);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .operations-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--apple-orange), var(--apple-red));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .operations-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .operations-panel:hover::before {
+            transform: scaleX(1);
+        }
+
+        .panel-header {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--apple-gray-5);
+        }
+        
+        .panel-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--apple-orange), var(--apple-red));
+            border-radius: var(--border-radius-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .panel-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--apple-black);
+            letter-spacing: -0.02em;
         }
 
         .router-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .selector-label {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
         }
 
         .router-select {
-            padding: 8px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
-            flex: 1;
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-medium);
+            font-size: 16px;
+            font-weight: 400;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            transition: var(--transition);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"%3e%3cpath fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/%3e%3c/svg%3e');
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 12px;
+            padding-right: 50px;
         }
 
-        .use-case-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+        .router-select:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .use-case-section {
+            margin-bottom: 32px;
+        }
+
+        .use-case-grid {
+            display: grid;
+            gap: 16px;
         }
 
         .use-case-card {
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
-            padding: 15px;
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-spring);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .use-case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .use-case-card:hover::before {
+            left: 100%;
         }
 
         .use-case-card:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
+            background: var(--apple-white);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-medium);
         }
 
-        .use-case-card h3 {
-            margin-bottom: 10px;
-            color: var(--primary-color);
+        .use-case-card.selected {
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .use-case-card.selected .use-case-title,
+        .use-case-card.selected .use-case-description {
+            color: var(--apple-white);
         }
 
-        .selected-use-case {
-            background: var(--primary-color);
+        .use-case-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--apple-blue);
+            border-radius: var(--border-radius-small);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 18px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+        
+        .use-case-card.selected .use-case-icon {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .selected-use-case h3 {
+        .use-case-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .use-case-description {
+            font-size: 14px;
+            color: var(--apple-gray);
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .router-info {
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 16px;
+        }
+        
+        .info-content {
+            color: var(--apple-gray);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Expandable Command Templates */
+        .command-templates {
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            margin-top: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .template-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: var(--apple-gray-6);
+            cursor: pointer;
+            border-bottom: 1px solid var(--apple-gray-5);
+            transition: var(--transition);
+        }
+
+        .template-header:hover {
+            background: var(--apple-gray-5);
+        }
+
+        .template-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--apple-black);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .template-icon {
+            font-size: 18px;
+        }
+
+        .expand-icon {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .command-templates.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .template-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .command-templates.expanded .template-content {
+            max-height: 2000px;
+        }
+
+        .template-inner {
+            padding: 20px;
+        }
+
+        .command-group {
+            margin-bottom: 24px;
+        }
+
+        .command-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .command-group-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--apple-gray-5);
+        }
+
+        .command-item {
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-small);
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .command-item:hover {
+            background: var(--apple-gray-5);
+            border-color: var(--apple-gray-3);
+        }
+
+        .command-code {
+            font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            background: var(--apple-black);
+            color: var(--apple-green);
+            padding: 12px 16px;
+            border-radius: var(--border-radius-small);
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            border: 1px solid var(--apple-gray-3);
+            overflow-x: auto;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .command-code:hover {
+            background: #2c2c2e;
+            border-color: var(--apple-blue);
+        }
+
+        .command-description {
+            font-size: 14px;
+            color: var(--apple-gray);
+            margin-bottom: 8px;
+        }
+
+        .expected-output {
+            font-size: 13px;
+            color: var(--apple-gray-2);
+            font-style: italic;
+            background: var(--apple-gray-6);
+            padding: 8px 12px;
+            border-radius: var(--border-radius-small);
+            border-left: 3px solid var(--apple-blue);
+        }
+
+        .decision-tree {
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.05), rgba(52, 199, 89, 0.05));
+            border: 1px solid var(--apple-blue);
+            border-radius: var(--border-radius-small);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .decision-tree-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--apple-blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .decision-step {
+            font-size: 13px;
+            color: var(--apple-black);
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .decision-step:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--apple-blue);
+            font-weight: 600;
+        }
+
+        /* Recent Commands Section */
+        .recent-commands {
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .recent-commands-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--apple-purple), var(--apple-indigo));
+            color: var(--apple-white);
+            cursor: pointer;
+        }
+
+        .recent-commands-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .recent-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .recent-commands.expanded .recent-content {
+            max-height: 1000px;
+        }
+
+        .recent-commands.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .recent-inner {
+            padding: 20px;
+        }
+
+        .recent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--apple-gray-6);
+            border-radius: var(--border-radius-small);
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .recent-item:hover {
+            background: var(--apple-gray-5);
+            transform: translateX(4px);
+        }
+
+        .recent-command {
+            font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--apple-black);
+            flex: 1;
+        }
+
+        .recent-time {
+            font-size: 12px;
+            color: var(--apple-gray-2);
+        }
+
+        .copy-btn {
+            background: var(--apple-blue);
             color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background: #0056cc;
+            transform: scale(1.05);
+        }
+
+        /* Technical Details Section */
+        .technical-details {
+            margin-top: 16px;
+            border-top: 1px solid var(--apple-gray-5);
+            padding-top: 16px;
+        }
+
+        .expand-details-btn {
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-4);
+            color: var(--apple-gray);
+            padding: 8px 16px;
+            border-radius: var(--border-radius-small);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+
+        .expand-details-btn:hover {
+            background: var(--apple-gray-5);
+            border-color: var(--apple-gray-3);
+        }
+
+        .expand-details-btn.expanded {
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            border-color: var(--apple-blue);
+        }
+
+        .expand-details-btn .expand-icon {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-details-btn.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .details-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .expand-details-btn.expanded + .details-content {
+            max-height: 1000px;
+        }
+
+        .details-inner {
+            padding: 16px;
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            margin-top: 8px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-content {
+            font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-small);
+            padding: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .detail-content.json {
+            color: var(--apple-black);
+        }
+
+        .detail-content.raw {
+            color: var(--apple-gray);
+        }
+
+        .detail-copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--apple-gray-5);
+            border: 1px solid var(--apple-gray-4);
+            color: var(--apple-gray);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+
+        .detail-copy-btn:hover {
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            border-color: var(--apple-blue);
+            opacity: 1;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .metadata-item {
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-small);
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .metadata-label {
+            font-weight: 600;
+            color: var(--apple-gray);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .metadata-value {
+            color: var(--apple-black);
+            font-weight: 500;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--apple-gray-5);
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--apple-red), var(--apple-yellow), var(--apple-green));
+            border-radius: 2px;
+            transition: width 0.3s ease;
         }
 
         .chat-container {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            overflow: hidden;
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             display: flex;
             flex-direction: column;
-            gap: 15px;
         }
 
         .chat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--light-gray);
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--apple-gray-5);
+            background: var(--apple-gray-6);
+        }
+        
+        .chat-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--apple-black);
         }
 
         .provider-select {
-            padding: 8px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
+            padding: 12px 16px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-medium);
+            font-size: 16px;
+            font-weight: 500;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            min-width: 180px;
+            cursor: pointer;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"%3e%3cpath fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/%3e%3c/svg%3e');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            padding-right: 40px;
+        }
+
+        .provider-select:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
 
         .chat-history {
             flex: 1;
             overflow-y: auto;
-            max-height: 400px;
+            max-height: 450px;
+            min-height: 350px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding: 10px;
+            gap: 20px;
+            padding: 32px;
+            background: var(--apple-white);
+        }
+        
+        .chat-history::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-history::-webkit-scrollbar-track {
+            background: var(--apple-gray-6);
+            border-radius: 3px;
+        }
+        
+        .chat-history::-webkit-scrollbar-thumb {
+            background: var(--apple-gray-3);
+            border-radius: 3px;
         }
 
         .message {
-            padding: 12px;
-            border-radius: var(--border-radius);
-            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: var(--border-radius-large);
+            max-width: 75%;
             word-wrap: break-word;
+            font-size: 16px;
+            line-height: 1.5;
+            box-shadow: var(--shadow-small);
+            animation: messageSlide 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .user-message {
-            background: var(--light-gray);
+            background: var(--apple-blue);
+            color: var(--apple-white);
             align-self: flex-end;
+            border-bottom-right-radius: 8px;
         }
 
         .ai-message {
-            background: #e3f2fd;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
             align-self: flex-start;
+            border: 1px solid var(--apple-gray-5);
+            border-bottom-left-radius: 8px;
         }
-
-        .ai-message.system {
-            background: #ffebee;
+        
+        .system-message {
+            background: linear-gradient(135deg, var(--apple-orange), var(--apple-red));
+            color: var(--apple-white);
+            align-self: center;
+            max-width: 90%;
+            text-align: center;
         }
 
         .message-meta {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 5px;
+            font-size: 13px;
+            color: var(--apple-gray-2);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .user-message .message-meta {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .input-area {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            padding: 32px;
+            background: var(--apple-gray-6);
+            border-top: 1px solid var(--apple-gray-5);
         }
 
         .message-input {
             flex: 1;
-            padding: 12px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
+            padding: 16px 20px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-large);
+            font-size: 16px;
+            font-weight: 400;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            transition: var(--transition);
+            resize: none;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .message-input::placeholder {
+            color: var(--apple-gray-2);
         }
 
         .send-button {
-            padding: 12px 20px;
-            background: var(--primary-color);
-            color: white;
+            padding: 16px 24px;
+            background: var(--apple-blue);
+            color: var(--apple-white);
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-large);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow-small);
+            white-space: nowrap;
         }
 
         .send-button:hover {
-            opacity: 0.9;
+            background: #0056cc;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
         }
 
-        .router-info {
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
-            padding: 15px;
-            margin-top: 20px;
+        .send-button:active {
+            transform: translateY(0);
         }
 
-        .router-info h3 {
-            margin-bottom: 10px;
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+        
+        /* Progressive disclosure specific styles for operations page */
+        .progressive-command .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .progressive-command .command-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .debug-toggle {
+            background: var(--apple-gray-5);
+            border: 1px solid var(--apple-gray-4);
+            color: var(--apple-gray);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-small);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .debug-toggle:hover {
+            background: var(--apple-gray-4);
+            border-color: var(--apple-gray-3);
+        }
+        
+        .debug-toggle.active {
+            background: var(--apple-orange);
+            color: var(--apple-white);
+            border-color: var(--apple-orange);
+        }
+        
+        .debug-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--apple-gray-5);
+            border-bottom: 1px solid var(--apple-gray-4);
+        }
+        
+        .debug-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--apple-black);
+        }
+        
+        .debug-content {
+            padding: 20px;
+        }
+        
+        .debug-section {
+            margin-bottom: 24px;
+        }
+        
+        .debug-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .debug-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .debug-raw-output {
+            font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            background: var(--apple-black);
+            color: var(--apple-green);
+            padding: 16px;
+            border-radius: var(--border-radius-small);
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border: 1px solid var(--apple-gray-3);
+        }
+        
+        .debug-json {
+            font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            padding: 16px;
+            border-radius: var(--border-radius-small);
+            font-size: 11px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border: 1px solid var(--apple-gray-4);
+        }
+        
+        .debug-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .metric-item {
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-small);
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--apple-gray);
+        }
+        
+        .metric-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--apple-black);
+        }
+        
+        .debug-error-stack {
+            font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            background: var(--apple-gray-6);
+            color: var(--apple-gray);
+            padding: 16px;
+            border-radius: var(--border-radius-small);
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            border: 1px solid var(--apple-gray-4);
+            font-style: italic;
+        }
+
+        .ollama-avatar { background: var(--ollama-color); }
 
         @media (max-width: 768px) {
-            .main-layout {
-                flex-direction: column;
+            .container {
+                padding: 0 16px;
+            }
+            
+            header {
+                margin: -16px -16px 24px -16px;
+                padding: 40px 16px 32px;
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                padding: 6px;
+                gap: 2px;
+                top: 16px;
+                margin-bottom: 24px;
+            }
+            
+            nav a {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .operations-panel,
+            .chat-container {
+                padding: 24px;
+            }
+            
+            .chat-header,
+            .chat-history,
+            .input-area {
+                padding: 20px;
             }
             
             .message {
-                max-width: 90%;
+                max-width: 85%;
+                font-size: 15px;
+                padding: 14px 16px;
+            }
+            
+            /* Mobile responsive adjustments for progressive disclosure */
+            .debug-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .progressive-command .command-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            
+            .progressive-command .command-actions {
+                justify-content: flex-end;
             }
         }
     </style>
@@ -373,61 +1203,107 @@
     <div class="container">
         <header>
             <h1>Multi-API Chat</h1>
-            <p>GENAI Network Operations for Cisco Routers</p>
+            <p>Operations Console</p>
         </header>
-        
         <nav>
             <a href="index.html">Chat</a>
             <a href="dashboard.html">Dashboard</a>
             <a href="operations.html" class="active">Operations</a>
             <a href="automation.html">Automation</a>
             <a href="devices.html">Devices</a>
+            <a href="settings.html">Settings</a>
         </nav>
         
         <div class="main-layout">
-            <div class="operations-container">
-                <h2>Cisco Router Operations</h2>
+            <div class="operations-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">🔧</div>
+                    <h2>Network Operations</h2>
+                </div>
                 
                 <div class="router-selector">
+                    <div class="selector-label">Select Router</div>
                     <select id="routerSelect" class="router-select">
-                        <option value="">Select Router</option>
-                        <option value="router1">Router 1 (192.168.1.1)</option>
-                        <option value="router2">Router 2 (192.168.1.2)</option>
-                        <option value="router3">Router 3 (192.168.1.3)</option>
-                        <option value="router4">Router 4 (192.168.1.4)</option>
+                        <option value="">Choose a network device</option>
+                        <option value="router1">CORE-RTR-01 (192.168.1.1)</option>
+                        <option value="router2">EDGE-RTR-02 (192.168.1.2)</option>
+                        <option value="router3">WAN-RTR-03 (192.168.1.3)</option>
+                        <option value="router4">BACKUP-RTR-04 (192.168.1.4)</option>
                     </select>
                 </div>
                 
-                <div class="use-case-selector">
-                    <h3>Common NOC Use Cases:</h3>
-                    <div class="use-case-card" onclick="selectUseCase('troubleshooting')">
-                        <h3>Network Troubleshooting</h3>
-                        <p>Diagnose and resolve network connectivity issues</p>
-                    </div>
-                    <div class="use-case-card" onclick="selectUseCase('monitoring')">
-                        <h3>Performance Monitoring</h3>
-                        <p>Analyze router performance and identify bottlenecks</p>
-                    </div>
-                    <div class="use-case-card" onclick="selectUseCase('configuration')">
-                        <h3>Configuration Management</h3>
-                        <p>Review and manage router configurations</p>
-                    </div>
-                    <div class="use-case-card" onclick="selectUseCase('security')">
-                        <h3>Security Audit</h3>
-                        <p>Check security settings and vulnerabilities</p>
+                <div class="use-case-section">
+                    <div class="selector-label">Operation Type</div>
+                    <div class="use-case-grid">
+                        <div class="use-case-card" onclick="selectUseCase('troubleshooting')">
+                            <div class="use-case-icon">🔍</div>
+                            <div class="use-case-title">Network Troubleshooting</div>
+                            <div class="use-case-description">Diagnose and resolve network connectivity issues</div>
+                        </div>
+                        <div class="use-case-card" onclick="selectUseCase('monitoring')">
+                            <div class="use-case-icon">📊</div>
+                            <div class="use-case-title">Performance Monitoring</div>
+                            <div class="use-case-description">Analyze router performance and identify bottlenecks</div>
+                        </div>
+                        <div class="use-case-card" onclick="selectUseCase('configuration')">
+                            <div class="use-case-icon">⚙️</div>
+                            <div class="use-case-title">Configuration Management</div>
+                            <div class="use-case-description">Review and manage router configurations</div>
+                        </div>
+                        <div class="use-case-card" onclick="selectUseCase('security')">
+                            <div class="use-case-icon">🔒</div>
+                            <div class="use-case-title">Security Audit</div>
+                            <div class="use-case-description">Check security settings and vulnerabilities</div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="router-info">
-                    <h3>Selected Router Information</h3>
-                    <div id="routerDetails">No router selected</div>
+                    <div class="info-title">Router Information</div>
+                    <div class="info-content" id="routerDetails">No router selected</div>
+                </div>
+
+                <!-- Command Templates Section -->
+                <div class="command-templates" id="commandTemplates" style="display: none;">
+                    <div class="template-header" onclick="toggleTemplates()">
+                        <div class="template-title">
+                            <span class="template-icon" id="templateIcon">🔧</span>
+                            <span id="templateTitle">Command Templates</span>
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="template-content">
+                        <div class="template-inner" id="templateContent">
+                            <!-- Command templates will be dynamically populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Commands Section -->
+                <div class="recent-commands" id="recentCommands">
+                    <div class="recent-commands-header" onclick="toggleRecentCommands()">
+                        <div class="recent-commands-title">
+                            <span>📜</span>
+                            <span>Recent Commands</span>
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="recent-content">
+                        <div class="recent-inner" id="recentContent">
+                            <div class="recent-item">
+                                <span class="recent-command">No commands executed yet</span>
+                                <span class="recent-time">-</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <div class="chat-container">
                 <div class="chat-header">
+                    <div class="chat-title">GENAI Assistant</div>
                     <select id="providerSelect" class="provider-select">
-                        <option value="">Select Provider</option>
+                        <option value="">Select AI Provider</option>
                     </select>
                 </div>
                 
@@ -436,7 +1312,7 @@
                 </div>
                 
                 <div class="input-area">
-                    <input type="text" id="messageInput" class="message-input" placeholder="Type your message here...">
+                    <input type="text" id="messageInput" class="message-input" placeholder="Ask about network operations, troubleshooting, or configuration...">
                     <button id="sendButton" class="send-button">Send</button>
                 </div>
             </div>
@@ -533,34 +1409,250 @@
             elements.providerSelect.value = state.settings.default_provider || '';
         }
 
+        // Command templates data
+        const commandTemplates = {
+            troubleshooting: {
+                icon: "🔍",
+                title: "Network Troubleshooting Commands",
+                groups: [
+                    {
+                        title: "Connectivity Tests",
+                        commands: [
+                            {
+                                code: "ping 8.8.8.8",
+                                description: "Test basic internet connectivity",
+                                expected: "Expected: 64 bytes packets with <50ms response time"
+                            },
+                            {
+                                code: "traceroute google.com",
+                                description: "Trace network path to destination",
+                                expected: "Expected: Show hop-by-hop path with response times"
+                            },
+                            {
+                                code: "show ip route",
+                                description: "Display routing table",
+                                expected: "Expected: List of routes with next-hop addresses"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Interface Status",
+                        commands: [
+                            {
+                                code: "show interfaces status",
+                                description: "Check all interface states",
+                                expected: "Expected: Interface names, status (up/down), and line protocol"
+                            },
+                            {
+                                code: "show ip interface brief",
+                                description: "Quick IP interface overview",
+                                expected: "Expected: Interface IPs and status summary"
+                            }
+                        ],
+                        decisionTree: {
+                            title: "Interface Troubleshooting Decision Tree",
+                            steps: [
+                                "Check physical layer: cables, ports, LEDs",
+                                "Verify interface configuration: IP, subnet mask",
+                                "Test Layer 2: ARP tables, VLAN assignments",
+                                "Validate Layer 3: routing, gateway connectivity",
+                                "Check for error counters and drops"
+                            ]
+                        }
+                    }
+                ]
+            },
+            monitoring: {
+                icon: "📊",
+                title: "Performance Monitoring Commands",
+                groups: [
+                    {
+                        title: "System Performance",
+                        commands: [
+                            {
+                                code: "show processes cpu sorted",
+                                description: "Display CPU utilization by process",
+                                expected: "Expected: Process list with CPU percentages <80%"
+                            },
+                            {
+                                code: "show memory summary",
+                                description: "Check memory usage statistics",
+                                expected: "Expected: Free memory >20% for optimal performance"
+                            },
+                            {
+                                code: "show version | include uptime",
+                                description: "Check system uptime",
+                                expected: "Expected: Continuous uptime without recent reboots"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Interface Statistics",
+                        commands: [
+                            {
+                                code: "show interfaces GigabitEthernet0/0/0",
+                                description: "Detailed interface statistics",
+                                expected: "Expected: Low error rates, balanced input/output"
+                            },
+                            {
+                                code: "show interfaces summary",
+                                description: "All interfaces utilization summary",
+                                expected: "Expected: Interface utilization <70% for good performance"
+                            }
+                        ],
+                        decisionTree: {
+                            title: "Performance Analysis Decision Tree",
+                            steps: [
+                                "Identify baseline performance metrics",
+                                "Compare current vs. historical data",
+                                "Look for patterns in traffic spikes",
+                                "Check for hardware limitations",
+                                "Plan capacity upgrades if needed"
+                            ]
+                        }
+                    }
+                ]
+            },
+            configuration: {
+                icon: "⚙️",
+                title: "Configuration Management Commands",
+                groups: [
+                    {
+                        title: "Configuration Display",
+                        commands: [
+                            {
+                                code: "show running-config",
+                                description: "Display current active configuration",
+                                expected: "Expected: Complete running configuration"
+                            },
+                            {
+                                code: "show startup-config",
+                                description: "Display saved configuration",
+                                expected: "Expected: Configuration that loads on boot"
+                            },
+                            {
+                                code: "show archive config differences",
+                                description: "Compare running vs startup config",
+                                expected: "Expected: List of unsaved configuration changes"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Configuration Management",
+                        commands: [
+                            {
+                                code: "copy running-config startup-config",
+                                description: "Save current configuration",
+                                expected: "Expected: 'Building configuration...' success message"
+                            },
+                            {
+                                code: "configure terminal",
+                                description: "Enter configuration mode",
+                                expected: "Expected: Prompt changes to Router(config)#"
+                            }
+                        ],
+                        decisionTree: {
+                            title: "Configuration Change Process",
+                            steps: [
+                                "Backup current configuration first",
+                                "Test changes in lab environment",
+                                "Schedule maintenance window",
+                                "Apply changes incrementally",
+                                "Verify functionality after each change",
+                                "Save configuration when verified"
+                            ]
+                        }
+                    }
+                ]
+            },
+            security: {
+                icon: "🔒",
+                title: "Security Audit Commands",
+                groups: [
+                    {
+                        title: "Access Control",
+                        commands: [
+                            {
+                                code: "show access-lists",
+                                description: "Display all ACL configurations",
+                                expected: "Expected: Properly configured permit/deny rules"
+                            },
+                            {
+                                code: "show ip access-lists",
+                                description: "Show IP access lists with hit counters",
+                                expected: "Expected: ACLs with appropriate hit counts"
+                            },
+                            {
+                                code: "show users",
+                                description: "Display currently logged in users",
+                                expected: "Expected: Only authorized users logged in"
+                            }
+                        ]
+                    },
+                    {
+                        title: "Security Status",
+                        commands: [
+                            {
+                                code: "show login",
+                                description: "Display login security settings",
+                                expected: "Expected: Login banner, timeout, and lockout settings"
+                            },
+                            {
+                                code: "show crypto key mypubkey rsa",
+                                description: "Display RSA public keys",
+                                expected: "Expected: Valid RSA keys for SSH authentication"
+                            }
+                        ],
+                        decisionTree: {
+                            title: "Security Audit Checklist",
+                            steps: [
+                                "Verify strong password policies",
+                                "Check SSH is enabled, Telnet disabled",
+                                "Validate ACL rules and placement",
+                                "Review user accounts and privileges",
+                                "Confirm logging and monitoring enabled",
+                                "Test backup and recovery procedures"
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+
+        // Recent commands storage
+        let recentCommands = [];
+
         // Select use case
         function selectUseCase(useCase) {
             // Remove active class from all use cases
             document.querySelectorAll('.use-case-card').forEach(card => {
-                card.classList.remove('selected-use-case');
+                card.classList.remove('selected');
             });
             
             // Add active class to selected use case
-            event.currentTarget.classList.add('selected-use-case');
+            event.currentTarget.classList.add('selected');
             state.selectedUseCase = useCase;
+            
+            // Show command templates
+            showCommandTemplates(useCase);
             
             // Update system message
             let useCasePrompt = "";
             switch(useCase) {
                 case 'troubleshooting':
-                    useCasePrompt = "You are now in Network Troubleshooting mode. Ask questions about connectivity issues, packet loss, or routing problems.";
+                    useCasePrompt = "🔍 Network Troubleshooting mode activated. Command templates are now available below. Ask questions about connectivity issues, packet loss, or routing problems.";
                     break;
                 case 'monitoring':
-                    useCasePrompt = "You are now in Performance Monitoring mode. Ask about interface statistics, CPU usage, or memory utilization.";
+                    useCasePrompt = "📊 Performance Monitoring mode activated. Command templates are now available below. Ask about interface statistics, CPU usage, or memory utilization.";
                     break;
                 case 'configuration':
-                    useCasePrompt = "You are now in Configuration Management mode. Ask to review, modify, or validate router configurations.";
+                    useCasePrompt = "⚙️ Configuration Management mode activated. Command templates are now available below. Ask to review, modify, or validate router configurations.";
                     break;
                 case 'security':
-                    useCasePrompt = "You are now in Security Audit mode. Ask about access control lists, security policies, or vulnerability assessments.";
+                    useCasePrompt = "🔒 Security Audit mode activated. Command templates are now available below. Ask about access control lists, security policies, or vulnerability assessments.";
                     break;
                 default:
-                    useCasePrompt = "Unknown use case selected.";
+                    useCasePrompt = "❓ Unknown use case selected.";
             }
             
             addSystemMessage(useCasePrompt);
@@ -672,9 +1764,12 @@
             } else if (role === 'ai') {
                 const providerId = metadata.provider;
                 const providerName = state.providers[providerId].name;
+                const technicalDetailsHtml = createTechnicalDetailsSection(metadata);
+                
                 messageDiv.innerHTML = `
                     <div>${content}</div>
                     <div class="message-meta">${providerName}</div>
+                    ${technicalDetailsHtml}
                 `;
             } else if (role === 'error') {
                 messageDiv.innerHTML = `
@@ -698,8 +1793,537 @@
             addMessageToHistory('system', content);
         }
 
+        // Show command templates for selected use case with progressive disclosure
+        function showCommandTemplates(useCase) {
+            const templatesDiv = document.getElementById('commandTemplates');
+            const templateContent = document.getElementById('templateContent');
+            const templateTitle = document.getElementById('templateTitle');
+            const templateIcon = document.getElementById('templateIcon');
+            
+            if (!commandTemplates[useCase]) return;
+            
+            const templates = commandTemplates[useCase];
+            templateTitle.textContent = templates.title;
+            templateIcon.textContent = templates.icon;
+            
+            let html = '';
+            templates.groups.forEach((group, groupIndex) => {
+                // Create progressive disclosure structure for each command group
+                html += `
+                    <div class="progressive-disclosure" data-level="summary">
+                        <div class="progressive-summary">
+                            <div class="summary-header" onclick="toggleProgressiveLevel('group_${groupIndex}', 'details')">
+                                <span class="summary-icon">📋</span>
+                                <div class="summary-content">
+                                    <h4 class="summary-title">${group.title}</h4>
+                                    <p class="summary-description">${group.commands.length} commands available for ${group.title.toLowerCase()}</p>
+                                </div>
+                                <span class="expand-indicator">▸</span>
+                            </div>
+                        </div>
+                        
+                        <div class="progressive-details" id="group_${groupIndex}_details" style="display: none;">
+                            <div class="details-header">
+                                <span class="details-icon">⚙️</span>
+                                <span class="details-title">Command Details & Configuration</span>
+                                <button class="debug-toggle" onclick="toggleProgressiveLevel('group_${groupIndex}', 'debug')">
+                                    <span>🔍</span> Debug Info
+                                </button>
+                            </div>
+                            <div class="details-content">`;
+                
+                group.commands.forEach((cmd, cmdIndex) => {
+                    html += `
+                        <div class="command-item progressive-command">
+                            <div class="command-header">
+                                <div class="command-code" onclick="copyToClipboard('${cmd.code.replace(/'/g, "\\'")}')" 
+                                     title="Click to copy command">${cmd.code}</div>
+                                <div class="command-actions">
+                                    <button class="copy-btn" onclick="copyToClipboard('${cmd.code.replace(/'/g, "\\'")}')" title="Copy command">
+                                        📋
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="command-description">${cmd.description}</div>
+                            <div class="expected-output">${cmd.expected}</div>
+                        </div>`;
+                });
+                
+                if (group.decisionTree) {
+                    html += `
+                        <div class="decision-tree">
+                            <div class="decision-tree-title">
+                                <span>🌳</span>
+                                ${group.decisionTree.title}
+                            </div>`;
+                    
+                    group.decisionTree.steps.forEach(step => {
+                        html += `<div class="decision-step">${step}</div>`;
+                    });
+                    
+                    html += `</div>`;
+                }
+                
+                html += `
+                            </div>
+                        </div>
+                        
+                        <div class="progressive-debug" id="group_${groupIndex}_debug" style="display: none;">
+                            <div class="debug-header">
+                                <span class="debug-icon">🐛</span>
+                                <span class="debug-title">Raw Output & Debug Information</span>
+                            </div>
+                            <div class="debug-content">
+                                <div class="debug-section">
+                                    <h5 class="debug-section-title">📤 Command Execution Log</h5>
+                                    <div class="debug-raw-output">
+$ ${group.commands[0]?.code || 'show command'}
+Connecting to router via telnet...
+Connection established: ${state.selectedRouter || 'No router selected'}
+Executing command...
+[Mock execution output would appear here]
+Command completed successfully.
+Latency: ${Math.floor(Math.random() * 50) + 10}ms
+                                    </div>
+                                </div>
+                                
+                                <div class="debug-section">
+                                    <h5 class="debug-section-title">🔧 API Call Details</h5>
+                                    <div class="debug-json">
+{
+  "endpoint": "/api/network/command",
+  "method": "POST",
+  "router_id": "${state.selectedRouter || 'unselected'}",
+  "command_group": "${group.title}",
+  "commands_count": ${group.commands.length},
+  "timestamp": "${new Date().toISOString()}",
+  "user_context": {
+    "use_case": "${useCase}",
+    "session_id": "${Math.random().toString(36).substr(2, 9)}"
+  }
+}
+                                    </div>
+                                </div>
+                                
+                                <div class="debug-section">
+                                    <h5 class="debug-section-title">📊 Performance Metrics</h5>
+                                    <div class="debug-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">Response Time:</span>
+                                            <span class="metric-value">${Math.floor(Math.random() * 200) + 50}ms</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Commands Processed:</span>
+                                            <span class="metric-value">${group.commands.length}</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Success Rate:</span>
+                                            <span class="metric-value">${Math.floor(Math.random() * 10) + 90}%</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Error Count:</span>
+                                            <span class="metric-value">${Math.floor(Math.random() * 3)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="debug-section">
+                                    <h5 class="debug-section-title">🚨 Error Stack (if any)</h5>
+                                    <div class="debug-error-stack">
+No errors detected in this command group.
+All commands executed successfully.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            
+            templateContent.innerHTML = html;
+            templatesDiv.style.display = 'block';
+        }
+
+        // Toggle command templates expansion
+        function toggleTemplates() {
+            const templatesDiv = document.getElementById('commandTemplates');
+            templatesDiv.classList.toggle('expanded');
+        }
+
+        // Toggle recent commands expansion
+        function toggleRecentCommands() {
+            const recentDiv = document.getElementById('recentCommands');
+            recentDiv.classList.toggle('expanded');
+        }
+
+        // Copy command to clipboard
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                addRecentCommand(text);
+                // Show brief success feedback
+                const originalCursor = event.target.style.cursor;
+                event.target.style.cursor = 'default';
+                event.target.style.background = 'var(--apple-green)';
+                setTimeout(() => {
+                    event.target.style.cursor = originalCursor;
+                    event.target.style.background = 'var(--apple-black)';
+                }, 500);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        }
+
+        // Add command to recent commands list
+        function addRecentCommand(command) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+            
+            // Remove duplicate if exists
+            recentCommands = recentCommands.filter(cmd => cmd.command !== command);
+            
+            // Add new command at the beginning
+            recentCommands.unshift({
+                command: command,
+                timestamp: timeStr,
+                fullTime: now
+            });
+            
+            // Keep only last 10 commands
+            recentCommands = recentCommands.slice(0, 10);
+            
+            updateRecentCommandsDisplay();
+        }
+
+        // Update recent commands display
+        function updateRecentCommandsDisplay() {
+            const recentContent = document.getElementById('recentContent');
+            
+            if (recentCommands.length === 0) {
+                recentContent.innerHTML = `
+                    <div class="recent-item">
+                        <span class="recent-command">No commands executed yet</span>
+                        <span class="recent-time">-</span>
+                    </div>`;
+                return;
+            }
+            
+            let html = '';
+            recentCommands.forEach(item => {
+                html += `
+                    <div class="recent-item">
+                        <span class="recent-command">${item.command}</span>
+                        <div>
+                            <span class="recent-time">${item.timestamp}</span>
+                            <button class="copy-btn" onclick="copyToClipboard('${item.command.replace(/'/g, "\\'")}')'"
+                                    title="Copy command">Copy</button>
+                        </div>
+                    </div>`;
+            });
+            
+            recentContent.innerHTML = html;
+        }
+
+        // Create technical details section for AI messages
+        function createTechnicalDetailsSection(metadata) {
+            if (!metadata) return '';
+            
+            // Generate unique ID for this message's technical details
+            const detailsId = 'details_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Simulate API request/response data (in real implementation, this would come from the backend)
+            const mockApiRequest = {
+                url: 'http://localhost:8002/api/chat',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ****'
+                },
+                body: {
+                    message: "[User's message]",
+                    provider: metadata.provider,
+                    system_prompt: state.settings.system_prompt || "You are a helpful network operations assistant.",
+                    temperature: 0.7,
+                    max_tokens: 1000
+                }
+            };
+            
+            const mockApiResponse = {
+                id: 'chatcmpl-' + Math.random().toString(36).substr(2, 9),
+                object: 'chat.completion',
+                created: Math.floor(Date.now() / 1000),
+                model: metadata.model || 'gpt-3.5-turbo',
+                choices: [{
+                    index: 0,
+                    message: {
+                        role: 'assistant',
+                        content: '[AI Response Content]'
+                    },
+                    finish_reason: 'stop'
+                }],
+                usage: {
+                    prompt_tokens: Math.floor(Math.random() * 100) + 50,
+                    completion_tokens: Math.floor(Math.random() * 200) + 100,
+                    total_tokens: Math.floor(Math.random() * 300) + 150
+                }
+            };
+            
+            // Generate mock command data
+            const mockCommands = [
+                'show ip interface brief',
+                'show running-config interface GigabitEthernet0/0/0',
+                'ping 192.168.1.1'
+            ];
+            
+            // Calculate confidence score (mock)
+            const confidenceScore = Math.floor(Math.random() * 30) + 70; // 70-100%
+            
+            return `
+                <div class="technical-details">
+                    <button class="expand-details-btn" onclick="toggleTechnicalDetails('${detailsId}')">
+                        <span>📊</span>
+                        <span>Expand Technical Details</span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+                    
+                    <div class="details-content" id="${detailsId}">
+                        <div class="details-inner">
+                            <!-- Model Parameters -->
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <span>⚙️</span>
+                                    <span>Model Parameters</span>
+                                </div>
+                                <div class="metadata-grid">
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Provider</div>
+                                        <div class="metadata-value">${state.providers[metadata.provider]?.name || metadata.provider}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Model</div>
+                                        <div class="metadata-value">${metadata.model || 'gpt-3.5-turbo'}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Temperature</div>
+                                        <div class="metadata-value">0.7</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Max Tokens</div>
+                                        <div class="metadata-value">1000</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Token Usage -->
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <span>🔢</span>
+                                    <span>Token Usage</span>
+                                </div>
+                                <div class="metadata-grid">
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Prompt Tokens</div>
+                                        <div class="metadata-value">${mockApiResponse.usage.prompt_tokens}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Completion Tokens</div>
+                                        <div class="metadata-value">${mockApiResponse.usage.completion_tokens}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Total Tokens</div>
+                                        <div class="metadata-value">${mockApiResponse.usage.total_tokens}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Estimated Cost</div>
+                                        <div class="metadata-value">$${(mockApiResponse.usage.total_tokens * 0.0015 / 1000).toFixed(4)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Generated Commands -->
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <span>⌨️</span>
+                                    <span>Generated Commands (Before Translation)</span>
+                                </div>
+                                <div class="detail-content raw">
+                                    <button class="detail-copy-btn" onclick="copyDetailContent(this)">Copy</button>
+${mockCommands.join('\n')}
+                                </div>
+                            </div>
+                            
+                            <!-- Confidence Score -->
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <span>🎯</span>
+                                    <span>Confidence Score</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <div class="metadata-label">Response Accuracy</div>
+                                    <div class="metadata-value">${confidenceScore}%</div>
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" style="width: ${confidenceScore}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Raw API Request -->
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <span>📤</span>
+                                    <span>API Request</span>
+                                </div>
+                                <div class="detail-content json">
+                                    <button class="detail-copy-btn" onclick="copyDetailContent(this)">Copy</button>
+${JSON.stringify(mockApiRequest, null, 2)}
+                                </div>
+                            </div>
+                            
+                            <!-- Raw API Response -->
+                            <div class="detail-section">
+                                <div class="detail-title">
+                                    <span>📥</span>
+                                    <span>API Response</span>
+                                </div>
+                                <div class="detail-content json">
+                                    <button class="detail-copy-btn" onclick="copyDetailContent(this)">Copy</button>
+${JSON.stringify(mockApiResponse, null, 2)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Toggle technical details section
+        function toggleTechnicalDetails(detailsId) {
+            const button = event.currentTarget;
+            const detailsContent = document.getElementById(detailsId);
+            
+            button.classList.toggle('expanded');
+            
+            if (button.classList.contains('expanded')) {
+                button.querySelector('span:nth-child(2)').textContent = 'Collapse Technical Details';
+                detailsContent.style.maxHeight = '1000px';
+            } else {
+                button.querySelector('span:nth-child(2)').textContent = 'Expand Technical Details';
+                detailsContent.style.maxHeight = '0';
+            }
+        }
+        
+        // Copy detail content to clipboard
+        async function copyDetailContent(button) {
+            const detailContent = button.parentElement;
+            const textContent = detailContent.textContent.replace('Copy', '').trim();
+            
+            try {
+                await navigator.clipboard.writeText(textContent);
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--apple-green)';
+                button.style.color = 'var(--apple-white)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--apple-gray-5)';
+                    button.style.color = 'var(--apple-gray)';
+                }, 1000);
+            } catch (err) {
+                console.error('Failed to copy detail content:', err);
+                button.textContent = 'Failed';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 1000);
+            }
+        }
+
+        // Progressive disclosure level toggling
+        function toggleProgressiveLevel(groupId, targetLevel) {
+            const detailsElement = document.getElementById(`${groupId}_details`);
+            const debugElement = document.getElementById(`${groupId}_debug`);
+            const summaryElement = document.querySelector(`[onclick*="${groupId}"] .expand-indicator`);
+            
+            if (targetLevel === 'details') {
+                if (detailsElement.style.display === 'none') {
+                    // Show details level
+                    detailsElement.style.display = 'block';
+                    summaryElement.textContent = '▾';
+                    summaryElement.parentElement.classList.add('expanded');
+                    
+                    // Save state to localStorage
+                    saveDisclosureState(groupId, 'details');
+                } else {
+                    // Hide details level (and debug if open)
+                    detailsElement.style.display = 'none';
+                    debugElement.style.display = 'none';
+                    summaryElement.textContent = '▸';
+                    summaryElement.parentElement.classList.remove('expanded');
+                    
+                    // Save state to localStorage
+                    saveDisclosureState(groupId, 'summary');
+                }
+            } else if (targetLevel === 'debug') {
+                if (debugElement.style.display === 'none') {
+                    // Show debug level
+                    debugElement.style.display = 'block';
+                    event.target.classList.add('active');
+                    
+                    // Save state to localStorage
+                    saveDisclosureState(groupId, 'debug');
+                } else {
+                    // Hide debug level
+                    debugElement.style.display = 'none';
+                    event.target.classList.remove('active');
+                    
+                    // Save state to localStorage
+                    saveDisclosureState(groupId, 'details');
+                }
+            }
+        }
+        
+        // Save disclosure state to localStorage
+        function saveDisclosureState(groupId, level) {
+            const disclosureStates = JSON.parse(localStorage.getItem('operationsDisclosureStates') || '{}');
+            disclosureStates[groupId] = level;
+            localStorage.setItem('operationsDisclosureStates', JSON.stringify(disclosureStates));
+        }
+        
+        // Restore disclosure states from localStorage
+        function restoreDisclosureStates() {
+            const disclosureStates = JSON.parse(localStorage.getItem('operationsDisclosureStates') || '{}');
+            
+            for (const [groupId, level] of Object.entries(disclosureStates)) {
+                const detailsElement = document.getElementById(`${groupId}_details`);
+                const debugElement = document.getElementById(`${groupId}_debug`);
+                const summaryElement = document.querySelector(`[onclick*="${groupId}"] .expand-indicator`);
+                
+                if (!detailsElement || !debugElement || !summaryElement) continue;
+                
+                if (level === 'details') {
+                    detailsElement.style.display = 'block';
+                    summaryElement.textContent = '▾';
+                    summaryElement.parentElement.classList.add('expanded');
+                } else if (level === 'debug') {
+                    detailsElement.style.display = 'block';
+                    debugElement.style.display = 'block';
+                    summaryElement.textContent = '▾';
+                    summaryElement.parentElement.classList.add('expanded');
+                    
+                    // Find and activate the debug toggle button
+                    const debugToggle = document.querySelector(`[onclick*="${groupId}"][onclick*="debug"]`);
+                    if (debugToggle) {
+                        debugToggle.classList.add('active');
+                    }
+                }
+            }
+        }
+        
         // Initialize application when page loads
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            // Restore disclosure states after a short delay to ensure DOM is ready
+            setTimeout(restoreDisclosureStates, 100);
+        });
     </script>
 </body>
 </html>

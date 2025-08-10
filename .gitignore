@@ -1,2 +1,171 @@
-# Ignore environment variables file
+# Enhanced Multi-API Chat - Git Ignore File
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
 .env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+venv_backup_*/
+
+# Private Environment Files (API Keys)
+.env.private
+.env.local
+*.env.secret
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Test Reports and Screenshots
+test_reports/
+enhanced_test_reports/
+test_failures/
+enhanced_test_screenshots/
+coverage/
+.nyc_output
+*.lcov
+
+# Logs
+logs/
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Configuration files with sensitive data
+config_private.json
+secrets.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+.tmp/
+temp/
+*.tmp
+*.temp
+
+# Package files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+
+# Application specific
+usage.json
+config.json.backup
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/

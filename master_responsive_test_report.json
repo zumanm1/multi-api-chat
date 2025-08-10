@@ -1,0 +1,77 @@
+{
+  "test_suite": "Comprehensive Responsive Design Testing",
+  "timestamp": "2025-08-09T10:38:49.343394",
+  "start_time": "2025-08-09T10:38:36.100105",
+  "end_time": "2025-08-09T10:38:49.343394",
+  "total_duration": "13.24s",
+  "summary": {
+    "total_test_suites": 3,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0,
+    "errors": 1,
+    "timeouts": 0,
+    "overall_success": false
+  },
+  "test_tools_used": {
+    "pytest": "Python-based unit and integration testing",
+    "playwright": "Cross-browser automation testing",
+    "puppeteer": "Chrome/Chromium browser automation"
+  },
+  "features_tested": {
+    "mobile_viewport_compatibility": "iPhone SE, iPhone 12, iPad, Android devices",
+    "touch_interactions": "Tap to expand/collapse, touch feedback",
+    "cross_browser_compatibility": "Chrome, Firefox, Safari, Edge",
+    "font_readability": "Minimum sizes, contrast ratios, technical content",
+    "long_content_handling": "Overflow management, scroll behavior",
+    "state_persistence": "Scroll, resize, focus changes, dynamic content",
+    "animation_smoothness": "Expand/collapse transitions, performance",
+    "accessibility_compliance": "ARIA attributes, keyboard navigation, screen readers"
+  },
+  "test_results_by_tool": {
+    "pytest": {
+      "status": "passed",
+      "duration": "3.76s",
+      "return_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0 -- /usr/bin/python3\ncachedir: .pytest_cache\nrootdir: /home/test/Documents/CHAT_4545u_test/multi-api-chat\nplugins: anyio-4.10.0\ncollecting ... collected 7 items\n\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_mobile_viewport_sizes PASSED\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_touch_interactions PASSED\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_browser_compatibility PASSED\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_font_size_readability PASSED\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_long_command_outputs PASSED\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_expand_collapse_state_persistence PASSED\ntest_responsive_collapsible.py::TestResponsiveCollapsible::test_animation_smoothness PASSED\n\n============================== 7 passed in 3.06s ===============================\n",
+      "stderr": "",
+      "reports_generated": [
+        "comprehensive_responsive_test_report.json",
+        "mobile_viewport_test_results.json",
+        "touch_interaction_test_results.json",
+        "browser_compatibility_test_results.json",
+        "font_readability_test_results.json",
+        "overflow_handling_test_results.json",
+        "state_persistence_test_results.json",
+        "animation_smoothness_test_results.json"
+      ]
+    },
+    "playwright": {
+      "status": "error",
+      "error": "Command '['/usr/bin/python3', '-c', 'import playwright']' returned non-zero exit status 1."
+    },
+    "puppeteer": {
+      "status": "failed",
+      "duration": "5.30s",
+      "return_code": 1,
+      "stdout": "\ud83e\udd16 Initializing Puppeteer Test Suite\nNaN\n\u2705 Chrome/Chromium browser launched\n\n\ud83d\udcf1 Testing Mobile Viewport Responsiveness...\n\ud83d\udcf1 Mobile tests completed: 0/6 passed\n\n\ud83d\udc46 Testing Touch Interactions...\n\ud83d\udc46 Touch tests completed: 0/1 passed\n\n\ud83c\udfac Testing Animation Smoothness...\n\ud83c\udfac Animation tests completed: 0/1 passed\n\n\ud83d\udcc4 Testing Long Content Handling...\n\ud83d\udcc4 Content tests completed: 0/3 passed\n\n\ud83d\udcbe Testing State Persistence...\n\ud83d\udcbe Persistence tests completed: 0/1 passed\n\n\u26a1 Testing Performance Metrics...\n\u26a1 Performance tests completed: 0/1 passed\n\n\ud83d\udcca Generating Test Report...\n\ud83d\udcca Test Report Summary:\n   Total Categories: 6\n   Passed: 0\n   Failed: 6\n   Overall Result: \u274c FAILED\n   Duration: 4.064s\n\n\ud83e\uddf9 Cleaning up...\n\u2705 Cleanup completed\n",
+      "stderr": "",
+      "reports_generated": [
+        "puppeteer_comprehensive_report.json",
+        "puppeteer_mobile_test_results.json",
+        "puppeteer_touch_test_results.json",
+        "puppeteer_animation_test_results.json",
+        "puppeteer_content_test_results.json",
+        "puppeteer_persistence_test_results.json",
+        "puppeteer_performance_test_results.json"
+      ]
+    }
+  },
+  "compliance_standards": {
+    "wcag": "2.1 AA",
+    "touch_targets": "Minimum 44px",
+    "font_sizes": "Minimum 14px on mobile",
+    "animation_duration": "Maximum 500ms",
+    "contrast_ratio": "Minimum 4.5:1"
+  }
+}

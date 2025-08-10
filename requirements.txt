@@ -1,5 +1,20 @@
-flask
-flask-cors
-openai
-python-dotenv
-paramiko
+# Multi-API Chat Application Dependencies
+# Compatible with Python 3.11+ (preferred: Python 3.11)
+# For Ollama integration: Uses existing openai package (OpenAI-compatible API)
+# No additional Ollama-specific packages required
+
+# Core Flask web framework
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# OpenAI client library (supports Ollama's OpenAI-compatible API)
+openai>=1.99.0
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# SSH connectivity for network device management
+paramiko>=3.0.0
+
+# HTTP requests library (used for Ollama native API endpoints)
+requests>=2.31.0

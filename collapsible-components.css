@@ -1,0 +1,655 @@
+/* ===== COLLAPSIBLE COMPONENT STYLES ===== */
+
+/* Collapsible Container */
+.collapsible-container {
+    background: var(--apple-white);
+    border: 1px solid var(--apple-gray-5);
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+    transition: var(--transition-spring);
+    box-shadow: var(--shadow-small);
+    margin-bottom: 16px;
+}
+
+.collapsible-container:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-1px);
+}
+
+/* Collapsible Header */
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--apple-gray-6);
+    border-bottom: 1px solid var(--apple-gray-5);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    user-select: none;
+}
+
+.collapsible-header:hover {
+    background: var(--apple-gray-5);
+}
+
+.collapsible-header.active {
+    background: linear-gradient(135deg, var(--apple-blue) 0%, var(--apple-indigo) 100%);
+    color: var(--apple-white);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.collapsible-header.active:hover {
+    background: linear-gradient(135deg, #0056cc 0%, #4a47c4 100%);
+}
+
+/* Collapsible Title */
+.collapsible-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--apple-black);
+    letter-spacing: -0.01em;
+}
+
+.collapsible-header.active .collapsible-title {
+    color: var(--apple-white);
+}
+
+.collapsible-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--apple-blue);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.collapsible-header.active .collapsible-icon {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* Chevron Icon */
+.collapsible-chevron {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--apple-gray-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-spring);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.collapsible-chevron::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--apple-gray);
+    border-bottom: 2px solid var(--apple-gray);
+    transform: rotate(45deg);
+    transition: var(--transition);
+}
+
+.collapsible-header:hover .collapsible-chevron {
+    background: var(--apple-gray-3);
+    transform: scale(1.1);
+}
+
+.collapsible-header.active .collapsible-chevron {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(180deg);
+}
+
+.collapsible-header.active .collapsible-chevron::after {
+    border-color: white;
+}
+
+/* Collapsible Content */
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                padding 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.3s ease;
+    opacity: 0;
+    background: var(--apple-white);
+}
+
+.collapsible-content.expanded {
+    max-height: 2000px; /* Large enough to accommodate content */
+    padding: 24px;
+    opacity: 1;
+}
+
+/* Technical Details Section */
+.technical-details {
+    background: var(--apple-gray-6);
+    border: 1px solid var(--apple-gray-5);
+    border-radius: var(--border-radius-medium);
+    padding: 20px;
+    margin-top: 20px;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.technical-details .details-title {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--apple-black);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.technical-details .details-title::before {
+    content: '⚡';
+    font-size: 18px;
+}
+
+/* Command Block */
+.command-block {
+    background: var(--apple-black);
+    color: var(--apple-white);
+    border-radius: var(--border-radius-small);
+    padding: 16px;
+    margin: 12px 0;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-x: auto;
+    border-left: 4px solid var(--apple-blue);
+    position: relative;
+}
+
+.command-block::before {
+    content: '$';
+    color: var(--apple-blue);
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.command-block code {
+    color: var(--apple-white);
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+/* Output Block */
+.output-block {
+    background: var(--apple-gray-6);
+    color: var(--apple-black);
+    border: 1px solid var(--apple-gray-4);
+    border-radius: var(--border-radius-small);
+    padding: 16px;
+    margin: 12px 0;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-x: auto;
+    border-left: 4px solid var(--apple-green);
+    white-space: pre-wrap;
+}
+
+.output-block::before {
+    content: '→';
+    color: var(--apple-green);
+    font-weight: 600;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-indicator.success {
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--apple-green);
+    border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
+.status-indicator.warning {
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--apple-orange);
+    border: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+.status-indicator.error {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--apple-red);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.status-indicator.info {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--apple-blue);
+    border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+.status-indicator::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Metric Display */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.metric-item {
+    background: var(--apple-white);
+    border: 1px solid var(--apple-gray-5);
+    border-radius: var(--border-radius-small);
+    padding: 12px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.metric-item:hover {
+    box-shadow: var(--shadow-small);
+    transform: translateY(-1px);
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--apple-blue);
+    line-height: 1;
+    margin-bottom: 4px;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: var(--apple-gray);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Progress Bars */
+.progress-container {
+    margin: 16px 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--apple-gray-5);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--apple-blue), var(--apple-teal));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0) 0%, 
+        rgba(255,255,255,0.3) 50%, 
+        rgba(255,255,255,0) 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ===== ACCESSIBILITY AND PRINT STYLES ===== */
+
+/* Focus states for better keyboard navigation */
+.collapsible-header:focus {
+    outline: 2px solid var(--apple-blue);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+}
+
+.collapsible-header:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .collapsible-header {
+        border: 2px solid;
+    }
+    
+    .collapsible-header.active {
+        background: CanvasText;
+        color: Canvas;
+    }
+    
+    .status-indicator {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .collapsible-container,
+    .collapsible-header,
+    .collapsible-content,
+    .collapsible-chevron,
+    .progress-fill {
+        transition: none;
+        animation: none;
+    }
+    
+    .progress-fill::after {
+        animation: none;
+    }
+}
+
+/* Skip link styles */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--apple-blue);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.3s;
+    font-weight: 600;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Print mode styles */
+@media print {
+    .collapsible-container {
+        box-shadow: none;
+        border: 1px solid #000;
+        break-inside: avoid;
+        margin-bottom: 20px;
+    }
+    
+    .collapsible-header {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        border-bottom: 1px solid #000;
+    }
+    
+    .collapsible-content {
+        max-height: none !important;
+        overflow: visible !important;
+        opacity: 1 !important;
+        padding: 16px !important;
+    }
+    
+    .collapsible-chevron {
+        display: none;
+    }
+    
+    .technical-details {
+        background: #f9f9f9;
+        border: 1px solid #ccc;
+    }
+    
+    .command-block {
+        background: #000;
+        color: #fff;
+        border-left: 4px solid #666;
+    }
+    
+    .output-block {
+        background: #f5f5f5;
+        border: 1px solid #999;
+    }
+    
+    .progress-fill::after {
+        display: none;
+    }
+}
+
+/* Print mode class for manual print preparation */
+body.print-mode .collapsible-content {
+    max-height: none !important;
+    opacity: 1 !important;
+    padding: 24px !important;
+}
+
+body.print-mode .collapsible-chevron::after {
+    transform: rotate(180deg);
+}
+
+/* Fade in animation for content */
+.collapsible-content.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Enhanced button styles for better touch targets */
+.control-button {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.collapsible-header {
+    min-height: 60px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --apple-gray-6: #1c1c1e;
+        --apple-white: #2c2c2e;
+        --apple-black: #f2f2f7;
+        --apple-gray: #98989d;
+        --apple-gray-2: #636366;
+        --apple-gray-3: #48484a;
+        --apple-gray-4: #3a3a3c;
+        --apple-gray-5: #2c2c2e;
+    }
+    
+    .collapsible-container {
+        border-color: var(--apple-gray-4);
+    }
+    
+    .collapsible-header {
+        border-bottom-color: var(--apple-gray-4);
+    }
+    
+    .technical-details {
+        background: var(--apple-gray-5);
+        border-color: var(--apple-gray-4);
+    }
+    
+    .metric-item {
+        background: var(--apple-gray-5);
+        border-color: var(--apple-gray-4);
+    }
+    
+    .output-block {
+        background: var(--apple-gray-5);
+        border-color: var(--apple-gray-4);
+        color: var(--apple-black);
+    }
+}
+
+/* Notification styles (added by JS) */
+.collapsible-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--apple-blue);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: var(--shadow-medium);
+    transform: translateX(400px);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.collapsible-notification.success {
+    background: var(--apple-green);
+}
+
+.collapsible-notification.error {
+    background: var(--apple-red);
+}
+
+.collapsible-notification.warning {
+    background: var(--apple-orange);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .collapsible-header {
+        padding: 14px 16px;
+    }
+    
+    .collapsible-content.expanded {
+        padding: 20px 16px;
+    }
+    
+    .collapsible-title {
+        font-size: 15px;
+    }
+    
+    .technical-details {
+        padding: 16px;
+        font-size: 13px;
+    }
+    
+    .command-block,
+    .output-block {
+        padding: 12px;
+        font-size: 12px;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 12px;
+    }
+    
+    .metric-value {
+        font-size: 20px;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.slide-up {
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulse animation for loading states */
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}

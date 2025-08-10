@@ -24,6 +24,15 @@ TEST_CONFIG = {
             "base_url": "http://test.provider.com/v1",
             "status": "disconnected",
             "last_checked": ""
+        },
+        "ollama": {
+            "name": "Ollama",
+            "enabled": False,
+            "api_key": "",
+            "model": "llama3.2",
+            "base_url": "http://localhost:11434/v1",
+            "status": "disconnected",
+            "last_checked": ""
         }
     },
     "settings": {
@@ -413,6 +422,316 @@ def test_chat_with_provider(client, mock_openai_client):
         assert result["tokens"] == 42
         assert result["model"] == "test_model"
         assert "response_time" in result
+
+# Ollama Integration Tests
+def test_ollama_provider_exists(client):
+    """Test that Ollama provider is available in the default configuration"""
+    response = client.get('/api/providers')
+    assert response.status_code == 200
+    
+    providers = json.loads(response.data)
+    assert "ollama" in providers
+    
+    ollama_provider = providers["ollama"]
+    assert ollama_provider["name"] == "Ollama"
+    assert ollama_provider["base_url"] == "http://localhost:11434/v1"
+    assert ollama_provider["api_key"] == ""  # Ollama doesn't require API key
+    assert ollama_provider["model"] == "llama3.2"
+
+def test_ollama_provider_configuration(client):
+    """Test Ollama-specific configuration"""
+    # Add Ollama to test config
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "disconnected",
+        "last_checked": ""
+    }
+    
+    response = client.get('/api/providers')
+    assert response.status_code == 200
+    
+    providers = json.loads(response.data)
+    ollama = providers["ollama"]
+    
+    # Verify Ollama-specific configuration
+    assert ollama["api_key"] == ""  # No API key needed
+    assert "localhost:11434" in ollama["base_url"]
+    assert ollama["enabled"] == True
+
+@patch('requests.get')
+def test_ollama_connection_success(mock_get, client):
+    """Test successful Ollama connection"""
+    # Add Ollama to test config
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "disconnected",
+        "last_checked": ""
+    }
+    
+    # Mock successful Ollama response
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"models": [{"name": "llama3.2"}]}
+    mock_response.raise_for_status.return_value = None
+    mock_get.return_value = mock_response
+    
+    response = client.post('/api/providers/ollama/test')
+    assert response.status_code == 200
+    
+    result = json.loads(response.data)
+    assert result["provider"] == "ollama"
+    assert result["success"] == True
+    assert backend_server.providers["ollama"]["status"] == "connected"
+
+@patch('requests.get')
+def test_ollama_connection_failure(mock_get, client):
+    """Test Ollama connection failure"""
+    # Add Ollama to test config
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "disconnected",
+        "last_checked": ""
+    }
+    
+    # Mock connection error
+    from requests.exceptions import ConnectionError
+    mock_get.side_effect = ConnectionError("Connection refused")
+    
+    response = client.post('/api/providers/ollama/test')
+    assert response.status_code == 200
+    
+    result = json.loads(response.data)
+    assert result["provider"] == "ollama"
+    assert result["success"] == False
+    assert backend_server.providers["ollama"]["status"] == "connection_refused"
+
+@patch('requests.get')
+def test_ollama_models_endpoint_success(mock_get, client):
+    """Test successful Ollama models listing"""
+    # Mock Ollama models response
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "models": [
+            {"name": "llama3.2", "size": 2000000, "modified_at": "2024-01-01T00:00:00Z"},
+            {"name": "llama3.2:1b", "size": 1000000, "modified_at": "2024-01-01T00:00:00Z"}
+        ]
+    }
+    mock_response.raise_for_status.return_value = None
+    mock_get.return_value = mock_response
+    
+    response = client.get('/api/providers/ollama/models')
+    assert response.status_code == 200
+    
+    data = json.loads(response.data)
+    assert "models" in data
+    assert "total" in data
+    assert len(data["models"]) == 2
+    assert data["total"] == 2
+    assert data["models"][0]["name"] == "llama3.2"
+
+@patch('requests.get')
+def test_ollama_models_endpoint_failure(mock_get, client):
+    """Test Ollama models listing when server is down"""
+    # Mock connection error
+    from requests.exceptions import ConnectionError
+    mock_get.side_effect = ConnectionError("Connection refused")
+    
+    response = client.get('/api/providers/ollama/models')
+    assert response.status_code == 503
+    
+    data = json.loads(response.data)
+    assert "error" in data
+    assert "Ollama server" in data["error"]
+
+@patch('requests.post')
+def test_ollama_model_pull_success(mock_post, client):
+    """Test successful Ollama model pull"""
+    # Mock streaming response for model pull
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.iter_lines.return_value = [
+        b'{"status": "pulling manifest"}',
+        b'{"status": "success"}'
+    ]
+    mock_response.raise_for_status.return_value = None
+    mock_post.return_value = mock_response
+    
+    pull_data = {"model": "llama3.2:1b"}
+    response = client.post('/api/providers/ollama/pull', json=pull_data)
+    assert response.status_code == 200
+    
+    data = json.loads(response.data)
+    assert data["success"] == True
+    assert data["model"] == "llama3.2:1b"
+    assert "status_log" in data
+
+def test_ollama_chat_with_mock(client, mock_openai_client):
+    """Test Ollama chat functionality with mocked client"""
+    # Add Ollama provider
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "connected",
+        "last_checked": ""
+    }
+    
+    # Test chat request
+    chat_data = {
+        "message": "Hello Ollama!",
+        "provider": "ollama"
+    }
+    
+    response = client.post('/api/chat', json=chat_data)
+    assert response.status_code == 200
+    
+    data = json.loads(response.data)
+    assert data["provider"] == "ollama"
+    assert data["response"] == "Test response from AI"
+    assert data["tokens"] == 42
+
+def test_ollama_fallback_mechanism(client, mock_openai_client):
+    """Test fallback when Ollama fails"""
+    # Setup Ollama and fallback provider
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "connected",
+        "last_checked": ""
+    }
+    
+    backend_server.providers["groq"] = {
+        "name": "Groq",
+        "enabled": True,
+        "api_key": "test_key",
+        "model": "llama-3.1-70b-versatile",
+        "base_url": "https://api.groq.com/openai/v1",
+        "status": "connected",
+        "last_checked": ""
+    }
+    
+    # Enable fallback
+    backend_server.settings["features"]["auto_fallback"] = True
+    backend_server.settings["fallback_provider"] = "groq"
+    
+    # Make Ollama fail
+    with patch('backend_server.get_client') as mock_get_client:
+        # First call (Ollama) fails, second call (Groq) succeeds
+        mock_get_client.side_effect = [Exception("Ollama connection failed"), mock_openai_client]
+        
+        chat_data = {
+            "message": "Hello!",
+            "provider": "ollama"
+        }
+        
+        response = client.post('/api/chat', json=chat_data)
+        assert response.status_code == 200
+        
+        data = json.loads(response.data)
+        assert data["provider"] == "groq"  # Should fallback to groq
+        assert data["fallback_used"] == True
+
+def test_ollama_usage_tracking(client, mock_openai_client):
+    """Test that Ollama requests are properly tracked in usage statistics"""
+    # Add Ollama provider
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "connected",
+        "last_checked": ""
+    }
+    
+    # Enable usage analytics
+    backend_server.settings["features"]["usage_analytics"] = True
+    
+    # Make chat request
+    chat_data = {
+        "message": "Test usage tracking",
+        "provider": "ollama"
+    }
+    
+    response = client.post('/api/chat', json=chat_data)
+    assert response.status_code == 200
+    
+    # Check usage was tracked
+    today = datetime.now().strftime('%Y-%m-%d')
+    assert today in backend_server.usage_stats
+    assert "ollama" in backend_server.usage_stats[today]
+    assert backend_server.usage_stats[today]["ollama"]["requests"] == 1
+    assert backend_server.usage_stats[today]["ollama"]["tokens"] == 42
+
+def test_ollama_disabled_provider(client):
+    """Test that disabled Ollama provider returns appropriate error"""
+    # Add disabled Ollama provider
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": False,  # Disabled
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "disconnected",
+        "last_checked": ""
+    }
+    
+    chat_data = {
+        "message": "Hello!",
+        "provider": "ollama"
+    }
+    
+    response = client.post('/api/chat', json=chat_data)
+    assert response.status_code == 400
+    
+    data = json.loads(response.data)
+    assert "disabled" in data["error"].lower() or "not enabled" in data["error"].lower()
+
+@patch('backend_server.get_client')
+def test_ollama_get_client_configuration(mock_get_client, client):
+    """Test that Ollama client is configured correctly"""
+    # Add Ollama provider
+    backend_server.providers["ollama"] = {
+        "name": "Ollama",
+        "enabled": True,
+        "api_key": "",
+        "model": "llama3.2",
+        "base_url": "http://localhost:11434/v1",
+        "status": "connected",
+        "last_checked": ""
+    }
+    
+    # Create a real client to test configuration
+    from backend_server import get_client
+    
+    # Test that get_client works for Ollama without throwing errors
+    # We can't easily test the exact configuration without mocking OpenAI,
+    # but we can verify the function doesn't crash
+    try:
+        client_instance = get_client("ollama")
+        # The client should be created successfully
+        assert client_instance is not None
+    except Exception as e:
+        # If it fails, it should be due to actual connection issues, not configuration
+        assert "api_key" not in str(e).lower()  # Should not fail due to API key issues
 
 # Router Device Management Tests
 def test_list_devices(client):

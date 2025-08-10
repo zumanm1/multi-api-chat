@@ -1,9 +1,9 @@
 {
-  "2025-08-08": {
-    "openrouter": {
-      "requests": 2,
-      "tokens": 349,
-      "total_response_time": 4.201685667037964
+  "2025-08-09": {
+    "ollama": {
+      "requests": 1,
+      "tokens": 42,
+      "total_response_time": 7.963180541992188e-05
     }
   }
 }

@@ -4,93 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automation - Multi-API Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="progressive-disclosure.css">
     <style>
-        .workflow-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .workflow-card h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .workflow-response {
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 10px;
-            white-space: pre-wrap;
-        }
-        
-        .success {
-            color: #28a745;
-            font-weight: bold;
-        }
-        
-        .error {
-            color: #dc3545;
-            font-weight: bold;
-        }
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
+            /* Apple Color Palette */
+            --apple-blue: #007AFF;
+            --apple-gray: #8E8E93;
+            --apple-gray-2: #AEAEB2;
+            --apple-gray-3: #C7C7CC;
+            --apple-gray-4: #D1D1D6;
+            --apple-gray-5: #E5E5EA;
+            --apple-gray-6: #F2F2F7;
+            --apple-black: #1C1C1E;
+            --apple-white: #FFFFFF;
+            --apple-green: #34C759;
+            --apple-red: #FF3B30;
+            --apple-orange: #FF9500;
+            --apple-yellow: #FFCC00;
+            --apple-purple: #AF52DE;
+            --apple-pink: #FF2D92;
+            --apple-teal: #5AC8FA;
+            --apple-indigo: #5856D6;
+            
+            /* Provider Colors */
             --openai-color: #10a37f;
             --groq-color: #f55036;
             --cerebras-color: #000000;
             --sambanova-color: #00aeef;
             --anthropic-color: #d9dae8;
             --openrouter-color: #000000;
-            --light-gray: #f5f5f5;
-            --dark-gray: #333;
-            --border-radius: 8px;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --ollama-color: #000000;
+            
+            /* Apple Design System */
+            --border-radius-small: 6px;
+            --border-radius-medium: 12px;
+            --border-radius-large: 20px;
+            --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-large: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --blur-background: backdrop-filter: saturate(180%) blur(20px);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         * {
@@ -100,238 +55,871 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--dark-gray);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.47;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            padding: 0 22px;
         }
 
         header {
             text-align: center;
-            color: white;
-            padding: 20px;
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, var(--apple-purple) 0%, var(--apple-pink) 100%);
+            margin: -22px -22px 40px -22px;
+            border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+            color: var(--apple-white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: saturate(180%) blur(10px);
+            -webkit-backdrop-filter: saturate(180%) blur(10px);
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
         }
 
         header p {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 400;
             opacity: 0.9;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
         }
 
         nav {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 8px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-medium);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
         }
 
         nav a {
             text-decoration: none;
-            color: var(--dark-gray);
-            padding: 10px 15px;
-            border-radius: var(--border-radius);
-            background: var(--light-gray);
-            font-weight: bold;
+            color: var(--apple-black);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-small);
+            font-weight: 500;
+            font-size: 15px;
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
         }
 
         nav a:hover {
-            opacity: 0.8;
+            background: var(--apple-gray-5);
+            transform: translateY(-1px);
         }
 
         nav a.active {
-            background: var(--primary-color);
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            box-shadow: var(--shadow-small);
+        }
+
+        .automation-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .automation-panel {
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            padding: 32px;
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            transition: var(--transition-spring);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .automation-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--apple-purple), var(--apple-pink));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .automation-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .automation-panel:hover::before {
+            transform: scaleX(1);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--apple-gray-5);
+        }
+        
+        .panel-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--apple-purple), var(--apple-pink));
+            border-radius: var(--border-radius-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 20px;
         }
 
-        .main-layout {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+        .panel-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--apple-black);
+            letter-spacing: -0.02em;
         }
 
-        .automation-container {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .workflow-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
         }
 
-        .workflow-selector {
+        .workflow-selection {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
+        }
+        
+        .selector-label {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .router-select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-medium);
+            font-size: 16px;
+            font-weight: 400;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            transition: var(--transition);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"%3e%3cpath fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/%3e%3c/svg%3e');
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 12px;
+            padding-right: 50px;
             margin-bottom: 20px;
         }
 
+        .router-select:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
         .workflow-card {
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
-            padding: 15px;
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-spring);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workflow-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .workflow-card:hover::before {
+            left: 100%;
         }
 
         .workflow-card:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
+            background: var(--apple-white);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-medium);
         }
 
-        .workflow-card h3 {
-            margin-bottom: 10px;
-            color: var(--primary-color);
+        .workflow-card.selected {
+            background: var(--apple-purple);
+            color: var(--apple-white);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .workflow-card.selected .workflow-title,
+        .workflow-card.selected .workflow-description {
+            color: var(--apple-white);
         }
 
-        .selected-workflow {
-            background: var(--primary-color);
+        .workflow-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--apple-purple);
+            border-radius: var(--border-radius-small);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 18px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+        
+        .workflow-card.selected .workflow-icon {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .selected-workflow h3 {
-            color: white;
+        .workflow-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .workflow-description {
+            font-size: 14px;
+            color: var(--apple-gray);
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .steps-panel {
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 24px;
+        }
+        
+        .steps-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 20px;
         }
 
         .workflow-steps {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
         }
 
-        .step {
+        .step-item {
             display: flex;
             align-items: center;
-            padding: 10px;
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
+            gap: 16px;
+            padding: 16px;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            transition: var(--transition);
+        }
+        
+        .step-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-small);
         }
 
         .step-number {
-            width: 30px;
-            height: 30px;
-            background: var(--primary-color);
-            color: white;
+            width: 32px;
+            height: 32px;
+            background: var(--apple-gray-3);
+            color: var(--apple-white);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .step-number.active {
+            background: var(--apple-orange);
+            animation: pulse 2s infinite;
+        }
+        
+        .step-number.completed {
+            background: var(--apple-green);
+        }
+        
+        .step-number.failed {
+            background: var(--apple-red);
         }
 
         .step-content {
             flex: 1;
         }
+        
+        .step-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--apple-black);
+            margin-bottom: 2px;
+        }
+        
+        .step-description {
+            font-size: 13px;
+            color: var(--apple-gray);
+        }
 
         .step-status {
-            margin-left: 10px;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
-
-        .step-pending {
-            color: #666;
+        
+        .step-status.pending {
+            color: var(--apple-gray);
         }
-
-        .step-in-progress {
-            color: var(--warning-color);
+        
+        .step-status.in-progress {
+            color: var(--apple-orange);
         }
-
-        .step-completed {
-            color: var(--success-color);
+        
+        .step-status.completed {
+            color: var(--apple-green);
         }
-
-        .step-failed {
-            color: var(--error-color);
+        
+        .step-status.failed {
+            color: var(--apple-red);
         }
-
-        .input-area {
+        
+        /* Chevron icon styles */
+        .step-chevron {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: var(--apple-gray-2);
+            font-size: 12px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+        }
+        
+        .step-chevron:hover {
+            background: var(--apple-gray-5);
+            color: var(--apple-gray);
+        }
+        
+        .step-chevron.expanded {
+            transform: rotate(90deg);
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            border-color: var(--apple-blue);
+        }
+        
+        /* Technical details section */
+        .step-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 0;
+            background: var(--apple-gray-6);
+            border-radius: var(--border-radius-small);
+            border: 1px solid var(--apple-gray-5);
+        }
+        
+        .step-details.expanded {
+            max-height: 500px;
+            margin-top: 12px;
+        }
+        
+        .step-details-content {
+            padding: 16px;
+        }
+        
+        .detail-section {
+            margin-bottom: 16px;
+        }
+        
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+        
+        .detail-content {
+            font-size: 12px;
+            color: var(--apple-gray);
+            line-height: 1.4;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-small);
+            padding: 8px 10px;
+            white-space: pre-wrap;
+        }
+        
+        .detail-content.parameters {
+            font-family: inherit;
+            white-space: normal;
+        }
+        
+        .step-item.expanded {
+            background: var(--apple-white);
+            border-color: var(--apple-blue);
+            box-shadow: 0 2px 12px rgba(0, 122, 255, 0.1);
         }
 
-        .message-input {
-            padding: 12px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
+        .input-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--apple-gray-5);
+        }
+        
+        .input-label {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .natural-language-input {
             width: 100%;
+            padding: 16px 20px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-medium);
+            font-size: 16px;
+            font-weight: 400;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            transition: var(--transition);
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .natural-language-input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .natural-language-input::placeholder {
+            color: var(--apple-gray-2);
         }
 
         .execute-button {
-            padding: 12px 20px;
-            background: var(--primary-color);
-            color: white;
+            padding: 16px 32px;
+            background: var(--apple-purple);
+            color: var(--apple-white);
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-medium);
             cursor: pointer;
-            font-size: 1rem;
-            align-self: flex-end;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow-small);
+            margin-top: 20px;
+            align-self: flex-start;
         }
 
         .execute-button:hover {
-            opacity: 0.9;
+            background: var(--apple-pink);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
         }
 
-        .config-display {
-            background: #e8f5e9;
-            border-radius: var(--border-radius);
-            padding: 15px;
-            margin-top: 20px;
+        .execute-button:active {
+            transform: translateY(0);
+        }
+
+        .execute-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--apple-gray-5);
+            display: none;
+        }
+        
+        .output-section.visible {
+            display: block;
+        }
+        
+        .output-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 16px;
+        }
+
+        .config-output {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
             white-space: pre-wrap;
-            font-family: monospace;
             overflow-x: auto;
+            color: var(--apple-black);
         }
 
-        .results-display {
-            background: #e3f2fd;
-            border-radius: var(--border-radius);
-            padding: 15px;
-            margin-top: 20px;
+        .results-output {
+            background: rgba(0, 122, 255, 0.1);
+            border: 1px solid rgba(0, 122, 255, 0.2);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
             white-space: pre-wrap;
-            font-family: monospace;
             overflow-x: auto;
+            color: var(--apple-black);
         }
-
-        .router-selector {
+        
+        /* Command History Styles */
+        .command-history {
+            margin-top: 32px;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+        }
+        
+        .history-header {
+            background: linear-gradient(135deg, var(--apple-purple), var(--apple-pink));
+            color: var(--apple-white);
+            padding: 16px 24px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
         }
-
-        .router-select {
-            padding: 8px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
+        
+        .history-header:hover {
+            background: linear-gradient(135deg, var(--apple-pink), var(--apple-purple));
+        }
+        
+        .history-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .history-toggle {
+            font-size: 18px;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .history-toggle.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .history-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .history-content.expanded {
+            max-height: 800px;
+        }
+        
+        .history-commands {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .command-entry {
+            border-bottom: 1px solid var(--apple-gray-5);
+            transition: var(--transition);
+        }
+        
+        .command-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .command-entry:hover {
+            background: var(--apple-gray-6);
+        }
+        
+        .command-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--apple-white);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .command-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
             flex: 1;
         }
+        
+        .command-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .command-status.success {
+            background: var(--apple-green);
+            box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.2);
+        }
+        
+        .command-status.error {
+            background: var(--apple-red);
+            box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.2);
+        }
+        
+        .command-status.pending {
+            background: var(--apple-orange);
+            box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        .command-text {
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 14px;
+            color: var(--apple-black);
+            background: var(--apple-gray-6);
+            padding: 4px 8px;
+            border-radius: var(--border-radius-small);
+            flex: 1;
+        }
+        
+        .command-timestamp {
+            font-size: 12px;
+            color: var(--apple-gray);
+            font-weight: 500;
+        }
+        
+        .command-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .copy-button {
+            padding: 6px 12px;
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            border: none;
+            border-radius: var(--border-radius-small);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .copy-button:hover {
+            background: var(--apple-indigo);
+            transform: translateY(-1px);
+        }
+        
+        .copy-button:active {
+            transform: translateY(0);
+        }
+        
+        .copy-button.copied {
+            background: var(--apple-green);
+        }
+        
+        .response-section {
+            background: var(--apple-gray-6);
+            padding: 16px 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .response-section.expanded {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response-content {
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--apple-black);
+            background: var(--apple-white);
+            padding: 16px;
+            border-radius: var(--border-radius-small);
+            border: 1px solid var(--apple-gray-5);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .response-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--apple-gray);
+            font-family: inherit;
+        }
+        
+        .syntax-highlight .keyword {
+            color: var(--apple-blue);
+            font-weight: 600;
+        }
+        
+        .syntax-highlight .ip {
+            color: var(--apple-purple);
+            font-weight: 500;
+        }
+        
+        .syntax-highlight .interface {
+            color: var(--apple-green);
+            font-weight: 500;
+        }
+        
+        .syntax-highlight .comment {
+            color: var(--apple-gray);
+            font-style: italic;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
 
+        .ollama-avatar { background: var(--ollama-color); }
+
+        @media (max-width: 1024px) {
+            .workflow-section {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .main-layout {
-                flex-direction: column;
+            .container {
+                padding: 0 16px;
+            }
+            
+            header {
+                margin: -16px -16px 24px -16px;
+                padding: 40px 16px 32px;
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                padding: 6px;
+                gap: 2px;
+                top: 16px;
+                margin-bottom: 24px;
+            }
+            
+            nav a {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .automation-panel {
+                padding: 24px;
+            }
+            
+            .step-item {
+                padding: 12px;
             }
         }
     </style>
@@ -340,95 +928,337 @@
     <div class="container">
         <header>
             <h1>Multi-API Chat</h1>
-            <p>GENAI Network Automation for Cisco Routers</p>
+            <p>Automation Workflows</p>
         </header>
-        
         <nav>
             <a href="index.html">Chat</a>
             <a href="dashboard.html">Dashboard</a>
             <a href="operations.html">Operations</a>
             <a href="automation.html" class="active">Automation</a>
             <a href="devices.html">Devices</a>
+            <a href="settings.html">Settings</a>
         </nav>
         
-        <div class="main-layout">
-            <div class="automation-container">
-                <h2>Cisco Router Automation</h2>
-                
-                <div class="router-selector">
-                    <select id="routerSelect" class="router-select">
-                        <option value="">Select Router</option>
-                        <option value="router1">Router 1 (192.168.1.1)</option>
-                        <option value="router2">Router 2 (192.168.1.2)</option>
-                        <option value="router3">Router 3 (192.168.1.3)</option>
-                        <option value="router4">Router 4 (192.168.1.4)</option>
-                    </select>
+        <div class="automation-layout">
+            <div class="automation-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">🤖</div>
+                    <h2>Cisco Router Automation</h2>
                 </div>
                 
-                <div class="workflow-selector">
-                    <h3>Automation Workflows:</h3>
-                    <div class="workflow-card" onclick="selectWorkflow('push')">
-                        <h3>Configuration Push</h3>
-                        <p>Push configurations to routers using natural language</p>
+                <div class="workflow-section">
+                    <div class="workflow-selection">
+                        <div class="selector-label">Select Router</div>
+                        <select id="routerSelect" class="router-select">
+                            <option value="">Choose a network device</option>
+                            <option value="router1">CORE-RTR-01 (192.168.1.1)</option>
+                            <option value="router2">EDGE-RTR-02 (192.168.1.2)</option>
+                            <option value="router3">WAN-RTR-03 (192.168.1.3)</option>
+                            <option value="router4">BACKUP-RTR-04 (192.168.1.4)</option>
+                        </select>
+                        
+                        <div class="selector-label">Workflow Type</div>
+                        <div class="workflow-card" onclick="selectWorkflow('push')">
+                            <div class="workflow-icon">📤</div>
+                            <div class="workflow-title">Configuration Push</div>
+                            <div class="workflow-description">Push configurations to routers using natural language</div>
+                        </div>
+                        <div class="workflow-card" onclick="selectWorkflow('retrieve')">
+                            <div class="workflow-icon">📥</div>
+                            <div class="workflow-title">Configuration Retrieval</div>
+                            <div class="workflow-description">Retrieve and validate router configurations using natural language</div>
+                        </div>
                     </div>
-                    <div class="workflow-card" onclick="selectWorkflow('retrieve')">
-                        <h3>Configuration Retrieval</h3>
-                        <p>Retrieve and validate router configurations using natural language</p>
+                    
+                    <div class="steps-panel">
+                        <div class="steps-title">Workflow Steps</div>
+                    <div class="workflow-steps" id="workflowSteps">
+                            <!-- Progressive Disclosure Step 1 -->
+                            <div class="progressive-disclosure" id="step-1">
+                                <div class="pd-summary" tabindex="0" role="button" aria-expanded="false">
+                                    <div class="pd-level-indicator"></div>
+                                    <div class="pd-summary-header">
+                                        <div class="pd-summary-icon">📝</div>
+                                        <div class="pd-summary-content">
+                                            <div class="pd-summary-title">Natural Language Request</div>
+                                            <div class="pd-summary-description">Enter your configuration request in plain English</div>
+                                        </div>
+                                        <div class="pd-summary-status">
+                                            <div class="pd-status-indicator info"></div>
+                                            <div class="pd-expand-icon">▼</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pd-details">
+                                    <div class="pd-level-indicator"></div>
+                                    <div class="pd-details-content">
+                                        <div class="pd-details-section" data-section="input">
+                                            <div class="pd-section-header">
+                                                <div class="pd-section-title">
+                                                    <span class="pd-section-icon">💬</span>
+                                                    User Input Processing
+                                                </div>
+                                                <div class="pd-debug-toggle">
+                                                    <span>Debug</span>
+                                                    <span class="pd-debug-toggle-icon">▼</span>
+                                                </div>
+                                            </div>
+                                            <div class="pd-parameter-grid">
+                                                <div class="pd-parameter-item">
+                                                    <div class="pd-parameter-label">Input Type</div>
+                                                    <div class="pd-parameter-value">Natural Language</div>
+                                                </div>
+                                                <div class="pd-parameter-item">
+                                                    <div class="pd-parameter-label">Max Length</div>
+                                                    <div class="pd-parameter-value">2048 chars</div>
+                                                </div>
+                                                <div class="pd-parameter-item">
+                                                    <div class="pd-parameter-label">Language</div>
+                                                    <div class="pd-parameter-value">English</div>
+                                                </div>
+                                                <div class="pd-parameter-item">
+                                                    <div class="pd-parameter-label">Validation</div>
+                                                    <div class="pd-parameter-value">Enabled</div>
+                                                </div>
+                                            </div>
+                                            <div class="pd-command-block">
+                                                <button class="pd-command-copy">Copy</button>
+Example Input: "Configure OSPF with process ID 1 and area 0 on interface GigabitEthernet0/0/1 with router ID 1.1.1.1"
+                                            </div>
+                                            <div class="pd-debug">
+                                                <div class="pd-debug-content">
+                                                    <div class="pd-debug-header">
+                                                        <span class="pd-debug-icon">🔍</span>
+                                                        <span class="pd-debug-title">Debug Information</span>
+                                                    </div>
+                                                    <div class="pd-debug-section">
+                                                        <div class="pd-debug-label">API Call</div>
+                                                        <div class="pd-debug-value">POST /api/v1/nlp/parse
+{
+  "text": "Configure OSPF...",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "user_id": "admin",
+  "session_id": "sess_abc123"
+}</div>
+                                                    </div>
+                                                    <div class="pd-debug-section">
+                                                        <div class="pd-debug-label">Response Headers</div>
+                                                        <div class="pd-debug-value">HTTP/1.1 200 OK
+Content-Type: application/json
+X-Request-ID: req_xyz789
+X-Processing-Time: 45ms</div>
+                                                    </div>
+                                                    <div class="pd-debug-section">
+                                                        <div class="pd-debug-label">Error Stack</div>
+                                                        <div class="pd-debug-value">No errors detected
+Validation: PASSED
+Sanitization: PASSED</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">AI Translation</div>
+                                    <div class="step-description">Convert to Cisco IOS commands using GENAI</div>
+                                    <div class="step-details">
+                                        <div class="step-details-content">
+                                            <div class="detail-section">
+                                                <div class="detail-title">Command Input</div>
+                                                <div class="detail-content">POST /api/genai/translate
+{
+  "text": "Configure OSPF...",
+  "target": "cisco_ios",
+  "model": "gpt-4"
+}</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Expected Output</div>
+                                                <div class="detail-content">interface GigabitEthernet0/0/1
+ ip ospf 1 area 0
+ no shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+!</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Parameters</div>
+                                                <div class="detail-content parameters">• Model: GPT-4 or equivalent<br>• Temperature: 0.1 (low randomness)<br>• Max tokens: 1000<br>• Context: Cisco IOS syntax rules</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Error Handling</div>
+                                                <div class="detail-content parameters">• API timeout: Retry with exponential backoff<br>• Invalid response: Fallback to template-based generation<br>• Rate limiting: Queue requests and inform user</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-status pending">Pending</div>
+                                <div class="step-chevron" onclick="toggleStepDetails(1)">▶</div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Syntax Validation</div>
+                                    <div class="step-description">Validate generated configuration syntax</div>
+                                    <div class="step-details">
+                                        <div class="step-details-content">
+                                            <div class="detail-section">
+                                                <div class="detail-title">Command Input</div>
+                                                <div class="detail-content">validate_ios_config()
+# Parse configuration blocks
+# Check command syntax
+# Verify parameter ranges</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Expected Output</div>
+                                                <div class="detail-content">{
+  "valid": true,
+  "warnings": [],
+  "errors": [],
+  "confidence": 0.95
+}</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Parameters</div>
+                                                <div class="detail-content parameters">• Syntax parser: Custom Cisco IOS grammar<br>• Validation rules: 500+ command patterns<br>• Interface validation: Check interface existence<br>• IP range validation: Subnet and mask checks</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Error Handling</div>
+                                                <div class="detail-content parameters">• Syntax error: Highlight problematic lines<br>• Unknown command: Suggest alternatives<br>• Validation failure: Return to AI translation step</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-status pending">Pending</div>
+                                <div class="step-chevron" onclick="toggleStepDetails(2)">▶</div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Router Execution</div>
+                                    <div class="step-description">Apply configuration to selected router</div>
+                                    <div class="step-details">
+                                        <div class="step-details-content">
+                                            <div class="detail-section">
+                                                <div class="detail-title">Command Input</div>
+                                                <div class="detail-content">telnet 192.168.1.1
+# Authentication
+enable
+configure terminal
+# Apply configuration commands
+end
+copy running-config startup-config</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Expected Output</div>
+                                                <div class="detail-content">CORE-RTR-01#configure terminal
+CORE-RTR-01(config)#interface GigabitEthernet0/0/1
+CORE-RTR-01(config-if)#ip ospf 1 area 0
+CORE-RTR-01(config-if)#end
+CORE-RTR-01#</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Parameters</div>
+                                                <div class="detail-content parameters">• Connection: Telnet (preferred) or SSH<br>• Timeout: 30 seconds per command<br>• Authentication: Username/password or certificates<br>• Backup: Auto-save running config</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Error Handling</div>
+                                                <div class="detail-content parameters">• Connection timeout: Retry connection<br>• Authentication failure: Check credentials<br>• Command error: Rollback and report<br>• Network unreachable: Verify router status</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-status pending">Pending</div>
+                                <div class="step-chevron" onclick="toggleStepDetails(3)">▶</div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Verification</div>
+                                    <div class="step-description">Confirm successful configuration deployment</div>
+                                    <div class="step-details">
+                                        <div class="step-details-content">
+                                            <div class="detail-section">
+                                                <div class="detail-title">Command Input</div>
+                                                <div class="detail-content">show running-config | include ospf
+show ip ospf interface
+show ip ospf neighbor
+show ip route ospf</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Expected Output</div>
+                                                <div class="detail-content">GigabitEthernet0/0/1 is up, line protocol is up
+  Internet Address 192.168.1.1/24, Area 0
+  Process ID 1, Router ID 1.1.1.1
+  Network Type BROADCAST, Cost: 1</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Parameters</div>
+                                                <div class="detail-content parameters">• Verification commands: Interface status, OSPF state<br>• Health checks: Ping tests, route table verification<br>• Performance: Response time measurement<br>• Logging: Configuration change audit trail</div>
+                                            </div>
+                                            <div class="detail-section">
+                                                <div class="detail-title">Error Handling</div>
+                                                <div class="detail-content parameters">• Verification timeout: Extended wait and retry<br>• Config mismatch: Report discrepancies<br>• OSPF not forming: Troubleshoot neighbor adjacency<br>• Interface down: Check physical connectivity</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-status pending">Pending</div>
+                                <div class="step-chevron" onclick="toggleStepDetails(4)">▶</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="workflow-steps" id="workflowSteps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">Enter natural language request</div>
-                        <div class="step-status step-pending">Pending</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">Translate to Cisco IOS commands</div>
-                        <div class="step-status step-pending">Pending</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">Validate Cisco IOS commands</div>
-                        <div class="step-status step-pending">Pending</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">Push configuration to router</div>
-                        <div class="step-status step-pending">Pending</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">Verify configuration push success</div>
-                        <div class="step-status step-pending">Pending</div>
-                    </div>
+                <div class="input-section">
+                    <div class="input-label">Natural Language Configuration Request</div>
+                    <textarea id="messageInput" class="natural-language-input" placeholder="Example: 'Configure OSPF with process ID 1 and area 0 on interface GigabitEthernet0/0/1 with router ID 1.1.1.1'"></textarea>
+                    <button id="executeButton" class="execute-button">🚀 Execute Automation Workflow</button>
                 </div>
                 
-                <div class="input-area">
-                    <input type="text" id="messageInput" class="message-input" placeholder="Example: 'Configure OSPF with process ID 1 and area 0 on interface GigabitEthernet0/0/1'">
-                    <button id="executeButton" class="execute-button">Execute Workflow</button>
+                <div class="output-section" id="configSection">
+                    <div class="output-title">📋 Generated Configuration</div>
+                    <div class="config-output" id="generatedConfig"></div>
                 </div>
                 
-                <div class="config-display" id="configDisplay" style="display: none;">
-                    <h3>Generated Cisco IOS Configuration:</h3>
-                    <div id="generatedConfig"></div>
-                </div>
-                
-                <div class="results-display" id="resultsDisplay" style="display: none;">
-                    <h3>Configuration Push Results:</h3>
-                    <div id="pushResults"></div>
+                <div class="output-section" id="resultsSection">
+                    <div class="output-title">✅ Execution Results</div>
+                    <div class="results-output" id="pushResults"></div>
+                    
+                    <!-- Command History Section -->
+                    <div class="command-history" id="commandHistory" style="display: none;">
+                        <div class="history-header" onclick="toggleCommandHistory()">
+                            <div class="history-title">
+                                <span>📜</span>
+                                <span>Full Command History</span>
+                                <span id="commandCount" class="command-timestamp">(0 commands)</span>
+                            </div>
+                            <div class="history-toggle" id="historyToggle">▼</div>
+                        </div>
+                        <div class="history-content" id="historyContent">
+                            <ul class="history-commands" id="historyCommands"></ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="progressive-disclosure.js"></script>
     <script>
         // Application state
         const state = {
             selectedRouter: null,
             selectedWorkflow: null,
-            workflowSteps: document.querySelectorAll('.step-status')
+            workflowSteps: document.querySelectorAll('.step-status'),
+            commandHistory: [],
+            currentExecution: null
         };
 
         // DOM Elements
@@ -437,10 +1267,17 @@
             messageInput: document.getElementById('messageInput'),
             executeButton: document.getElementById('executeButton'),
             workflowSteps: document.querySelectorAll('.step-status'),
-            configDisplay: document.getElementById('configDisplay'),
+            configSection: document.getElementById('configSection'),
             generatedConfig: document.getElementById('generatedConfig'),
-            resultsDisplay: document.getElementById('resultsDisplay'),
-            pushResults: document.getElementById('pushResults')
+            resultsSection: document.getElementById('resultsSection'),
+            pushResults: document.getElementById('pushResults'),
+            stepNumbers: document.querySelectorAll('.step-number'),
+            stepItems: document.querySelectorAll('.step-item'),
+            commandHistory: document.getElementById('commandHistory'),
+            historyContent: document.getElementById('historyContent'),
+            historyCommands: document.getElementById('historyCommands'),
+            commandCount: document.getElementById('commandCount'),
+            historyToggle: document.getElementById('historyToggle')
         };
 
         // Initialize the application
@@ -468,11 +1305,11 @@
         function selectWorkflow(workflow) {
             // Remove active class from all workflows
             document.querySelectorAll('.workflow-card').forEach(card => {
-                card.classList.remove('selected-workflow');
+                card.classList.remove('selected');
             });
             
             // Add active class to selected workflow
-            event.currentTarget.classList.add('selected-workflow');
+            event.currentTarget.classList.add('selected');
             state.selectedWorkflow = workflow;
             
             // Reset workflow steps
@@ -483,12 +1320,26 @@
         function resetWorkflowSteps() {
             elements.workflowSteps.forEach(step => {
                 step.textContent = 'Pending';
-                step.className = 'step-status step-pending';
+                step.className = 'step-status pending';
+            });
+            
+            // Reset step numbers
+            elements.stepNumbers.forEach(stepNumber => {
+                stepNumber.className = 'step-number';
             });
             
             // Hide displays
-            elements.configDisplay.style.display = 'none';
-            elements.resultsDisplay.style.display = 'none';
+            elements.configSection.style.display = 'none';
+            elements.resultsSection.style.display = 'none';
+            elements.commandHistory.style.display = 'none';
+            
+            // Clear command history for new execution
+            state.commandHistory = [];
+            state.currentExecution = {
+                startTime: new Date(),
+                commands: []
+            };
+            updateCommandHistoryDisplay();
         }
 
         // Execute workflow
@@ -523,56 +1374,99 @@
         async function executePushWorkflow(message) {
             // Step 1: Enter natural language request
             updateStepStatus(0, 'completed');
+            addCommandToHistory('Natural Language Input', message, new Date(), true, 'Request processed and parsed successfully');
             
             // Step 2: Translate to Cisco IOS commands
             updateStepStatus(1, 'in-progress');
             const iosConfig = await translateToIOS(message);
             updateStepStatus(1, 'completed');
+            addCommandToHistory('AI Translation', 'Generate Cisco IOS configuration', new Date(), true, iosConfig);
             
             // Step 3: Validate Cisco IOS commands
             updateStepStatus(2, 'in-progress');
             const isValid = await validateIOSConfig(iosConfig);
             updateStepStatus(2, isValid ? 'completed' : 'failed');
+            addCommandToHistory('Syntax Validation', 'validate_ios_config()', new Date(), isValid, 
+                isValid ? 'Configuration syntax validated successfully' : 'Configuration validation failed');
             
             if (!isValid) {
                 alert('Configuration validation failed. Please check the generated configuration.');
+                elements.commandHistory.style.display = 'block';
                 return;
             }
             
             // Display generated configuration
             elements.generatedConfig.textContent = iosConfig;
-            elements.configDisplay.style.display = 'block';
+            elements.configSection.style.display = 'block';
             
             // Step 4: Push configuration to router
             updateStepStatus(3, 'in-progress');
             const pushResult = await pushConfigToRouter(iosConfig);
             updateStepStatus(3, pushResult.success ? 'completed' : 'failed');
             
+            // Add detailed router commands to history
+            const routerCommands = [
+                'configure terminal',
+                ...iosConfig.split('\n').filter(line => line.trim() && !line.trim().startsWith('!')),
+                'end',
+                'copy running-config startup-config'
+            ];
+            
+            routerCommands.forEach((cmd, index) => {
+                setTimeout(() => {
+                    addCommandToHistory(
+                        'Router Execution', 
+                        cmd, 
+                        new Date(), 
+                        pushResult.success, 
+                        pushResult.success ? `${state.selectedRouter}(config)# ${cmd}` : 'Command failed'
+                    );
+                }, index * 100);
+            });
+            
             // Step 5: Verify configuration push success
             updateStepStatus(4, pushResult.success ? 'completed' : 'failed');
+            const verifyCommands = ['show running-config | include ospf', 'show ip ospf interface'];
+            verifyCommands.forEach((cmd, index) => {
+                setTimeout(() => {
+                    addCommandToHistory(
+                        'Verification', 
+                        cmd, 
+                        new Date(), 
+                        pushResult.success, 
+                        pushResult.success ? generateVerificationOutput(cmd) : 'Verification failed'
+                    );
+                }, (routerCommands.length + index) * 100 + 500);
+            });
             
             // Display results
             elements.pushResults.textContent = pushResult.message;
-            elements.resultsDisplay.style.display = 'block';
+            elements.resultsSection.style.display = 'block';
+            elements.commandHistory.style.display = 'block';
         }
 
         // Execute retrieve workflow
         async function executeRetrieveWorkflow(message) {
             // Step 1: Enter natural language request
             updateStepStatus(0, 'completed');
+            addCommandToHistory('Natural Language Input', message, new Date(), true, 'Request processed and parsed successfully');
             
             // Step 2: Translate to Cisco IOS commands
             updateStepStatus(1, 'in-progress');
             const iosCommand = await translateToIOSCommand(message);
             updateStepStatus(1, 'completed');
+            addCommandToHistory('AI Translation', 'Generate Cisco IOS command', new Date(), true, iosCommand);
             
             // Step 3: Validate Cisco IOS commands
             updateStepStatus(2, 'in-progress');
             const isValid = await validateIOSCommand(iosCommand);
             updateStepStatus(2, isValid ? 'completed' : 'failed');
+            addCommandToHistory('Command Validation', 'validate_ios_command()', new Date(), isValid, 
+                isValid ? 'Command syntax validated successfully' : 'Command validation failed');
             
             if (!isValid) {
                 alert('Command validation failed.');
+                elements.commandHistory.style.display = 'block';
                 return;
             }
             
@@ -580,13 +1474,15 @@
             updateStepStatus(3, 'in-progress');
             const commandResult = await executeCommandOnRouter(iosCommand);
             updateStepStatus(3, commandResult.success ? 'completed' : 'failed');
+            addCommandToHistory('Router Execution', iosCommand, new Date(), commandResult.success, commandResult.output || commandResult.message);
             
             // Step 5: Display retrieved results
             updateStepStatus(4, commandResult.success ? 'completed' : 'failed');
             
             // Display results
             elements.pushResults.textContent = commandResult.output || commandResult.message;
-            elements.resultsDisplay.style.display = 'block';
+            elements.resultsSection.style.display = 'block';
+            elements.commandHistory.style.display = 'block';
         }
 
         // Update step status
@@ -697,6 +1593,186 @@ end`;
             };
         }
 
+        // Toggle step details
+        function toggleStepDetails(stepIndex) {
+            const stepItem = document.querySelectorAll('.step-item')[stepIndex];
+            const chevron = stepItem.querySelector('.step-chevron');
+            const details = stepItem.querySelector('.step-details');
+            
+            // Toggle expanded state
+            const isExpanded = details.classList.contains('expanded');
+            
+            if (isExpanded) {
+                // Collapse
+                chevron.classList.remove('expanded');
+                chevron.textContent = '▶';
+                details.classList.remove('expanded');
+                stepItem.classList.remove('expanded');
+            } else {
+                // Expand
+                chevron.classList.add('expanded');
+                chevron.textContent = '▼';
+                details.classList.add('expanded');
+                stepItem.classList.add('expanded');
+            }
+        }
+        
+        // Command History Management
+        function addCommandToHistory(stepName, command, timestamp, success, response) {
+            const commandEntry = {
+                id: Date.now() + Math.random(),
+                stepName,
+                command,
+                timestamp,
+                success,
+                response,
+                expanded: false
+            };
+            
+            state.commandHistory.push(commandEntry);
+            updateCommandHistoryDisplay();
+        }
+        
+        function updateCommandHistoryDisplay() {
+            const historyList = elements.historyCommands;
+            historyList.innerHTML = '';
+            
+            elements.commandCount.textContent = `(${state.commandHistory.length} commands)`;
+            
+            state.commandHistory.forEach(entry => {
+                const listItem = document.createElement('li');
+                listItem.className = 'command-entry';
+                listItem.innerHTML = `
+                    <div class="command-header" onclick="toggleCommandResponse('${entry.id}')">
+                        <div class="command-info">
+                            <div class="command-status ${entry.success ? 'success' : 'error'}"></div>
+                            <div class="command-text">${entry.command}</div>
+                            <div class="command-timestamp">${formatTimestamp(entry.timestamp)} - ${entry.stepName}</div>
+                        </div>
+                        <div class="command-actions">
+                            <button class="copy-button" onclick="copyToClipboard('${entry.command}', this); event.stopPropagation();">
+                                📋 Copy Command
+                            </button>
+                            <button class="copy-button" onclick="copyToClipboard(\`${entry.response.replace(/`/g, '\\`')}\`, this); event.stopPropagation();">
+                                📄 Copy Output
+                            </button>
+                        </div>
+                    </div>
+                    <div class="response-section ${entry.expanded ? 'expanded' : ''}" id="response-${entry.id}">
+                        <div class="response-header">
+                            <div class="response-title">Router Response:</div>
+                        </div>
+                        <div class="response-content syntax-highlight">${applySyntaxHighlighting(entry.response)}</div>
+                    </div>
+                `;
+                historyList.appendChild(listItem);
+            });
+        }
+        
+        function toggleCommandHistory() {
+            const content = elements.historyContent;
+            const toggle = elements.historyToggle;
+            const isExpanded = content.classList.contains('expanded');
+            
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                toggle.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                toggle.classList.add('expanded');
+            }
+        }
+        
+        function toggleCommandResponse(entryId) {
+            const responseSection = document.getElementById(`response-${entryId}`);
+            const isExpanded = responseSection.classList.contains('expanded');
+            
+            if (isExpanded) {
+                responseSection.classList.remove('expanded');
+            } else {
+                responseSection.classList.add('expanded');
+            }
+            
+            // Update state
+            const entry = state.commandHistory.find(cmd => cmd.id == entryId);
+            if (entry) {
+                entry.expanded = !entry.expanded;
+            }
+        }
+        
+        function formatTimestamp(timestamp) {
+            return timestamp.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+        }
+        
+        function applySyntaxHighlighting(text) {
+            if (!text) return '';
+            
+            return text
+                .replace(/(interface|router|ip|show|configure|terminal|end|shutdown|no shutdown)/gi, '<span class="keyword">$1</span>')
+                .replace(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/g, '<span class="ip">$1</span>')
+                .replace(/\b(GigabitEthernet\d+\/\d+(?:\/\d+)?|FastEthernet\d+\/\d+(?:\/\d+)?|Loopback\d+)\b/gi, '<span class="interface">$1</span>')
+                .replace(/^!.*$/gm, '<span class="comment">$&</span>')
+                .replace(/\n/g, '\n');
+        }
+        
+        async function copyToClipboard(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }
+        }
+        
+        function generateVerificationOutput(command) {
+            if (command.includes('show running-config')) {
+                return `!
+interface GigabitEthernet0/0/1
+ description Auto-generated by GENAI
+ ip ospf 1 area 0
+ no shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+!`;
+            } else if (command.includes('show ip ospf interface')) {
+                return `GigabitEthernet0/0/1 is up, line protocol is up 
+  Internet Address 192.168.1.1/24, Area 0
+  Process ID 1, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1
+  Topology-MTID    Cost    Disabled    Shutdown      Topology Name
+        0           1         no          no            Base
+  Transmit Delay is 1 sec, State DR, Priority 1
+  Designated Router (ID) 1.1.1.1, Interface address 192.168.1.1`;
+            }
+            return 'Verification completed successfully';
+        }
+        
         // Initialize application when page loads
         document.addEventListener('DOMContentLoaded', init);
     </script>

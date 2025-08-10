@@ -1,0 +1,23 @@
+[
+  {
+    "browser": "chrome",
+    "viewport": "Desktop",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:48.441Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "Tablet",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:48.571Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "Mobile",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:48.741Z"
+  }
+]

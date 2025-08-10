@@ -1,0 +1,32 @@
+{
+  "tap_to_expand": {
+    "passed": true,
+    "details": "Tap to expand works correctly",
+    "single_tap_responsive": true,
+    "event_propagation": "correct"
+  },
+  "double_tap_prevention": {
+    "passed": true,
+    "details": "Double-tap zoom prevented appropriately",
+    "touch_action": "manipulation",
+    "user_scalable": "no"
+  },
+  "swipe_gestures": {
+    "passed": true,
+    "details": "Swipe gestures handled appropriately",
+    "prevents_scroll_conflict": true,
+    "gesture_recognition": "accurate"
+  },
+  "touch_feedback": {
+    "passed": true,
+    "details": "Touch feedback provided appropriately",
+    "active_states": true,
+    "haptic_feedback": "system_default"
+  },
+  "accessibility_touch": {
+    "passed": true,
+    "details": "Touch accessibility features working",
+    "screen_reader_compatible": true,
+    "voice_control_compatible": true
+  }
+}

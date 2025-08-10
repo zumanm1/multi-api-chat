@@ -4,7 +4,7 @@ A unified chat interface enabling seamless interaction with multiple AI provider
 
 ## 🎯 Features
 
-- **Multi-Provider Support**: Chat with OpenAI, Groq, Cerebras, SambaNova, Anthropic, and OpenRouter
+- **Multi-Provider Support**: Chat with OpenAI, Groq, Cerebras, SambaNova, Anthropic, OpenRouter, and Ollama (local)
 - **Local-First**: No intermediary data transmission - all data stays on your machine
 - **Secure Storage**: AES-256 encrypted API key storage
 - **Auto-Fallback**: Automatic switching to backup providers on failure
@@ -16,7 +16,15 @@ A unified chat interface enabling seamless interaction with multiple AI provider
 
 ### 1. Install Dependencies
 
+Use Python 3.11 (preferred) in a virtual environment:
+
 ```bash
+# Create and activate a Python 3.11 virtual environment
+python3.11 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Upgrade pip and install dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -84,11 +92,14 @@ All providers are configured through the web interface. The configuration is sto
 
 ### Environment Variables
 
-While not directly used in the current implementation, you can configure your API keys in a `.env` file by copying `.env.template`:
+You can configure your API keys in a `.env` file by copying `.env.template`:
 
 ```bash
 cp .env.template .env
-# Edit .env with your actual API keys
+# Edit .env with your actual API keys (plain ASCII, no quotes)
+# Example:
+# OPENAI_API_KEY=sk-...
+# OPENROUTER_API_KEY=sk-or-...
 ```
 
 ## 📊 Usage Analytics
@@ -229,3 +240,30 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Check network connectivity
 - Verify API key format and permissions
 - Check provider status pages for service interruptions
+
+### Ollama (Local AI) setup
+- **Quick setup**: Run `bash setup_ollama.sh` for automatic installation and configuration
+- **Manual setup**: For detailed instructions, see [`OLLAMA_SETUP_GUIDE.md`](OLLAMA_SETUP_GUIDE.md)
+- **Status check**: Run `bash setup_ollama.sh --status` to check current setup
+
+Quick manual steps:
+- Install Ollama: `curl -fsSL https://ollama.ai/install.sh | sh`
+- Start service: `ollama serve`
+- Install a model: `ollama pull llama3.2:1b`
+- Enable in application settings with base URL: `http://localhost:11434/v1`
+
+## 📚 Documentation
+
+### Setup Guides
+- **[Ollama Setup Guide](OLLAMA_SETUP_GUIDE.md)**: Complete guide for setting up local AI with Ollama
+- **[OpenRouter Setup Guide](README_OPENROUTER.md)**: Configure OpenRouter for access to multiple models
+
+### Technical Documentation
+- **[Ollama Implementation Details](OLLAMA_IMPLEMENTATION.md)**: Technical details of Ollama integration
+- **[Ollama Integration Features](OLLAMA_INTEGRATION.md)**: API endpoints and model management
+- **[Testing Summary](OLLAMA_TESTING_SUMMARY.md)**: Test coverage and validation results
+
+### Other Features
+- **[Accessibility Features](ACCESSIBILITY_FEATURES.md)**: Accessibility and usability enhancements
+- **[Responsive Testing Report](RESPONSIVE_TESTING_REPORT.md)**: Mobile and responsive design validation
+- **[Operations Summary](OPERATIONS_SUMMARY.md)**: Deployment and operational considerations

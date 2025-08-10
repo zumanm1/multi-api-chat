@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collapsible Components Example</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Apple Color Palette */
+            --apple-blue: #007AFF;
+            --apple-gray: #8E8E93;
+            --apple-gray-2: #AEAEB2;
+            --apple-gray-3: #C7C7CC;
+            --apple-gray-4: #D1D1D6;
+            --apple-gray-5: #E5E5EA;
+            --apple-gray-6: #F2F2F7;
+            --apple-black: #1C1C1E;
+            --apple-white: #FFFFFF;
+            --apple-green: #34C759;
+            --apple-red: #FF3B30;
+            --apple-orange: #FF9500;
+            --apple-yellow: #FFCC00;
+            --apple-purple: #AF52DE;
+            --apple-pink: #FF2D92;
+            --apple-teal: #5AC8FA;
+            --apple-indigo: #5856D6;
+            
+            /* Apple Design System */
+            --border-radius-small: 6px;
+            --border-radius-medium: 12px;
+            --border-radius-large: 20px;
+            --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-large: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
+            line-height: 1.47;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--apple-black);
+            margin-bottom: 16px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--apple-gray);
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .control-button {
+            padding: 12px 20px;
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .control-button:hover {
+            background: #0056cc;
+            transform: translateY(-1px);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--apple-black);
+            margin-bottom: 24px;
+        }
+    </style>
+    <link rel="stylesheet" href="collapsible-components.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Collapsible Components</h1>
+            <p>Reusable Apple-inspired collapsible sections for automation.html and operations.html</p>
+        </header>
+
+        <div class="controls">
+            <button class="control-button" onclick="collapsibleManager.expandAll()" title="Expand all sections (Ctrl+E)">
+                <span>Expand All</span>
+                <kbd style="margin-left: 8px; font-size: 11px; opacity: 0.8;">Ctrl+E</kbd>
+            </button>
+            <button class="control-button" onclick="collapsibleManager.collapseAll()" title="Collapse all sections (Ctrl+C)">
+                <span>Collapse All</span>
+                <kbd style="margin-left: 8px; font-size: 11px; opacity: 0.8;">Ctrl+C</kbd>
+            </button>
+            <button class="control-button" onclick="collapsibleManager.togglePrintMode()" title="Toggle print mode (Ctrl+P)">
+                <span>Print Mode</span>
+                <kbd style="margin-left: 8px; font-size: 11px; opacity: 0.8;">Ctrl+P</kbd>
+            </button>
+            <button class="control-button" onclick="collapsibleManager.exportToText()" title="Export technical details (Ctrl+Shift+S)">
+                <span>Export</span>
+                <kbd style="margin-left: 8px; font-size: 11px; opacity: 0.8;">Ctrl+⇧+S</kbd>
+            </button>
+            <button class="control-button" onclick="collapsibleManager.showKeyboardHelp()" title="Show keyboard shortcuts help (?)">
+                <span>Help</span>
+                <kbd style="margin-left: 8px; font-size: 11px; opacity: 0.8;">?</kbd>
+            </button>
+            <button class="control-button" onclick="addDynamicCollapsible()">Add Dynamic</button>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Network Configuration Examples</h2>
+
+            <!-- Example 1: Router Configuration Details -->
+            <div class="collapsible-container" id="router-config">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <div class="collapsible-icon">🔧</div>
+                        <span>Router Configuration Details</span>
+                    </div>
+                    <div class="collapsible-chevron"></div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="technical-details">
+                        <div class="details-title">OSPF Configuration Applied</div>
+                        <div class="status-indicator success">Success</div>
+                        
+                        <div class="command-block">
+                            <code>configure terminal</code>
+                        </div>
+                        <div class="command-block">
+                            <code>router ospf 1</code>
+                        </div>
+                        <div class="command-block">
+                            <code>router-id 1.1.1.1</code>
+                        </div>
+                        <div class="command-block">
+                            <code>network 192.168.1.0 0.0.0.255 area 0</code>
+                        </div>
+                        
+                        <div class="output-block">Router(config-router)# router-id 1.1.1.1
+Router(config-router)# network 192.168.1.0 0.0.0.255 area 0
+%OSPF-5-ADJCHG: Process 1, Nbr 192.168.1.2 on GigabitEthernet0/0/1 from LOADING to FULL</div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">98.5%</div>
+                                <div class="metric-label">Success Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">2.3s</div>
+                                <div class="metric-label">Execution Time</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">3</div>
+                                <div class="metric-label">Neighbors</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Configuration Progress</span>
+                                <span>5/5</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 2: Interface Statistics -->
+            <div class="collapsible-container" id="interface-stats" data-expanded="true">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <div class="collapsible-icon">📊</div>
+                        <span>Interface Statistics</span>
+                    </div>
+                    <div class="collapsible-chevron"></div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="technical-details">
+                        <div class="details-title">GigabitEthernet0/0/1 Status</div>
+                        <div class="status-indicator success">Online</div>
+                        
+                        <div class="command-block">
+                            <code>show interface GigabitEthernet0/0/1</code>
+                        </div>
+                        
+                        <div class="output-block">GigabitEthernet0/0/1 is up, line protocol is up 
+  Hardware is iGbE, address is 0024.c4a7.1234 (bia 0024.c4a7.1234)
+  Internet address is 192.168.1.1/24
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set</div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">1.2GB</div>
+                                <div class="metric-label">Total Traffic</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">0</div>
+                                <div class="metric-label">Errors</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">99.9%</div>
+                                <div class="metric-label">Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 3: Security Analysis -->
+            <div class="collapsible-container" id="security-analysis">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <div class="collapsible-icon">🔒</div>
+                        <span>Security Analysis</span>
+                    </div>
+                    <div class="collapsible-chevron"></div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="technical-details">
+                        <div class="details-title">Access Control Lists</div>
+                        <div class="status-indicator warning">Review Required</div>
+                        
+                        <div class="command-block">
+                            <code>show access-lists</code>
+                        </div>
+                        
+                        <div class="output-block">Standard IP access list 1
+    10 permit 192.168.1.0, wildcard bits 0.0.0.255
+    20 deny   any
+
+Extended IP access list 101
+    10 permit tcp 192.168.1.0 0.0.0.255 any eq www
+    20 permit tcp 192.168.1.0 0.0.0.255 any eq https
+    30 deny   ip any any</div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">2</div>
+                                <div class="metric-label">Active ACLs</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">5</div>
+                                <div class="metric-label">Total Rules</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">1</div>
+                                <div class="metric-label">Warnings</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example 4: Performance Monitoring -->
+            <div class="collapsible-container" id="performance-monitoring">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <div class="collapsible-icon">⚡</div>
+                        <span>Performance Monitoring</span>
+                    </div>
+                    <div class="collapsible-chevron"></div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="technical-details">
+                        <div class="details-title">System Resource Usage</div>
+                        <div class="status-indicator info">Monitoring</div>
+                        
+                        <div class="command-block">
+                            <code>show processes cpu</code>
+                        </div>
+                        
+                        <div class="output-block">CPU utilization for five seconds: 2%/0%; one minute: 2%; five minutes: 2%
+ PID Runtime(ms)     Invoked      uSecs   5Sec   1Min   5Min TTY Process 
+   1          28          11       2545  0.00%  0.00%  0.00%   0 Chunk Manager
+   2           4           2       2000  0.00%  0.00%  0.00%   0 Load Meter</div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>CPU Usage</span>
+                                <span>2%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 2%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Memory Usage</span>
+                                <span>45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Automation Workflow Examples</h2>
+
+            <!-- Example 5: Workflow Execution -->
+            <div class="collapsible-container" id="workflow-execution">
+                <div class="collapsible-header">
+                    <div class="collapsible-title">
+                        <div class="collapsible-icon">🚀</div>
+                        <span>GENAI Configuration Workflow</span>
+                    </div>
+                    <div class="collapsible-chevron"></div>
+                </div>
+                <div class="collapsible-content">
+                    <div class="technical-details">
+                        <div class="details-title">Natural Language to IOS Translation</div>
+                        <div class="status-indicator success">Completed</div>
+                        
+                        <p style="margin-bottom: 16px; padding: 16px; background: var(--apple-gray-6); border-radius: var(--border-radius-small);">
+                            <strong>Input:</strong> "Configure OSPF with process ID 1 and area 0 on interface GigabitEthernet0/0/1 with router ID 1.1.1.1"
+                        </p>
+                        
+                        <div class="command-block">
+                            <code>router ospf 1</code>
+                        </div>
+                        <div class="command-block">
+                            <code>router-id 1.1.1.1</code>
+                        </div>
+                        <div class="command-block">
+                            <code>interface GigabitEthernet0/0/1</code>
+                        </div>
+                        <div class="command-block">
+                            <code>ip ospf 1 area 0</code>
+                        </div>
+                        
+                        <div class="output-block">Configuration applied successfully.
+OSPF process 1 started with router ID 1.1.1.1
+Interface GigabitEthernet0/0/1 added to OSPF area 0
+Neighbor relationships established</div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">4</div>
+                                <div class="metric-label">Commands</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">100%</div>
+                                <div class="metric-label">Success Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">3.2s</div>
+                                <div class="metric-label">Total Time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="collapsible-components.js"></script>
+    <script>
+        // Example of adding dynamic collapsible content
+        function addDynamicCollapsible() {
+            const container = document.querySelector('.section');
+            const newCollapsible = CollapsibleUtils.create({
+                title: 'Dynamic Network Status',
+                icon: '🔄',
+                content: CollapsibleUtils.createTechnicalDetails({
+                    title: 'Real-time Network Status',
+                    commands: ['show ip route', 'show ip interface brief'],
+                    outputs: [
+                        'Gateway of last resort is 192.168.1.254 to network 0.0.0.0\n\nS*    0.0.0.0/0 [1/0] via 192.168.1.254\nC     192.168.1.0/24 is directly connected, GigabitEthernet0/0/1'
+                    ],
+                    metrics: [
+                        { value: '5', label: 'Active Routes' },
+                        { value: '2', label: 'Interfaces' },
+                        { value: '1', label: 'Default Gateway' }
+                    ],
+                    status: 'success'
+                }),
+                expanded: true,
+                className: 'dynamic-example'
+            });
+
+            container.appendChild(newCollapsible);
+            
+            // Animate the new collapsible
+            newCollapsible.classList.add('fade-in');
+            CollapsibleAnimations.bounce(newCollapsible);
+        }
+
+        // Example of listening to collapsible events
+        document.addEventListener('collapsible:expand', (e) => {
+            console.log('Expanded:', e.detail.id);
+        });
+
+        document.addEventListener('collapsible:collapse', (e) => {
+            console.log('Collapsed:', e.detail.id);
+        });
+
+        // Example of programmatic control
+        setTimeout(() => {
+            console.log('Router config expanded:', collapsibleManager.isExpanded('router-config'));
+        }, 1000);
+    </script>
+</body>
+</html>

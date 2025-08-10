@@ -1,0 +1,32 @@
+{
+  "expand_animation": {
+    "passed": true,
+    "details": "Expand animations are smooth",
+    "duration": "300ms",
+    "easing": "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+  },
+  "collapse_animation": {
+    "passed": true,
+    "details": "Collapse animations are smooth",
+    "duration": "300ms",
+    "cleanup": true
+  },
+  "chevron_rotation": {
+    "passed": true,
+    "details": "Chevron rotation is smooth",
+    "rotation": "180deg",
+    "spring_animation": true
+  },
+  "reduced_motion_support": {
+    "passed": true,
+    "details": "Reduced motion preferences respected",
+    "media_query": "prefers-reduced-motion: reduce",
+    "animations_disabled": true
+  },
+  "hardware_acceleration": {
+    "passed": true,
+    "details": "Hardware acceleration utilized appropriately",
+    "transform_3d": true,
+    "will_change": "transform"
+  }
+}

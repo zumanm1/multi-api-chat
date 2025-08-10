@@ -1,0 +1,8 @@
+[
+  {
+    "browser": "chrome",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:49.102Z"
+  }
+]

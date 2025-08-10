@@ -1,0 +1,493 @@
+/* Progressive Disclosure CSS Framework */
+/* Three-tier information architecture implementation */
+
+:root {
+    /* Progressive Disclosure Colors */
+    --pd-summary-bg: #f8f9fa;
+    --pd-summary-border: #e5e5ea;
+    --pd-details-bg: #f2f2f7;
+    --pd-details-border: #d1d1d6;
+    --pd-debug-bg: #1c1c1e;
+    --pd-debug-text: #00d4aa;
+    --pd-debug-border: #48484a;
+    
+    /* Interaction states */
+    --pd-hover-bg: #e5e5ea;
+    --pd-active-bg: #007aff;
+    --pd-active-text: #ffffff;
+    
+    /* Animations */
+    --pd-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --pd-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Base Progressive Disclosure Container */
+.progressive-disclosure {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: var(--pd-transition);
+}
+
+.progressive-disclosure:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Tier 1: Summary Level (Always Visible) */
+.pd-summary {
+    background: var(--pd-summary-bg);
+    border: 1px solid var(--pd-summary-border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: var(--pd-transition);
+    position: relative;
+    user-select: none;
+}
+
+.pd-summary:hover {
+    background: var(--pd-hover-bg);
+    border-color: var(--pd-details-border);
+}
+
+.pd-summary.expanded {
+    background: var(--pd-active-bg);
+    color: var(--pd-active-text);
+    border-color: var(--pd-active-bg);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.pd-summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.pd-summary-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--apple-blue);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+    transition: var(--pd-transition);
+}
+
+.pd-summary.expanded .pd-summary-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.pd-summary-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.pd-summary-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.pd-summary-description {
+    font-size: 14px;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.pd-summary.expanded .pd-summary-description {
+    opacity: 0.9;
+}
+
+.pd-summary-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.pd-status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--apple-gray);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    transition: var(--pd-transition);
+}
+
+.pd-status-indicator.success { background: var(--apple-green); }
+.pd-status-indicator.warning { background: var(--apple-orange); }
+.pd-status-indicator.error { background: var(--apple-red); }
+.pd-status-indicator.info { background: var(--apple-blue); }
+
+.pd-expand-icon {
+    font-size: 14px;
+    color: var(--apple-gray);
+    transition: transform 0.3s ease;
+}
+
+.pd-summary.expanded .pd-expand-icon {
+    transform: rotate(180deg);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Tier 2: Details Level (One Click) */
+.pd-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: var(--pd-details-bg);
+    border: 1px solid var(--pd-details-border);
+    border-top: none;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.pd-summary.expanded + .pd-details {
+    max-height: 800px;
+}
+
+.pd-details-content {
+    padding: 24px;
+}
+
+.pd-details-section {
+    margin-bottom: 20px;
+}
+
+.pd-details-section:last-child {
+    margin-bottom: 0;
+}
+
+.pd-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--pd-details-border);
+}
+
+.pd-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--apple-black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pd-section-icon {
+    font-size: 14px;
+    color: var(--apple-blue);
+}
+
+.pd-debug-toggle {
+    background: var(--apple-gray-6);
+    border: 1px solid var(--apple-gray-4);
+    color: var(--apple-gray);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--pd-transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pd-debug-toggle:hover {
+    background: var(--apple-gray-5);
+    border-color: var(--apple-gray-3);
+}
+
+.pd-debug-toggle.active {
+    background: var(--apple-blue);
+    color: white;
+    border-color: var(--apple-blue);
+}
+
+.pd-debug-toggle-icon {
+    font-size: 11px;
+    transition: transform 0.3s ease;
+}
+
+.pd-debug-toggle.active .pd-debug-toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Details Content Types */
+.pd-parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pd-parameter-item {
+    background: white;
+    border: 1px solid var(--apple-gray-5);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.pd-parameter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--apple-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.pd-parameter-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--apple-black);
+}
+
+.pd-command-block {
+    background: var(--apple-gray-6);
+    border: 1px solid var(--apple-gray-5);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--apple-black);
+    white-space: pre-wrap;
+    overflow-x: auto;
+    position: relative;
+}
+
+.pd-command-copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--apple-blue);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pd-command-block:hover .pd-command-copy {
+    opacity: 1;
+}
+
+/* Tier 3: Debug Level (Two Clicks) */
+.pd-debug {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: var(--pd-debug-bg);
+    border: 1px solid var(--pd-debug-border);
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.pd-debug.expanded {
+    max-height: 600px;
+}
+
+.pd-debug-content {
+    padding: 16px;
+}
+
+.pd-debug-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--pd-debug-border);
+}
+
+.pd-debug-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pd-debug-text);
+}
+
+.pd-debug-icon {
+    font-size: 12px;
+    color: var(--apple-orange);
+}
+
+.pd-debug-section {
+    margin-bottom: 16px;
+}
+
+.pd-debug-section:last-child {
+    margin-bottom: 0;
+}
+
+.pd-debug-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #8a8a8e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.pd-debug-value {
+    font-family: 'SFMono-Regular', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--pd-debug-text);
+    background: rgba(0, 212, 170, 0.1);
+    border: 1px solid rgba(0, 212, 170, 0.2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.pd-debug-value::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pd-debug-value::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.pd-debug-value::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 170, 0.3);
+    border-radius: 3px;
+}
+
+/* State Persistence */
+.progressive-disclosure.persistent .pd-summary.expanded,
+.progressive-disclosure.persistent .pd-details,
+.progressive-disclosure.persistent .pd-debug.expanded {
+    /* Styles maintained across page loads */
+}
+
+/* Visual Level Indicators */
+.pd-level-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 2px;
+    transition: var(--pd-transition);
+}
+
+.pd-summary .pd-level-indicator {
+    background: var(--apple-green);
+}
+
+.pd-details .pd-level-indicator {
+    background: var(--apple-orange);
+}
+
+.pd-debug .pd-level-indicator {
+    background: var(--apple-red);
+}
+
+/* Smooth Transitions */
+@keyframes pdSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pd-details-content > *,
+.pd-debug-content > * {
+    animation: pdSlideIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pd-summary {
+        padding: 16px;
+    }
+    
+    .pd-details-content,
+    .pd-debug-content {
+        padding: 16px;
+    }
+    
+    .pd-parameter-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pd-summary-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .pd-summary-status {
+        align-self: flex-end;
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+    }
+}
+
+/* Accessibility Enhancements */
+.progressive-disclosure:focus-within {
+    outline: 2px solid var(--apple-blue);
+    outline-offset: 2px;
+}
+
+.pd-summary:focus {
+    outline: none;
+}
+
+.pd-debug-toggle:focus {
+    outline: 2px solid var(--apple-blue);
+    outline-offset: 1px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .pd-summary {
+        border-width: 2px;
+    }
+    
+    .pd-details,
+    .pd-debug {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .progressive-disclosure,
+    .pd-summary,
+    .pd-details,
+    .pd-debug,
+    .pd-expand-icon,
+    .pd-debug-toggle-icon {
+        transition: none;
+    }
+    
+    .pd-details-content > *,
+    .pd-debug-content > * {
+        animation: none;
+    }
+}

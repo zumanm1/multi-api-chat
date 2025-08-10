@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Features Test</title>
+    <link rel="stylesheet" href="collapsible-components.css">
+    <style>
+        :root {
+            /* Apple Color Palette */
+            --apple-blue: #007AFF;
+            --apple-gray: #8E8E93;
+            --apple-gray-2: #AEAEB2;
+            --apple-gray-3: #C7C7CC;
+            --apple-gray-4: #D1D1D6;
+            --apple-gray-5: #E5E5EA;
+            --apple-gray-6: #F2F2F7;
+            --apple-black: #1C1C1E;
+            --apple-white: #FFFFFF;
+            --apple-green: #34C759;
+            --apple-red: #FF3B30;
+            --apple-orange: #FF9500;
+            --apple-yellow: #FFCC00;
+            --apple-purple: #AF52DE;
+            --apple-pink: #FF2D92;
+            --apple-teal: #5AC8FA;
+            --apple-indigo: #5856D6;
+            
+            /* Apple Design System */
+            --border-radius-small: 6px;
+            --border-radius-medium: 12px;
+            --border-radius-large: 20px;
+            --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-large: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
+            line-height: 1.47;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: 20px;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .test-header {
+            background: var(--apple-white);
+            border-radius: var(--border-radius-medium);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-small);
+        }
+
+        .test-instructions {
+            background: var(--apple-blue);
+            color: white;
+            border-radius: var(--border-radius-small);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .test-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .test-button {
+            padding: 10px 16px;
+            background: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .test-button:hover {
+            background: #0056cc;
+        }
+
+        .test-results {
+            background: var(--apple-white);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            margin-top: 24px;
+            box-shadow: var(--shadow-small);
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--apple-gray-5);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-pass {
+            color: var(--apple-green);
+        }
+
+        .status-fail {
+            color: var(--apple-red);
+        }
+
+        .status-warning {
+            color: var(--apple-orange);
+        }
+
+        kbd {
+            background: var(--apple-gray-5);
+            border: 1px solid var(--apple-gray-4);
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content" class="test-container">
+        <div class="test-header">
+            <h1>Accessibility Features Test</h1>
+            <p>This page tests the keyboard shortcuts and accessibility features of the collapsible components.</p>
+        </div>
+
+        <div class="test-instructions">
+            <h2>Test Instructions</h2>
+            <ol>
+                <li>Try the keyboard shortcuts: <kbd>Ctrl+E</kbd> (expand all), <kbd>Ctrl+C</kbd> (collapse all), <kbd>?</kbd> (help)</li>
+                <li>Use <kbd>Tab</kbd> to navigate between sections</li>
+                <li>Use <kbd>Enter</kbd> or <kbd>Space</kbd> to toggle sections</li>
+                <li>Test navigation with <kbd>Ctrl+↓</kbd> and <kbd>Ctrl+↑</kbd></li>
+                <li>Try print mode with <kbd>Ctrl+P</kbd></li>
+                <li>Export data with <kbd>Ctrl+Shift+S</kbd></li>
+            </ol>
+        </div>
+
+        <div class="test-controls">
+            <button class="test-button" onclick="runAccessibilityTest()">Run Accessibility Test</button>
+            <button class="test-button" onclick="testKeyboardShortcuts()">Test Keyboard Shortcuts</button>
+            <button class="test-button" onclick="testScreenReader()">Test Screen Reader Support</button>
+            <button class="test-button" onclick="simulateKeyPress('?')">Show Help (?)</button>
+            <button class="test-button" onclick="collapsibleManager.togglePrintMode()">Toggle Print Mode</button>
+        </div>
+
+        <!-- Test Collapsible Sections -->
+        <div class="collapsible-container" id="test-section-1">
+            <div class="collapsible-header">
+                <div class="collapsible-title">
+                    <div class="collapsible-icon">🧪</div>
+                    <span>Test Section 1 - Basic Functionality</span>
+                </div>
+                <div class="collapsible-chevron"></div>
+            </div>
+            <div class="collapsible-content">
+                <div class="technical-details">
+                    <div class="details-title">Test Commands</div>
+                    <div class="status-indicator success">Active</div>
+                    
+                    <div class="command-block">
+                        <code>test command 1</code>
+                    </div>
+                    <div class="command-block">
+                        <code>test command 2</code>
+                    </div>
+                    
+                    <div class="output-block">Test output successful
+All systems operational</div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-value">100%</div>
+                            <div class="metric-label">Test Coverage</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">0ms</div>
+                            <div class="metric-label">Latency</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapsible-container" id="test-section-2" data-expanded="true">
+            <div class="collapsible-header">
+                <div class="collapsible-title">
+                    <div class="collapsible-icon">🎹</div>
+                    <span>Test Section 2 - Keyboard Navigation</span>
+                </div>
+                <div class="collapsible-chevron"></div>
+            </div>
+            <div class="collapsible-content">
+                <div class="technical-details">
+                    <div class="details-title">Keyboard Test Results</div>
+                    <div class="status-indicator info">Testing</div>
+                    
+                    <p style="margin: 16px 0;">This section tests keyboard navigation. Use Tab to move between focusable elements.</p>
+                    
+                    <button style="margin: 8px; padding: 8px 12px;">Focusable Button 1</button>
+                    <button style="margin: 8px; padding: 8px 12px;">Focusable Button 2</button>
+                    <input type="text" placeholder="Focusable input" style="margin: 8px; padding: 8px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="collapsible-container" id="test-section-3">
+            <div class="collapsible-header">
+                <div class="collapsible-title">
+                    <div class="collapsible-icon">♿</div>
+                    <span>Test Section 3 - Screen Reader Support</span>
+                </div>
+                <div class="collapsible-chevron"></div>
+            </div>
+            <div class="collapsible-content">
+                <div class="technical-details">
+                    <div class="details-title">Accessibility Features</div>
+                    <div class="status-indicator success">Compliant</div>
+                    
+                    <ul style="margin: 16px 0; padding-left: 20px;">
+                        <li>ARIA labels properly implemented</li>
+                        <li>Focus management working correctly</li>
+                        <li>Screen reader announcements active</li>
+                        <li>High contrast mode supported</li>
+                        <li>Reduced motion respected</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-results" id="test-results" style="display: none;">
+            <h2>Test Results</h2>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script src="collapsible-components.js"></script>
+    <script>
+        // Test functions
+        function runAccessibilityTest() {
+            const results = [];
+            
+            // Test 1: Check if ARIA attributes are present
+            const headers = document.querySelectorAll('.collapsible-header');
+            headers.forEach((header, index) => {
+                const hasRole = header.getAttribute('role') === 'button';
+                const hasTabIndex = header.getAttribute('tabindex') === '0';
+                const hasAriaExpanded = header.hasAttribute('aria-expanded');
+                
+                results.push({
+                    test: `Header ${index + 1} ARIA attributes`,
+                    passed: hasRole && hasTabIndex && hasAriaExpanded,
+                    details: `Role: ${hasRole}, TabIndex: ${hasTabIndex}, AriaExpanded: ${hasAriaExpanded}`
+                });
+            });
+            
+            // Test 2: Check if live region exists
+            const liveRegion = document.getElementById('collapsible-announcer');
+            results.push({
+                test: 'ARIA Live Region',
+                passed: !!liveRegion,
+                details: liveRegion ? 'Live region found' : 'Live region missing'
+            });
+            
+            // Test 3: Check if skip link exists
+            const skipLink = document.querySelector('.skip-link');
+            results.push({
+                test: 'Skip Link',
+                passed: !!skipLink,
+                details: skipLink ? 'Skip link found' : 'Skip link missing'
+            });
+            
+            // Test 4: Check collapsible manager
+            results.push({
+                test: 'Collapsible Manager',
+                passed: !!window.collapsibleManager,
+                details: window.collapsibleManager ? 'Manager initialized' : 'Manager not found'
+            });
+            
+            displayResults(results);
+        }
+        
+        function testKeyboardShortcuts() {
+            const results = [];
+            
+            // Test shortcut functions
+            const shortcuts = [
+                { name: 'expandAll', func: () => collapsibleManager.expandAll() },
+                { name: 'collapseAll', func: () => collapsibleManager.collapseAll() },
+                { name: 'showKeyboardHelp', func: () => collapsibleManager.showKeyboardHelp() },
+                { name: 'togglePrintMode', func: () => collapsibleManager.togglePrintMode() },
+                { name: 'exportToText', func: () => collapsibleManager.exportToText() }
+            ];
+            
+            shortcuts.forEach(shortcut => {
+                try {
+                    shortcut.func();
+                    results.push({
+                        test: `Shortcut: ${shortcut.name}`,
+                        passed: true,
+                        details: 'Function executed successfully'
+                    });
+                } catch (error) {
+                    results.push({
+                        test: `Shortcut: ${shortcut.name}`,
+                        passed: false,
+                        details: `Error: ${error.message}`
+                    });
+                }
+            });
+            
+            displayResults(results);
+        }
+        
+        function testScreenReader() {
+            const results = [];
+            
+            // Test announcement function
+            try {
+                collapsibleManager.announce('Test announcement');
+                results.push({
+                    test: 'Screen Reader Announcement',
+                    passed: true,
+                    details: 'Announcement function works'
+                });
+            } catch (error) {
+                results.push({
+                    test: 'Screen Reader Announcement',
+                    passed: false,
+                    details: `Error: ${error.message}`
+                });
+            }
+            
+            // Test ARIA attributes on content
+            const contents = document.querySelectorAll('.collapsible-content');
+            contents.forEach((content, index) => {
+                const hasAriaHidden = content.hasAttribute('aria-hidden');
+                results.push({
+                    test: `Content ${index + 1} ARIA Hidden`,
+                    passed: hasAriaHidden,
+                    details: hasAriaHidden ? 'ARIA hidden attribute present' : 'ARIA hidden missing'
+                });
+            });
+            
+            displayResults(results);
+        }
+        
+        function simulateKeyPress(key, ctrlKey = false, shiftKey = false) {
+            const event = new KeyboardEvent('keydown', {
+                key: key,
+                ctrlKey: ctrlKey,
+                shiftKey: shiftKey,
+                bubbles: true
+            });
+            document.dispatchEvent(event);
+        }
+        
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('test-results');
+            const contentDiv = document.getElementById('results-content');
+            
+            contentDiv.innerHTML = results.map(result => `
+                <div class="result-item">
+                    <span class="${result.passed ? 'status-pass' : 'status-fail'}">
+                        ${result.passed ? '✅' : '❌'}
+                    </span>
+                    <strong>${result.test}:</strong>
+                    <span>${result.details}</span>
+                </div>
+            `).join('');
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Auto-run basic test when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                console.log('Running initial accessibility check...');
+                runAccessibilityTest();
+            }, 1000);
+        });
+        
+        // Log events for debugging
+        document.addEventListener('collapsible:expand', (e) => {
+            console.log('Expanded:', e.detail.id);
+        });
+        
+        document.addEventListener('collapsible:collapse', (e) => {
+            console.log('Collapsed:', e.detail.id);
+        });
+        
+        // Test keyboard shortcuts programmatically
+        document.addEventListener('keydown', (e) => {
+            console.log('Key pressed:', {
+                key: e.key,
+                ctrlKey: e.ctrlKey,
+                shiftKey: e.shiftKey,
+                altKey: e.altKey
+            });
+        });
+    </script>
+</body>
+</html>

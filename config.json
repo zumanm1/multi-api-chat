@@ -1,71 +1,117 @@
 {
   "providers": {
-    "openai": {
-      "name": "OpenAI",
+    "openrouter": {
+      "name": "OpenRouter",
       "enabled": true,
-      "api_key": "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",
-      "model": "gpt-3.5-turbo",
-      "base_url": "https://api.openai.com/v1",
-      "status": "error",
-      "last_checked": "2025-08-08T10:46:19.119947",
-      "last_response": "{\n    \"error\": {\n        \"message\": \"Your account is not active, please check your billing details on our website.\",\n        \"type\": \"billing_not_active\",\n        \"param\": null,\n        \"code\": \"billi"
+      "api_key": "",
+      "model": "meta-llama/llama-4-maverick:free",
+      "base_url": "https://openrouter.ai/api/v1",
+      "status": "disconnected",
+      "last_checked": "",
+      "models": [
+        "meta-llama/llama-4-maverick:free",
+        "meta-llama/llama-4-scout:free",
+        "deepseek/deepseek-v3-base:free",
+        "deepseek/deepseek-chat-v3-0324:free",
+        "deepseek/deepseek-r1-zero:free",
+        "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
+        "mistralai/mistral-small-3.1-24b-instruct:free",
+        "nousresearch/deephermes-3-llama-3-8b-preview:free",
+        "qwen/qwen2.5-vl-3b-instruct:free",
+        "moonshotai/kimi-vl-a3b-thinking:free"
+      ]
     },
     "groq": {
       "name": "Groq",
       "enabled": true,
-      "api_key": "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",
+      "api_key": "",
       "model": "llama-3.1-8b-instant",
       "base_url": "https://api.groq.com/openai/v1",
-      "status": "connected",
-      "last_checked": "2025-08-08T10:46:19.736211",
-      "last_response": "Hello, World!"
-    },
-    "openrouter": {
-      "name": "OpenRouter",
-      "enabled": true,
-      "api_key": "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",
-      "model": "openai/gpt-3.5-turbo",
-      "base_url": "https://openrouter.ai/api/v1",
-      "status": "connected",
-      "last_checked": "2025-08-08T10:46:21.033424",
-      "last_response": "Hello world!"
-    },
-    "anthropic": {
-      "name": "Anthropic",
-      "enabled": true,
-      "api_key": "sk-ant-test123",
-      "model": "claude-3-sonnet",
-      "base_url": "https://api.anthropic.com/v1/openai",
       "status": "disconnected",
-      "last_checked": ""
+      "last_checked": "",
+      "models": [
+        "llama-3.1-8b-instant",
+        "llama-3.3-70b-versatile",
+        "gemma2-9b-it",
+        "meta-llama/llama-guard-4-12b",
+        "whisper-large-v3",
+        "whisper-large-v3-turbo",
+        "deepseek-r1-distill-llama-70b",
+        "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "meta-llama/llama-4-scout-17b-16e-instruct",
+        "meta-llama/llama-prompt-guard-2-22m",
+        "meta-llama/llama-prompt-guard-2-86m",
+        "moonshotai/kimi-k2-instruct",
+        "openai/gpt-oss-120b",
+        "openai/gpt-oss-20b",
+        "qwen/qwen3-32b",
+        "playai-tts",
+        "playai-tts-arabic",
+        "compound-beta",
+        "compound-beta-mini"
+      ]
     },
     "cerebras": {
       "name": "Cerebras",
       "enabled": true,
-      "api_key": "sk-cerebras-test123",
-      "model": "llama-3-70b-wse-3",
+      "api_key": "",
+      "model": "llama3.1-8b",
       "base_url": "https://api.cerebras.ai/v1",
       "status": "disconnected",
-      "last_checked": ""
+      "last_checked": "",
+      "models": [
+        "llama3.1-8b",
+        "llama-3.3-70b",
+        "llama-4-scout-17b-16e-instruct",
+        "qwen-3-32b",
+        "qwen-3-235b-a22b-instruct-2507",
+        "qwen-3-235b-a22b-thinking-2507",
+        "qwen-3-coder-480b",
+        "gpt-oss-120b",
+        "deepseek-r1-distill-llama-70b",
+        "cerebras-gpt-13b",
+        "cerebras-gpt-6.7b",
+        "cerebras-gpt-2.7b",
+        "cerebras-gpt-1.3b",
+        "cerebras-gpt-590m",
+        "cerebras-gpt-256m",
+        "cerebras-gpt-111m",
+        "btlm-3b-8k-base",
+        "gigaGPT-111b"
+      ]
     },
-    "test_provider": {
-      "name": "Test Provider",
-      "enabled": false,
-      "api_key": "updated_key",
-      "model": "updated_model",
-      "base_url": "http://test.provider.com/v1",
-      "status": "error",
-      "last_checked": "2025-08-08T09:59:11.884967"
+    "ollama": {
+      "name": "Ollama",
+      "enabled": true,
+      "api_key": "",
+      "model": "llama3",
+      "base_url": "http://localhost:11434/v1",
+      "status": "connection_refused",
+      "last_checked": "2025-08-10T11:06:00.769426",
+      "models": [
+        "llama3",
+        "llama3.1",
+        "llama3.2",
+        "llama3.3",
+        "mistral",
+        "mixtral",
+        "gemma",
+        "gemma2",
+        "phi3",
+        "qwen",
+        "qwen2",
+        "llama-guard-4"
+      ]
     }
   },
   "settings": {
-    "default_provider": "test_provider",
+    "default_provider": "groq",
     "fallback_provider": null,
     "temperature": 0.7,
     "max_tokens": 1000,
-    "system_prompt": "You are a test AI assistant.",
+    "system_prompt": "You are a helpful AI assistant.",
     "features": {
-      "auto_fallback": false,
+      "auto_fallback": true,
       "speed_optimization": false,
       "cost_optimization": false,
       "multi_provider_compare": false,
@@ -74,14 +120,14 @@
   },
   "devices": {
     "dummy_router": {
-      "name": "Updated Router",
-      "ip": "192.168.2.1",
+      "name": "Dummy Router",
+      "ip": "192.168.1.1",
       "model": "Cisco 2900",
       "username": "",
       "password": "",
       "port": 22,
-      "status": "offline",
-      "last_checked": "2025-08-07T22:26:42.562222"
+      "status": "unknown",
+      "last_checked": ""
     },
     "real_router": {
       "name": "Real Router",
@@ -90,8 +136,8 @@
       "username": "admin",
       "password": "password123",
       "port": 22,
-      "status": "offline",
-      "last_checked": "2025-08-07T22:26:42.601874"
+      "status": "unknown",
+      "last_checked": ""
     }
   }
 }

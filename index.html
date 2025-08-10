@@ -4,23 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-API Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
+            /* Apple Color Palette */
+            --apple-blue: #007AFF;
+            --apple-gray: #8E8E93;
+            --apple-gray-2: #AEAEB2;
+            --apple-gray-3: #C7C7CC;
+            --apple-gray-4: #D1D1D6;
+            --apple-gray-5: #E5E5EA;
+            --apple-gray-6: #F2F2F7;
+            --apple-black: #1C1C1E;
+            --apple-white: #FFFFFF;
+            --apple-green: #34C759;
+            --apple-red: #FF3B30;
+            --apple-orange: #FF9500;
+            --apple-yellow: #FFCC00;
+            --apple-purple: #AF52DE;
+            --apple-pink: #FF2D92;
+            --apple-teal: #5AC8FA;
+            --apple-indigo: #5856D6;
+            
+            /* Provider Colors */
             --openai-color: #10a37f;
             --groq-color: #f55036;
             --cerebras-color: #000000;
             --sambanova-color: #00aeef;
             --anthropic-color: #d9dae8;
             --openrouter-color: #000000;
-            --light-gray: #f5f5f5;
-            --dark-gray: #333;
-            --border-radius: 8px;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --ollama-color: #000000;
+            
+            /* Apple Design System */
+            --border-radius-small: 6px;
+            --border-radius-medium: 12px;
+            --border-radius-large: 20px;
+            --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-large: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --blur-background: backdrop-filter: saturate(180%) blur(20px);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         * {
@@ -30,152 +53,241 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--dark-gray);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.47;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            padding: 0 22px;
         }
 
         header {
             text-align: center;
-            color: white;
-            padding: 20px;
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, var(--apple-blue) 0%, var(--apple-purple) 100%);
+            margin: -22px -22px 40px -22px;
+            border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+            color: var(--apple-white);
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         header p {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 400;
             opacity: 0.9;
+            letter-spacing: -0.01em;
         }
 
         nav {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-medium);
+            padding: 8px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-medium);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
         }
 
         nav a {
             text-decoration: none;
-            color: var(--dark-gray);
-            padding: 10px 15px;
-            border-radius: var(--border-radius);
-            background: var(--light-gray);
-            font-weight: bold;
+            color: var(--apple-black);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-small);
+            font-weight: 500;
+            font-size: 15px;
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
         }
 
         nav a:hover {
-            opacity: 0.8;
+            background: var(--apple-gray-5);
+            transform: translateY(-1px);
         }
 
         nav a.active {
-            background: var(--primary-color);
-            color: white;
+            background: var(--apple-blue);
+            color: var(--apple-white);
+            box-shadow: var(--shadow-small);
         }
 
         .main-layout {
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 60px;
         }
 
         .chat-container {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .settings-container {
-            width: 300px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            width: 100%;
+            max-width: 800px;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            overflow: hidden;
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
         }
 
         .chat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--light-gray);
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--apple-gray-5);
+            background: var(--apple-gray-6);
         }
 
-        .provider-select {
-            padding: 8px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
+        .provider-model-section {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .provider-select, .model-select {
+            padding: 12px 16px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-medium);
+            font-size: 16px;
+            font-weight: 500;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            min-width: 180px;
+            cursor: pointer;
+            transition: var(--transition);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"%3e%3cpath fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/%3e%3c/svg%3e');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            padding-right: 40px;
+        }
+
+        .model-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--apple-gray-6);
+        }
+
+        .provider-select:focus, .model-select:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
 
         .compare-toggle {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 12px;
+            padding: 8px;
+            border-radius: var(--border-radius-medium);
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-4);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .compare-toggle:hover {
+            background: var(--apple-gray-6);
         }
 
         .compare-toggle input {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .compare-toggle label {
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
         }
 
         .chat-history {
             flex: 1;
             overflow-y: auto;
             max-height: 500px;
+            min-height: 400px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding: 10px;
+            gap: 20px;
+            padding: 28px;
+            background: var(--apple-white);
         }
 
         .message {
-            padding: 12px;
-            border-radius: var(--border-radius);
-            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: var(--border-radius-large);
+            max-width: 75%;
             word-wrap: break-word;
+            font-size: 16px;
+            line-height: 1.5;
+            box-shadow: var(--shadow-small);
+            animation: messageSlide 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .user-message {
-            background: var(--light-gray);
+            background: var(--apple-blue);
+            color: var(--apple-white);
             align-self: flex-end;
+            border-bottom-right-radius: 8px;
         }
 
         .ai-message {
-            background: #e3f2fd;
+            background: var(--apple-gray-6);
+            color: var(--apple-black);
             align-self: flex-start;
+            border: 1px solid var(--apple-gray-5);
+            border-bottom-left-radius: 8px;
         }
 
         .message-meta {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 5px;
+            font-size: 13px;
+            color: var(--apple-gray-2);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .user-message .message-meta {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .provider-tag {
@@ -193,180 +305,200 @@
         .sambanova-tag { background: var(--sambanova-color); }
         .anthropic-tag { background: var(--anthropic-color); color: black; }
         .openrouter-tag { background: var(--openrouter-color); }
+        .ollama-tag { background: var(--ollama-color); }
+
+        .ollama-avatar { background: var(--ollama-color); }
 
         .input-area {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            padding: 28px;
+            background: var(--apple-gray-6);
+            border-top: 1px solid var(--apple-gray-5);
         }
 
         .message-input {
             flex: 1;
-            padding: 12px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-            font-size: 1rem;
+            padding: 16px 20px;
+            border: 1px solid var(--apple-gray-4);
+            border-radius: var(--border-radius-large);
+            font-size: 16px;
+            font-weight: 400;
+            background: var(--apple-white);
+            color: var(--apple-black);
+            transition: var(--transition);
+            resize: none;
+            min-height: 50px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .message-input::placeholder {
+            color: var(--apple-gray-2);
         }
 
         .send-button {
-            padding: 12px 20px;
-            background: var(--primary-color);
-            color: white;
+            padding: 16px 24px;
+            background: var(--apple-blue);
+            color: var(--apple-white);
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-large);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow-small);
+            white-space: nowrap;
         }
 
         .send-button:hover {
-            opacity: 0.9;
+            background: #0056cc;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .compare-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 20px;
+            padding: 28px;
+            background: var(--apple-gray-6);
+            border-top: 1px solid var(--apple-gray-5);
         }
 
         .compare-header {
-            font-weight: bold;
-            font-size: 1.2rem;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--light-gray);
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--apple-black);
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--apple-gray-4);
+            letter-spacing: -0.01em;
         }
 
-        .setting-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .setting-group label {
-            font-weight: bold;
-        }
-
-        .setting-group input, .setting-group select, .setting-group textarea {
-            padding: 8px;
-            border-radius: var(--border-radius);
-            border: 1px solid #ddd;
-        }
-
-        .setting-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toggle-group input {
-            width: 20px;
-            height: 20px;
-        }
-
-        .provider-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .status-connected { background: var(--success-color); }
-        .status-disconnected { background: var(--error-color); }
-        .status-checking { background: var(--warning-color); }
-
-        .api-key-input {
-            position: relative;
-        }
-
-        .api-key-input input {
-            width: 100%;
-        }
-
-        .api-key-toggle {
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            cursor: pointer;
-        }
-
-        .test-button {
-            padding: 6px 12px;
-            background: #ddd;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .test-button:hover {
-            background: #ccc;
-        }
-
-        .test-result {
-            font-size: 0.8rem;
-            padding: 5px;
-        }
-
-        .test-success {
-            color: var(--success-color);
-        }
-
-        .test-error {
-            color: var(--error-color);
-        }
 
         .usage-container {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            margin-top: 20px;
+            background: var(--apple-white);
+            border: 1px solid var(--apple-gray-5);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            padding: 32px;
+            margin-top: 40px;
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
         }
 
         .usage-header {
-            font-weight: bold;
-            font-size: 1.2rem;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--light-gray);
-            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 24px;
+            color: var(--apple-black);
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--apple-gray-5);
+            margin-bottom: 28px;
+            letter-spacing: -0.02em;
         }
 
         .usage-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
         }
 
         .usage-card {
-            padding: 15px;
-            border-radius: var(--border-radius);
-            background: var(--light-gray);
+            padding: 24px;
+            border-radius: var(--border-radius-medium);
+            background: var(--apple-gray-6);
+            border: 1px solid var(--apple-gray-5);
+            transition: var(--transition);
+        }
+
+        .usage-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
         }
 
         .usage-card h3 {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--apple-black);
+        }
+
+        .usage-card div {
+            color: var(--apple-gray);
+            font-size: 15px;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
-            .main-layout {
-                flex-direction: column;
+            .container {
+                padding: 0 16px;
             }
             
-            .settings-container {
-                width: 100%;
+            header {
+                margin: -16px -16px 24px -16px;
+                padding: 40px 16px 32px;
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                padding: 6px;
+                gap: 2px;
+                top: 16px;
+                margin-bottom: 24px;
+            }
+            
+            nav a {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .chat-container {
+                border-radius: var(--border-radius-medium);
+            }
+            
+            .chat-header, 
+            .chat-history,
+            .input-area,
+            .compare-container {
+                padding: 20px;
             }
             
             .message {
-                max-width: 90%;
+                max-width: 85%;
+                font-size: 15px;
+                padding: 14px 16px;
+            }
+            
+            .provider-select {
+                min-width: auto;
+                font-size: 15px;
+            }
+            
+            .usage-container {
+                padding: 24px;
+                margin-top: 24px;
+            }
+            
+            .usage-stats {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
         }
     </style>
@@ -384,14 +516,20 @@
             <a href="operations.html">Operations</a>
             <a href="automation.html">Automation</a>
             <a href="devices.html">Devices</a>
+            <a href="settings.html">Settings</a>
         </nav>
         
         <div class="main-layout">
             <div class="chat-container">
                 <div class="chat-header">
-                    <select id="providerSelect" class="provider-select">
-                        <option value="">Select Provider</option>
-                    </select>
+                    <div class="provider-model-section">
+                        <select id="providerSelect" class="provider-select">
+                            <option value="">Select Provider</option>
+                        </select>
+                        <select id="modelSelect" class="model-select" disabled>
+                            <option value="">Select Model</option>
+                        </select>
+                    </div>
                     <div class="compare-toggle">
                         <input type="checkbox" id="compareMode">
                         <label for="compareMode">Compare Mode</label>
@@ -411,56 +549,6 @@
                     <div class="compare-header">Compare Responses</div>
                     <div id="compareResults"></div>
                 </div>
-            </div>
-            
-            <div class="settings-container">
-                <h2>Settings</h2>
-                
-                <div class="setting-group">
-                    <label for="defaultProvider">Default Provider</label>
-                    <select id="defaultProvider"></select>
-                </div>
-                
-                <div class="setting-group">
-                    <label for="fallbackProvider">Fallback Provider</label>
-                    <select id="fallbackProvider">
-                        <option value="">None</option>
-                    </select>
-                </div>
-                
-                <div class="setting-group">
-                    <label for="temperature">Temperature</label>
-                    <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
-                    <span id="temperatureValue">0.7</span>
-                </div>
-                
-                <div class="setting-group">
-                    <label for="maxTokens">Max Tokens</label>
-                    <input type="range" id="maxTokens" min="100" max="4000" step="100" value="1000">
-                    <span id="maxTokensValue">1000</span>
-                </div>
-                
-                <div class="setting-group">
-                    <label for="systemPrompt">System Prompt</label>
-                    <textarea id="systemPrompt">You are a helpful AI assistant.</textarea>
-                </div>
-                
-                <div class="toggle-group">
-                    <input type="checkbox" id="autoFallback" checked>
-                    <label for="autoFallback">Auto-Fallback</label>
-                </div>
-                
-                <div class="toggle-group">
-                    <input type="checkbox" id="usageAnalytics" checked>
-                    <label for="usageAnalytics">Usage Analytics</label>
-                </div>
-                
-                <button id="saveSettings" class="send-button">Save Settings</button>
-                
-                <h3 style="margin-top: 20px;">Provider Configuration</h3>
-                <div id="providerConfig"></div>
-                
-                <button id="testAllProviders" class="test-button">Test All Providers</button>
             </div>
         </div>
         
@@ -482,24 +570,13 @@
         // DOM Elements
         const elements = {
             providerSelect: document.getElementById('providerSelect'),
-            defaultProvider: document.getElementById('defaultProvider'),
-            fallbackProvider: document.getElementById('fallbackProvider'),
+            modelSelect: document.getElementById('modelSelect'),
             compareMode: document.getElementById('compareMode'),
             chatHistory: document.getElementById('chatHistory'),
             messageInput: document.getElementById('messageInput'),
             sendButton: document.getElementById('sendButton'),
             compareContainer: document.getElementById('compareContainer'),
             compareResults: document.getElementById('compareResults'),
-            temperature: document.getElementById('temperature'),
-            temperatureValue: document.getElementById('temperatureValue'),
-            maxTokens: document.getElementById('maxTokens'),
-            maxTokensValue: document.getElementById('maxTokensValue'),
-            systemPrompt: document.getElementById('systemPrompt'),
-            autoFallback: document.getElementById('autoFallback'),
-            usageAnalytics: document.getElementById('usageAnalytics'),
-            saveSettings: document.getElementById('saveSettings'),
-            providerConfig: document.getElementById('providerConfig'),
-            testAllProviders: document.getElementById('testAllProviders'),
             usageStats: document.getElementById('usageStats')
         };
 
@@ -516,9 +593,6 @@
                 
                 // Populate provider dropdowns
                 populateProviderDropdowns();
-                
-                // Render provider configuration UI
-                renderProviderConfig();
                 
                 // Render usage statistics
                 renderUsageStats();
@@ -557,20 +631,16 @@
                 }
             });
             
-            // Test all providers
-            elements.testAllProviders.addEventListener('click', testAllProviders);
-            
-            // Save settings
-            elements.saveSettings.addEventListener('click', saveSettings);
-            
-            // Temperature slider
-            elements.temperature.addEventListener('input', () => {
-                elements.temperatureValue.textContent = elements.temperature.value;
-            });
-            
-            // Max tokens slider
-            elements.maxTokens.addEventListener('input', () => {
-                elements.maxTokensValue.textContent = elements.maxTokens.value;
+            // Provider selection change
+            elements.providerSelect.addEventListener('change', async (e) => {
+                const providerId = e.target.value;
+                if (providerId) {
+                    await loadProviderModels(providerId);
+                } else {
+                    // Clear model selection when no provider is selected
+                    elements.modelSelect.innerHTML = '<option value="">Select Model</option>';
+                    elements.modelSelect.disabled = true;
+                }
             });
             
             // Compare mode toggle
@@ -583,8 +653,6 @@
         function populateProviderDropdowns() {
             // Clear existing options
             elements.providerSelect.innerHTML = '<option value="">Select Provider</option>';
-            elements.defaultProvider.innerHTML = '';
-            elements.fallbackProvider.innerHTML = '<option value="">None</option>';
             
             // Add providers to dropdowns
             for (const [id, provider] of Object.entries(state.providers)) {
@@ -592,107 +660,97 @@
                     const option = document.createElement('option');
                     option.value = id;
                     option.textContent = provider.name;
-                    
-                    elements.providerSelect.appendChild(option.cloneNode(true));
-                    elements.defaultProvider.appendChild(option.cloneNode(true));
-                    
-                    const fallbackOption = document.createElement('option');
-                    fallbackOption.value = id;
-                    fallbackOption.textContent = provider.name;
-                    elements.fallbackProvider.appendChild(fallbackOption);
+                    elements.providerSelect.appendChild(option);
                 }
             }
             
             // Set default provider selection
-            elements.defaultProvider.value = state.settings.default_provider || '';
-            elements.fallbackProvider.value = state.settings.fallback_provider || '';
-        }
-
-        // Render provider configuration UI
-        function renderProviderConfig() {
-            elements.providerConfig.innerHTML = '';
+            const defaultProvider = state.settings.default_provider || '';
+            elements.providerSelect.value = defaultProvider;
             
-            for (const [id, provider] of Object.entries(state.providers)) {
-                const providerDiv = document.createElement('div');
-                providerDiv.className = 'setting-group';
-                providerDiv.innerHTML = `
-                    <label>${provider.name}</label>
-                    <div class="provider-status">
-                        <div class="status-indicator status-${provider.status}"></div>
-                        <span>${provider.status}</span>
-                    </div>
-                    <div class="api-key-input">
-                        <input type="password" id="apiKey-${id}" value="${provider.api_key}" placeholder="API Key">
-                    </div>
-                    ${(() => {
-    let modelOptions = [];
-    if (id === 'openai') {
-        modelOptions = [
-            'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-5-chat',
-            'gpt-4o-2024-11-20', 'gpt-4o-2024-08-06', 'gpt-4o-2024-05-13',
-            'gpt-4o-mini', 'gpt-4-turbo-2024-04-09',
-            'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano',
-            'gpt-3.5-turbo-0125', 'gpt-3.5-turbo-1106', 'gpt-3.5-turbo-instruct-0914',
-            'gpt-oss-120b', 'gpt-oss-20b',
-            'o4-mini', 'text-embedding-3-large'
-        ];
-    } else if (id === 'groq') {
-        modelOptions = [
-            'llama-3.1-8b-instant', 'llama-3.3-70b-versatile',
-            'meta-llama/llama-guard-4-12b', 'whisper-large-v3',
-            'whisper-large-v3-turbo', 'deepseek-r1-distill-llama-70b',
-            'meta-llama/llama-4-maverick-17b-128e-instruct',
-            'meta-llama/llama-4-scout-17b-16e-instruct',
-            'meta-llama/llama-prompt-guard-2-22m',
-            'meta-llama/llama-prompt-guard-2-86m',
-            'moonshotai/kimi-k2-instruct', 'openai/gpt-oss-120b',
-            'openai/gpt-oss-20b', 'qwen/qwen3-32b',
-            'playai-tts', 'playai-tts-arabic',
-            'compound-beta', 'compound-beta-mini'
-        ];
-    } else if (id === 'anthropic') {
-        modelOptions = [
-            'claude-opus-4', 'claude-sonnet-4', 'claude-3-7-sonnet',
-            'claude-3-5-sonnet', 'claude-3-haiku', 'claude-3-opus',
-            'claude-3-sonnet', 'claude-2.1', 'claude-2.0',
-            'claude-instant-1.2'
-        ];
-    } else if (id === 'cerebras') {
-        modelOptions = [
-            'llama-4-scout-wse-3', 'llama-4-wse-3', 'llama-3-wse-3',
-            'llama-3-70b-wse-3', 'llama-3-8b-wse-3', 'llama-2-70b-wse-3',
-            'llama-2-7b-wse-3', 'mixtral-8x7b-wse-3', 'mistral-7b-wse-3'
-        ];
-    } else if (id === 'openrouter') {
-        modelOptions = [
-            'anthropic/claude-opus-4-20250514', 'anthropic/claude-sonnet-4-20250514',
-            'anthropic/claude-3-7-sonnet-20250219', 'google/gemini-2.5-pro-preview',
-            'google/gemini-1.5-flash-latest', 'meta-llama/llama-3-70b-instruct',
-            'meta-llama/llama-3-8b-instruct', 'mistralai/mixtral-8x22b-instruct',
-            'mistralai/mistral-7b-instruct', '01-ai/yi-34b-chat',
-            'deepseek-ai/deepseek-coder-33b-instruct',
-            'mistralai/mistral-small-1-1', 'meta-llama/llama-4-scout-17b-16e-instruct',
-            'mistralai/mixtral-8x7b-instruct', 'openrouter/auto',
-            'mistralai/mistral-7b-v0.1'
-        ];
-    }
-    if (modelOptions.length > 0) {
-        return `<select id='model-${id}'>` + modelOptions.map(opt => `<option value='${opt}' ${provider.model === opt ? 'selected' : ''}>${opt}</option>`).join('') + `</select>`;
-    } else {
-        return `<input type='text' id='model-${id}' value='${provider.model}' placeholder='Model'>`;
-    }
-})()}
-
-                    <div class="toggle-group">
-                        <input type="checkbox" id="enabled-${id}" ${provider.enabled ? 'checked' : ''}>
-                        <label for="enabled-${id}">Enabled</label>
-                    </div>
-                    <button class="test-button" onclick="testProvider('${id}')">Test</button>
-                    <div id="test-result-${id}" class="test-result"></div>
-                `;
-                elements.providerConfig.appendChild(providerDiv);
+            // Load models for default provider if set
+            if (defaultProvider) {
+                loadProviderModels(defaultProvider);
             }
         }
+
+        // Load models for selected provider
+        async function loadProviderModels(providerId) {
+            try {
+                // Show loading state
+                elements.modelSelect.innerHTML = '<option value="">Loading models...</option>';
+                elements.modelSelect.disabled = false;
+                
+                const response = await fetch(`http://localhost:8002/api/providers/${providerId}/models`);
+                const data = await response.json();
+                
+                if (data.models && data.models.length > 0) {
+                    // Clear options and populate with models
+                    elements.modelSelect.innerHTML = '<option value="">Select Model</option>';
+                    
+                    for (const model of data.models) {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        elements.modelSelect.appendChild(option);
+                    }
+                    
+                    // Set default model for the provider
+                    const providerDefaultModel = state.providers[providerId].model;
+                    if (providerDefaultModel && data.models.includes(providerDefaultModel)) {
+                        elements.modelSelect.value = providerDefaultModel;
+                    } else if (data.models.length > 0) {
+                        elements.modelSelect.value = data.models[0];
+                    }
+                    
+                    elements.modelSelect.disabled = false;
+                    
+                    // Add model descriptions for better UX
+                    addModelDescriptions(providerId, elements.modelSelect);
+                } else {
+                    elements.modelSelect.innerHTML = '<option value="">No models available</option>';
+                    elements.modelSelect.disabled = true;
+                }
+            } catch (error) {
+                console.error('Failed to load models:', error);
+                elements.modelSelect.innerHTML = '<option value="">Error loading models</option>';
+                elements.modelSelect.disabled = true;
+            }
+        }
+
+        // Add model descriptions based on provider and model name
+        function addModelDescriptions(providerId, selectElement) {
+            const options = selectElement.querySelectorAll('option:not(:first-child)');
+            options.forEach(option => {
+                const modelName = option.value.toLowerCase();
+                let description = '';
+                
+                if (modelName.includes('llama')) {
+                    description = ' - Meta\'s LLaMA: Great for reasoning';
+                } else if (modelName.includes('gemma')) {
+                    description = ' - Google\'s Gemma: Efficient chat model';
+                } else if (modelName.includes('mistral')) {
+                    description = ' - Mistral: Versatile and fast';
+                } else if (modelName.includes('qwen')) {
+                    description = ' - Alibaba\'s Qwen: Multilingual capabilities';
+                } else if (modelName.includes('deepseek')) {
+                    description = ' - DeepSeek: Advanced reasoning';
+                } else if (modelName.includes('phi')) {
+                    description = ' - Microsoft\'s Phi: Compact and efficient';
+                } else if (modelName.includes('nemotron')) {
+                    description = ' - NVIDIA Nemotron: Optimized performance';
+                } else if (modelName.includes('gpt')) {
+                    description = ' - OpenAI GPT: General purpose';
+                } else if (providerId === 'openrouter' && modelName.includes('free')) {
+                    description = ' - Free tier model';
+                }
+                
+                if (description) {
+                    option.textContent = option.value + description;
+                }
+            });
+        }
+
 
         // Send message function
         async function sendMessage() {
@@ -703,8 +761,9 @@
             addMessageToHistory('user', message);
             elements.messageInput.value = '';
             
-            // Get selected provider
+            // Get selected provider and model
             const providerId = elements.providerSelect.value || state.settings.default_provider;
+            const selectedModel = elements.modelSelect.value;
             
             if (elements.compareMode.checked) {
                 // Compare mode
@@ -712,16 +771,24 @@
             } else {
                 // Single provider mode
                 try {
+                    // Prepare request payload
+                    const payload = {
+                        message: message,
+                        provider: providerId,
+                        system_prompt: state.settings.system_prompt
+                    };
+                    
+                    // Include selected model if one is chosen
+                    if (selectedModel) {
+                        payload.model = selectedModel;
+                    }
+                    
                     const response = await fetch('http://localhost:8002/api/chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            message: message,
-                            provider: providerId,
-                            system_prompt: state.settings.system_prompt
-                        })
+                        body: JSON.stringify(payload)
                     });
                     
                     const data = await response.json();
@@ -816,110 +883,6 @@
             elements.chatHistory.scrollTop = elements.chatHistory.scrollHeight;
         }
 
-        // Test provider connection
-        async function testProvider(providerId) {
-            const testResultElement = document.getElementById(`test-result-${providerId}`);
-            testResultElement.textContent = 'Testing...';
-            testResultElement.className = 'test-result';
-            
-            try {
-                const response = await fetch(`http://localhost:8002/api/providers/${providerId}/test`, {
-                    method: 'POST'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    testResultElement.textContent = 'Connected successfully!';
-                    testResultElement.className = 'test-result test-success';
-                } else {
-                    testResultElement.textContent = 'Connection failed!';
-                    testResultElement.className = 'test-result test-error';
-                }
-                
-                // Update provider status
-                state.providers[providerId].status = data.success ? 'connected' : 'error';
-                state.providers[providerId].last_checked = new Date().toISOString();
-                
-                // Refresh UI
-                renderProviderConfig();
-                populateProviderDropdowns();
-            } catch (error) {
-                testResultElement.textContent = `Error: ${error.message}`;
-                testResultElement.className = 'test-result test-error';
-            }
-        }
-
-        // Test all providers
-        async function testAllProviders() {
-            try {
-                const response = await fetch('http://localhost:8002/api/providers/test-all', {
-                    method: 'POST'
-                });
-                
-                const data = await response.json();
-                
-                // Update provider statuses
-                for (const [providerId, success] of Object.entries(data)) {
-                    state.providers[providerId].status = success ? 'connected' : 'error';
-                    state.providers[providerId].last_checked = new Date().toISOString();
-                }
-                
-                // Refresh UI
-                renderProviderConfig();
-                populateProviderDropdowns();
-            } catch (error) {
-                console.error('Failed to test all providers:', error);
-            }
-        }
-
-        // Save settings
-        async function saveSettings() {
-            // Update settings state
-            state.settings.default_provider = elements.defaultProvider.value;
-            state.settings.fallback_provider = elements.fallbackProvider.value || null;
-            state.settings.temperature = parseFloat(elements.temperature.value);
-            state.settings.max_tokens = parseInt(elements.maxTokens.value);
-            state.settings.system_prompt = elements.systemPrompt.value;
-            state.settings.features.auto_fallback = elements.autoFallback.checked;
-            state.settings.features.usage_analytics = elements.usageAnalytics.checked;
-            
-            // Update provider configurations
-            for (const [id, provider] of Object.entries(state.providers)) {
-                provider.api_key = document.getElementById(`apiKey-${id}`).value;
-                provider.model = document.getElementById(`model-${id}`).value;
-                provider.enabled = document.getElementById(`enabled-${id}`).checked;
-            }
-            
-            try {
-                // Save settings to backend
-                await fetch('http://localhost:8002/api/settings', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(state.settings)
-                });
-                
-                // Save providers to backend
-                for (const [id, provider] of Object.entries(state.providers)) {
-                    await fetch(`http://localhost:8002/api/providers/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(provider)
-                    });
-                }
-                
-                alert('Settings saved successfully!');
-                
-                // Refresh UI
-                populateProviderDropdowns();
-            } catch (error) {
-                alert(`Error saving settings: ${error.message}`);
-            }
-        }
 
         // Render usage statistics
         function renderUsageStats() {

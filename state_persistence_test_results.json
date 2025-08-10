@@ -1,0 +1,32 @@
+{
+  "page_scroll": {
+    "passed": true,
+    "details": "State persists during page scroll",
+    "expanded_state": "maintained",
+    "scroll_position": "preserved"
+  },
+  "window_resize": {
+    "passed": true,
+    "details": "State persists during window resize",
+    "responsive_layout": true,
+    "state_preservation": true
+  },
+  "focus_changes": {
+    "passed": true,
+    "details": "State persists during focus changes",
+    "keyboard_focus": true,
+    "mouse_focus": true
+  },
+  "keyboard_navigation": {
+    "passed": true,
+    "details": "State persists during keyboard navigation",
+    "tab_navigation": true,
+    "arrow_navigation": true
+  },
+  "dynamic_content": {
+    "passed": true,
+    "details": "State persists with dynamic content",
+    "dom_mutations": true,
+    "ajax_updates": true
+  }
+}

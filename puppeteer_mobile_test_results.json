@@ -1,0 +1,44 @@
+[
+  {
+    "browser": "chrome",
+    "viewport": "iPhone SE",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:47.216Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "iPhone 12",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:47.385Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "iPhone 12 Pro Max",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:47.543Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "iPad",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:47.711Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "Galaxy S21",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:47.852Z"
+  },
+  {
+    "browser": "chrome",
+    "viewport": "Pixel 5",
+    "passed": false,
+    "error": "net::ERR_CONNECTION_REFUSED at http://localhost:8003/collapsible-example.html",
+    "timestamp": "2025-08-09T08:38:48.000Z"
+  }
+]

@@ -1,4 +1,4 @@
-#!/home/test/Desktop/multi-api-chat/venv/bin/python3
+#!/home/test/Documents/CHAT_4545u_test/multi-api-chat/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
