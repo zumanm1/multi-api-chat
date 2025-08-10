@@ -39,7 +39,7 @@
     }
   },
   "settings": {
-    "default_provider": "test_provider",
+    "default_provider": "ollama",
     "fallback_provider": "openai",
     "temperature": 0.7,
     "max_tokens": 2000,

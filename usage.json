@@ -1,9 +1,9 @@
 {
   "2025-08-10": {
     "ollama": {
-      "requests": 1,
-      "tokens": 94,
-      "total_response_time": 26.323149919509888
+      "requests": 2,
+      "tokens": 210,
+      "total_response_time": 3.8435146808624268
     }
   }
 }
