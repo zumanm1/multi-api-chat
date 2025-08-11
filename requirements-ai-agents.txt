@@ -1,0 +1,20 @@
+# AI Agent Dependencies
+# Separate requirements file to avoid conflicts with main requirements.txt
+
+# Core AI Agent Frameworks
+crewai>=0.41.0                # Main CrewAI framework
+crewai-tools>=0.4.0           # CrewAI tools library
+langgraph>=0.0.20             # LangGraph for agent workflow orchestration
+
+# LangChain Framework and Integrations
+langchain>=0.1.0              # LangChain framework (required by CrewAI)
+langchain-openai>=0.0.5       # OpenAI integration for LangChain
+
+# Core Dependencies
+pydantic>=2.0.0               # Data validation (required by CrewAI)
+tiktoken>=0.5.0               # Token counting for LLM interactions
+aiohttp>=3.9.0                # Async HTTP client for API calls
+
+# Vector Database and Numerical Operations
+chromadb>=0.4.0               # Vector database for agent memory (already in user's stack)
+numpy<2.0.0                   # Numerical operations (pin to avoid compatibility issues)

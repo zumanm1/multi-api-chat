@@ -9,6 +9,23 @@ import json
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 
+# Import dependency checker
+from .utils.dependency_checker import (
+    check_ai_dependencies, 
+    log_dependency_status, 
+    validate_ai_environment
+)
+
+# Check if CrewAI dependencies are available
+try:
+    from crewai import Agent
+    from langchain_openai import ChatOpenAI
+    CREWAI_AVAILABLE = True
+except ImportError as e:
+    logging.getLogger(__name__).warning(f"CrewAI dependencies not available: {e}")
+    logging.getLogger(__name__).info("AI agent functionality will be disabled")
+    CREWAI_AVAILABLE = False
+
 from .agents.master_agent import get_master_agent, MasterAgent
 from .configs.agents_config import AGENTS_CONFIG
 
@@ -23,6 +40,7 @@ class AIAgentIntegration:
         self.integration_status = {
             "enabled": AGENTS_CONFIG.enabled,
             "initialized": False,
+            "dependencies_installed": CREWAI_AVAILABLE,
             "last_activity": None,
             "total_requests": 0,
             "error_count": 0
@@ -37,8 +55,48 @@ class AIAgentIntegration:
         try:
             self.logger.info("Initializing AI Agent Integration...")
             
-            # Create master agent instance
-            self.master_agent = get_master_agent()
+            # Perform comprehensive dependency check
+            self.logger.info("Checking AI dependencies...")
+            dependency_status = check_ai_dependencies()
+            environment_validation = validate_ai_environment()
+            
+            # Log dependency status with detailed information
+            log_dependency_status(logging.INFO)
+            
+            # Update integration status with dependency information
+            self.integration_status.update({
+                "dependency_check": dependency_status,
+                "environment_validation": environment_validation,
+                "dependencies_satisfied": dependency_status["all_installed"]
+            })
+            
+            if not dependency_status["all_installed"]:
+                missing_count = len(dependency_status["missing_packages"])
+                outdated_count = len(dependency_status["outdated_packages"])
+                
+                error_msg = (
+                    f"AI dependencies not satisfied: {missing_count} missing packages, "
+                    f"{outdated_count} version issues. "
+                    "Run 'pip install -r requirements-ai-agents.txt' to install missing dependencies."
+                )
+                
+                self.logger.error(error_msg)
+                
+                # Provide detailed recommendations
+                if environment_validation["recommendations"]:
+                    self.logger.info("Recommendations to fix dependency issues:")
+                    for rec in environment_validation["recommendations"]:
+                        self.logger.info(f"  - {rec}")
+                
+                # Don't raise exception, allow fallback operation
+                self.logger.warning("AI agents will operate in fallback mode")
+                self.integration_status["fallback_mode"] = True
+            else:
+                self.logger.info("All AI dependencies satisfied")
+                self.integration_status["fallback_mode"] = False
+                
+                # Create master agent instance only if dependencies are satisfied
+                self.master_agent = get_master_agent()
             
             # Update status
             self.is_initialized = True
@@ -267,6 +325,7 @@ class AIAgentIntegration:
     def _is_ready(self) -> bool:
         """Check if the AI agent system is ready for requests"""
         return (AGENTS_CONFIG.enabled and 
+                CREWAI_AVAILABLE and
                 self.is_initialized and 
                 self.master_agent is not None)
     
@@ -284,9 +343,40 @@ class AIAgentIntegration:
     
     def _get_fallback_response(self, message: str) -> Dict[str, Any]:
         """Get fallback response when AI agents are not available"""
+        # Determine specific reason for unavailability and provide appropriate response
+        if not CREWAI_AVAILABLE:
+            response = (
+                "AI agent functionality is currently unavailable due to missing dependencies. "
+                "The CrewAI and langchain-openai packages are required for AI agent functionality.\n\n"
+                "To enable AI agents, please install the required dependencies:\n"
+                "pip install crewai langchain-openai\n\n"
+                "After installation, restart the application to enable AI agent features."
+            )
+            reason = "missing_dependencies"
+        elif not AGENTS_CONFIG.enabled:
+            response = (
+                "AI agent functionality is currently disabled. "
+                "To enable AI agents, set the AI_AGENTS_ENABLED environment variable to 'true' "
+                "and restart the application."
+            )
+            reason = "disabled_configuration"
+        elif not self.is_initialized:
+            response = (
+                "AI agent functionality is currently initializing. "
+                "Please try again in a few moments."
+            )
+            reason = "not_initialized"
+        else:
+            response = message
+            reason = "general_unavailable"
+        
         return {
             "success": False,
-            "response": message,
+            "response": response,
+            "reason": reason,
+            "dependencies_installed": CREWAI_AVAILABLE,
+            "configuration_enabled": AGENTS_CONFIG.enabled,
+            "system_initialized": self.is_initialized,
             "ai_generated": False,
             "fallback": True,
             "timestamp": datetime.now().isoformat()
@@ -331,6 +421,7 @@ class AIAgentIntegration:
             "checks": {
                 "master_agent": "healthy" if self.master_agent else "unhealthy",
                 "configuration": "healthy" if AGENTS_CONFIG.enabled else "disabled",
+                "dependencies": "healthy" if CREWAI_AVAILABLE else "missing",
                 "memory_usage": "normal",  # Could implement actual memory checking
                 "response_time": "normal"   # Could implement actual response time checking
             },
@@ -340,7 +431,8 @@ class AIAgentIntegration:
         # Determine overall status
         unhealthy_checks = [k for k, v in health["checks"].items() if v != "healthy" and v != "normal"]
         if unhealthy_checks:
-            if "configuration" in unhealthy_checks and len(unhealthy_checks) == 1:
+            if ("configuration" in unhealthy_checks or "dependencies" in unhealthy_checks) and \
+               all(check in ["configuration", "dependencies"] for check in unhealthy_checks):
                 health["overall_status"] = "disabled"
             else:
                 health["overall_status"] = "degraded"
@@ -361,8 +453,8 @@ def get_ai_integration() -> AIAgentIntegration:
 
 
 def is_ai_enabled() -> bool:
-    """Check if AI agents are enabled"""
-    return AGENTS_CONFIG.enabled
+    """Check if AI agents are enabled and dependencies are available"""
+    return AGENTS_CONFIG.enabled and CREWAI_AVAILABLE
 
 
 async def process_ai_request(request_type: str, 

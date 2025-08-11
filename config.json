@@ -31,11 +31,11 @@
     "ollama": {
       "name": "Ollama",
       "enabled": true,
-      "api_key": "",
+      "api_key": "updated_key_456",
       "model": "llama3:latest",
       "base_url": "http://192.168.3.10:11434/v1",
       "status": "connected",
-      "last_checked": "2025-08-10T17:43:03.073919"
+      "last_checked": "2025-08-11T10:03:37.871297"
     }
   },
   "settings": {

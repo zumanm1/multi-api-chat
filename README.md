@@ -26,6 +26,10 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 # Upgrade pip and install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
+
+# Optional: Install AI Agent Features (requires additional dependencies)
+# These dependencies are optional and the application will work without them
+pip install -r requirements-ai-agents.txt
 ```
 
 ### 2. Configure API Keys
@@ -52,6 +56,46 @@ bash start_frontend.sh # (serves frontend on port 8001)
 ### 5. Access Application
 
 Open your browser to `http://localhost:8001` to use the application.
+
+## 🤖 AI Agent Features (Optional)
+
+The application includes optional AI agent capabilities powered by CrewAI and Ollama.
+
+### AI Features Overview
+- **Intelligent Chat Assistance**: Enhanced conversational AI with specialized agents
+- **Analytics and Insights**: Automated analysis of usage patterns and performance
+- **Device Management**: AI-powered monitoring and management of connected devices
+- **Workflow Automation**: Smart automation of repetitive tasks
+- **Local AI with Ollama**: Privacy-focused local AI processing
+
+### AI Dependencies Installation
+
+AI features require additional dependencies that are **completely optional**:
+
+```bash
+# Install AI agent dependencies (optional)
+pip install -r requirements-ai-agents.txt
+```
+
+**Note**: The application will work perfectly without AI features. All AI-related functionality gracefully falls back to standard operation if dependencies are not installed.
+
+### Environment Variables for AI Features
+
+Control AI functionality with environment variables:
+
+```bash
+# Enable/disable AI agents (default: true if dependencies are installed)
+ENABLE_AI_AGENTS=true
+
+# AI debug mode (default: false)
+AI_AGENTS_DEBUG=false
+
+# Default LLM for AI agents (default: gpt-4)
+AI_AGENTS_DEFAULT_LLM=gpt-4
+
+# Maximum concurrent AI tasks (default: 3)
+AI_AGENTS_MAX_CONCURRENT=3
+```
 
 ## ⚙️ Configuration
 
@@ -92,7 +136,7 @@ All providers are configured through the web interface. The configuration is sto
 
 ### Environment Variables
 
-You can configure your API keys in a `.env` file by copying `.env.template`:
+You can configure your API keys and AI features in a `.env` file by copying `.env.template`:
 
 ```bash
 cp .env.template .env
@@ -100,6 +144,12 @@ cp .env.template .env
 # Example:
 # OPENAI_API_KEY=sk-...
 # OPENROUTER_API_KEY=sk-or-...
+
+# AI Agent Configuration (optional)
+# ENABLE_AI_AGENTS=true
+# AI_AGENTS_DEBUG=false
+# AI_AGENTS_DEFAULT_LLM=gpt-4
+# AI_AGENTS_MAX_CONCURRENT=3
 ```
 
 ## 📊 Usage Analytics
@@ -256,6 +306,8 @@ Quick manual steps:
 
 ### Setup Guides
 - **[Ollama Setup Guide](OLLAMA_SETUP_GUIDE.md)**: Complete guide for setting up local AI with Ollama
+- **[CrewAI Setup Guide](AI_CREWAI_SETUP_GUIDE.md)**: Configure CrewAI with different LLM providers (OpenAI, Ollama, Groq, etc.)
+- **[AI Agents with Ollama Guide](AI_AGENTS_OLLAMA_GUIDE.md)**: Complete integration guide for using Ollama with AI agents
 - **[OpenRouter Setup Guide](README_OPENROUTER.md)**: Configure OpenRouter for access to multiple models
 
 ### Technical Documentation

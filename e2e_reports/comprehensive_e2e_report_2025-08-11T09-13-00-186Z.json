@@ -1,0 +1,140 @@
+{
+  "test_run_info": {
+    "timestamp": "2025-08-11T09:13:00.186Z",
+    "total_duration": 7681,
+    "tests_run": 7,
+    "tests_passed": 6,
+    "tests_failed": 1
+  },
+  "test_results": [
+    {
+      "test": "Backend Health and AI Status",
+      "success": true,
+      "timestamp": "2025-08-11T09:12:53.699Z",
+      "duration": 1194,
+      "details": {
+        "backend_status": "healthy",
+        "ai_available": false,
+        "features_enabled": 6
+      },
+      "screenshot": null
+    },
+    {
+      "test": "Backend API Endpoints",
+      "success": true,
+      "timestamp": "2025-08-11T09:12:55.307Z",
+      "duration": 2802,
+      "details": {
+        "endpoints_tested": 3,
+        "successful_endpoints": 3,
+        "results": {
+          "/api/health": {
+            "status": 200,
+            "ok": true,
+            "has_data": true
+          },
+          "/api/ai/status": {
+            "status": 200,
+            "ok": true,
+            "has_data": true
+          },
+          "/api/chat": {
+            "status": 200,
+            "ok": true,
+            "has_data": true
+          }
+        }
+      },
+      "screenshot": null
+    },
+    {
+      "test": "Frontend Loading and Initial State",
+      "success": true,
+      "timestamp": "2025-08-11T09:12:58.379Z",
+      "duration": 5874,
+      "details": {
+        "page_title": "Multi-API Chat",
+        "provider_select_loaded": true,
+        "model_select_loaded": true,
+        "chat_messages_loaded": false,
+        "chat_input_loaded": true
+      },
+      "screenshot": "e2e_screenshots/Frontend Loading and Initial State_2025-08-11T09-12-58-094Z.png"
+    },
+    {
+      "test": "Provider Selection and Model Loading",
+      "success": true,
+      "timestamp": "2025-08-11T09:12:58.843Z",
+      "duration": 6338,
+      "details": {
+        "providers_count": 3,
+        "selected_provider": "ollama",
+        "models_loaded": true,
+        "models_count": 7
+      },
+      "screenshot": "e2e_screenshots/Provider Selection and Model Loading_2025-08-11T09-12-58-516Z.png"
+    },
+    {
+      "test": "AI Chat Functionality (Fallback Mode)",
+      "success": false,
+      "timestamp": "2025-08-11T09:12:59.656Z",
+      "duration": 7151,
+      "details": {
+        "messages_count": 1,
+        "has_user_message": false,
+        "has_ai_response": true,
+        "test_message": "Hello, this is an E2E test message!"
+      },
+      "screenshot": "e2e_screenshots/AI Chat Functionality (Fallback Mode)_2025-08-11T09-12-59-374Z.png"
+    },
+    {
+      "test": "Responsive Design and Mobile View",
+      "success": true,
+      "timestamp": "2025-08-11T09:13:00.156Z",
+      "duration": 7651,
+      "details": {
+        "viewport_tests": {
+          "mobile": {
+            "chat_container_visible": true,
+            "provider_select_visible": true,
+            "chat_input_visible": true,
+            "viewport": "375x667"
+          },
+          "tablet": {
+            "chat_container_visible": true,
+            "provider_select_visible": true,
+            "chat_input_visible": true,
+            "viewport": "768x1024"
+          },
+          "desktop": {
+            "chat_container_visible": true,
+            "provider_select_visible": true,
+            "chat_input_visible": true,
+            "viewport": "1280x720"
+          }
+        }
+      },
+      "screenshot": "e2e_screenshots/Responsive Design and Mobile View_2025-08-11T09-12-59-801Z.png"
+    },
+    {
+      "test": "Error Handling and Fallback Behavior",
+      "success": true,
+      "timestamp": "2025-08-11T09:13:00.186Z",
+      "duration": 7681,
+      "details": {
+        "invalid_endpoint_handled": false,
+        "invalid_provider_fallback": false,
+        "chat_response_received": false
+      },
+      "screenshot": null
+    }
+  ],
+  "summary": {
+    "backend_health": true,
+    "frontend_loading": true,
+    "provider_selection": true,
+    "chat_functionality": false,
+    "responsive_design": true,
+    "error_handling": true
+  }
+}

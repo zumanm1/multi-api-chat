@@ -9,12 +9,39 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 import json
 
-# CrewAI imports replaced with mock implementations for demo
-# from crewai import Agent, Task, Crew
-# from langchain_openai import ChatOpenAI
+# CrewAI imports with error handling for optional AI functionality
+try:
+    from crewai import Agent, Task, Crew
+    from langchain_openai import ChatOpenAI
+    CREWAI_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"CrewAI dependencies not available: {e}")
+    logging.info("Running in fallback mode without AI agent functionality")
+    CREWAI_AVAILABLE = False
+    
+    # Import fallback classes for robust fallback functionality
+    from ..fallback_classes import (
+        FallbackAgent as Agent,
+        FallbackTask as Task, 
+        FallbackCrew as Crew,
+        FallbackChatOpenAI as ChatOpenAI,
+        log_fallback_status
+    )
+    
+    # Log fallback status on first import
+    log_fallback_status()
 
 from ..configs.agents_config import AGENTS_CONFIG, AgentConfig
 from ..tools.base_tools import get_agent_tools
+
+# Import LangGraph orchestrator for advanced workflow management
+try:
+    from ..workflows.graph_orchestrator import graph_orchestrator, GraphWorkflowConfig, RequestType
+    LANGGRAPH_ORCHESTRATOR_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"LangGraph orchestrator not available: {e}")
+    LANGGRAPH_ORCHESTRATOR_AVAILABLE = False
+    graph_orchestrator = None
 
 
 class MasterAgent:
@@ -28,12 +55,24 @@ class MasterAgent:
         self.task_history: List[Dict] = []
         self.context_memory: Dict[str, Any] = {}
         
+        if not CREWAI_AVAILABLE:
+            self.logger.warning("CrewAI not available - running in fallback mode")
+            self.llm = None
+            self.agent = None
+            return
+        
         # Initialize LLM
-        self.llm = ChatOpenAI(
-            model=AGENTS_CONFIG.default_llm,
-            temperature=self.config.llm_config.get("temperature", 0.7),
-            max_tokens=self.config.llm_config.get("max_tokens", 2000)
-        )
+        try:
+            self.llm = ChatOpenAI(
+                model=AGENTS_CONFIG.default_llm,
+                temperature=self.config.llm_config.get("temperature", 0.7),
+                max_tokens=self.config.llm_config.get("max_tokens", 2000)
+            )
+        except Exception as e:
+            self.logger.error(f"Failed to initialize ChatOpenAI: {e}")
+            self.llm = None
+            self.agent = None
+            return
         
         # Create master agent
         self.agent = self._create_master_agent()
@@ -91,8 +130,31 @@ class MasterAgent:
     async def process_user_request(self, 
                                  request: str, 
                                  context: Dict[str, Any] = None,
-                                 source_page: str = "chat") -> Dict[str, Any]:
+                                 source_page: str = "chat",
+                                 use_graph_orchestration: bool = None) -> Dict[str, Any]:
         """Process user request and coordinate appropriate agents"""
+        # Auto-determine graph orchestration usage if not specified
+        if use_graph_orchestration is None:
+            use_graph_orchestration = self._should_use_graph_orchestration(request, context, source_page)
+        
+        # Try graph-based orchestration first if available and requested
+        if use_graph_orchestration and LANGGRAPH_ORCHESTRATOR_AVAILABLE:
+            try:
+                return await self._process_with_graph_orchestration(request, context, source_page)
+            except Exception as e:
+                self.logger.warning(f"Graph orchestration failed, falling back to CrewAI: {e}")
+                # Fall through to CrewAI processing
+        
+        # Fallback response when CrewAI is not available
+        if not CREWAI_AVAILABLE:
+            return {
+                "success": False,
+                "error": "AI agent functionality not available",
+                "response": "The AI agent system is currently unavailable due to missing dependencies. Please ensure CrewAI and langchain_openai are installed to enable advanced AI functionality.",
+                "timestamp": datetime.now().isoformat(),
+                "fallback_mode": True
+            }
+        
         try:
             # Analyze user intent
             intent_analysis = await self._analyze_user_intent(request, context, source_page)
@@ -373,19 +435,21 @@ class MasterAgent:
         """Get status of all agents"""
         return {
             "master_agent": {
-                "status": "active",
+                "status": "active" if CREWAI_AVAILABLE else "fallback_mode",
                 "tasks_completed": len(self.task_history),
                 "last_activity": self.task_history[-1]["timestamp"] if self.task_history else None
             },
             "specialized_agents": {
-                name: {"status": "active", "capabilities": config.capabilities}
+                name: {"status": "active" if CREWAI_AVAILABLE else "unavailable", "capabilities": config.capabilities}
                 for name, config in AGENTS_CONFIG.get_all_agents().items()
-                if name in self.active_agents
+                if name in self.active_agents or not CREWAI_AVAILABLE
             },
             "system_status": {
                 "enabled": AGENTS_CONFIG.enabled,
                 "debug_mode": AGENTS_CONFIG.debug_mode,
-                "max_concurrent_tasks": AGENTS_CONFIG.max_concurrent_tasks
+                "max_concurrent_tasks": AGENTS_CONFIG.max_concurrent_tasks,
+                "crewai_available": CREWAI_AVAILABLE,
+                "fallback_mode": not CREWAI_AVAILABLE
             }
         }
     
@@ -399,6 +463,191 @@ class MasterAgent:
         }
         
         return await self.process_user_request(request, cross_page_context, source_page)
+    
+    def _should_use_graph_orchestration(self, request: str, context: Dict[str, Any], source_page: str) -> bool:
+        """Determine if graph orchestration should be used for this request"""
+        if not LANGGRAPH_ORCHESTRATOR_AVAILABLE:
+            return False
+        
+        # Use graph orchestration for complex multi-agent workflows
+        request_lower = request.lower()
+        
+        # Keywords that suggest complex workflows
+        complex_keywords = [
+            'analyze and', 'comprehensive', 'multi-step', 'workflow', 'coordinate',
+            'automation and', 'monitor and', 'both', 'also', 'additionally',
+            'full analysis', 'complete assessment', 'end-to-end'
+        ]
+        
+        # Check if request seems complex or involves multiple domains
+        if any(keyword in request_lower for keyword in complex_keywords):
+            return True
+        
+        # Count potential agent domains mentioned
+        domain_keywords = {
+            'analytics': ['analyze', 'data', 'metrics', 'report', 'statistics'],
+            'device': ['device', 'router', 'switch', 'hardware', 'network'],
+            'operations': ['operations', 'monitor', 'system', 'logs', 'alerts'],
+            'automation': ['automate', 'schedule', 'workflow', 'process'],
+            'chat': ['explain', 'help', 'what', 'how', 'why']
+        }
+        
+        domains_mentioned = 0
+        for domain, keywords in domain_keywords.items():
+            if any(keyword in request_lower for keyword in keywords):
+                domains_mentioned += 1
+        
+        # Use graph orchestration for multi-domain requests
+        if domains_mentioned >= 2:
+            return True
+        
+        # Use for specific pages that benefit from graph workflows
+        if source_page in ['analytics', 'workflow', 'automation']:
+            return True
+        
+        # Default to CrewAI for simpler requests
+        return False
+    
+    async def _process_with_graph_orchestration(self, request: str, context: Dict[str, Any], source_page: str) -> Dict[str, Any]:
+        """Process request using LangGraph orchestration"""
+        try:
+            # Determine request type based on source page and content
+            request_type = self._determine_graph_request_type(request, source_page)
+            
+            # Create graph workflow configuration
+            config = GraphWorkflowConfig(
+                request_type=RequestType(request_type),
+                max_iterations=10,
+                enable_checkpoints=True,
+                recovery_enabled=True,
+                agent_timeout=30.0
+            )
+            
+            # Integrate with graph orchestrator
+            if graph_orchestrator:
+                graph_orchestrator.integrate_with_master_agent(self)
+            
+            # Process with graph orchestration
+            result = await graph_orchestrator.process_request(
+                request=request,
+                context=context or {},
+                request_type=request_type,
+                config=config
+            )
+            
+            # Enhance result with MasterAgent metadata
+            result["orchestration_mode"] = "langgraph"
+            result["master_agent_integrated"] = True
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Graph orchestration error: {e}")
+            raise e
+    
+    def _determine_graph_request_type(self, request: str, source_page: str) -> str:
+        """Determine the appropriate graph workflow type for the request"""
+        request_lower = request.lower()
+        
+        # Page-based determination
+        page_mapping = {
+            'analytics': 'analytics',
+            'device': 'device', 
+            'operations': 'operations',
+            'automation': 'automation',
+            'workflow': 'workflow',
+            'chat': 'chat'
+        }
+        
+        if source_page in page_mapping:
+            primary_type = page_mapping[source_page]
+        else:
+            primary_type = 'chat'
+        
+        # Content-based refinement
+        if any(word in request_lower for word in ['comprehensive', 'full analysis', 'complete', 'multi', 'both']):
+            return 'hybrid'
+        
+        # Specific keyword mapping
+        if any(word in request_lower for word in ['analyze', 'data', 'metrics', 'statistics']):
+            return 'analytics'
+        elif any(word in request_lower for word in ['device', 'router', 'switch', 'network']):
+            return 'device'
+        elif any(word in request_lower for word in ['operations', 'system', 'monitor', 'health']):
+            return 'operations'
+        elif any(word in request_lower for word in ['automate', 'workflow', 'schedule', 'process']):
+            return 'automation'
+        
+        return primary_type
+    
+    async def stream_graph_workflow(self, request: str, context: Dict[str, Any] = None, source_page: str = "chat"):
+        """Stream a graph-based workflow execution"""
+        if not LANGGRAPH_ORCHESTRATOR_AVAILABLE:
+            yield {
+                "status": "error",
+                "message": "Graph orchestration not available",
+                "timestamp": datetime.now().isoformat()
+            }
+            return
+        
+        try:
+            request_type = self._determine_graph_request_type(request, source_page)
+            
+            # Integrate with graph orchestrator
+            if graph_orchestrator:
+                graph_orchestrator.integrate_with_master_agent(self)
+            
+            async for chunk in graph_orchestrator.stream_workflow(
+                request=request,
+                context=context or {},
+                request_type=request_type
+            ):
+                chunk["master_agent_integrated"] = True
+                yield chunk
+                
+        except Exception as e:
+            self.logger.error(f"Stream graph workflow error: {e}")
+            yield {
+                "status": "error",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+    
+    def get_orchestration_status(self) -> Dict[str, Any]:
+        """Get status of orchestration capabilities"""
+        status = {
+            "crewai_available": CREWAI_AVAILABLE,
+            "langgraph_available": LANGGRAPH_ORCHESTRATOR_AVAILABLE,
+            "default_mode": "crewai" if CREWAI_AVAILABLE else "fallback",
+            "graph_workflows_available": [],
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        if LANGGRAPH_ORCHESTRATOR_AVAILABLE and graph_orchestrator:
+            try:
+                status["graph_workflows_available"] = graph_orchestrator.get_available_workflows()
+                status["default_mode"] = "hybrid"  # Can use both
+            except Exception as e:
+                status["graph_orchestrator_error"] = str(e)
+        
+        return status
+    
+    async def process_with_preferred_orchestration(self, 
+                                                 request: str,
+                                                 context: Dict[str, Any] = None,
+                                                 source_page: str = "chat",
+                                                 prefer_graph: bool = True) -> Dict[str, Any]:
+        """Process request with preferred orchestration method"""
+        if prefer_graph and LANGGRAPH_ORCHESTRATOR_AVAILABLE:
+            try:
+                result = await self._process_with_graph_orchestration(request, context, source_page)
+                if result.get("success", False):
+                    return result
+            except Exception as e:
+                self.logger.warning(f"Preferred graph orchestration failed: {e}")
+        
+        # Fallback to standard processing
+        return await self.process_user_request(request, context, source_page, use_graph_orchestration=False)
 
 # Global master agent instance
 master_agent_instance = None

@@ -6,6 +6,7 @@ Defines agent roles, capabilities, and system-wide settings for the Multi-API Ch
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import os
+import logging
 
 @dataclass
 class AgentConfig:
@@ -31,13 +32,27 @@ class AgentsConfig:
     """Central configuration for all AI agents in the system"""
     
     def __init__(self):
-        self.enabled = os.getenv('AI_AGENTS_ENABLED', 'true').lower() == 'true'
+        self.logger = logging.getLogger(__name__)
+        
+        # Check if AI agents are enabled via environment variable
+        self.enabled = os.getenv('ENABLE_AI_AGENTS', 'true').lower() == 'true'
         self.debug_mode = os.getenv('AI_AGENTS_DEBUG', 'false').lower() == 'true'
         self.default_llm = os.getenv('AI_AGENTS_DEFAULT_LLM', 'gpt-4')
         self.max_concurrent_tasks = int(os.getenv('AI_AGENTS_MAX_CONCURRENT', '3'))
         
+        # Check if AI dependencies are available
+        self.dependencies_available = self._check_dependencies()
+        
+        # Only enable agents if both env var is true AND dependencies are available
+        if self.enabled and not self.dependencies_available:
+            self.logger.warning(
+                "AI Agents are enabled in configuration but required dependencies are missing. "
+                "Install with: pip install -r requirements-ai-agents.txt"
+            )
+            self.enabled = False
+        
         # Agent configurations
-        self.agents = self._define_agents()
+        self.agents = self._define_agents() if self.enabled else {}
         
     def _define_agents(self) -> Dict[str, AgentConfig]:
         """Define all AI agents and their configurations"""
@@ -202,9 +217,35 @@ class AgentsConfig:
         """Get all agent configurations"""
         return self.agents
     
+    def _check_dependencies(self) -> bool:
+        """Check if AI agent dependencies are available"""
+        required_packages = ['crewai', 'langchain', 'chromadb']
+        
+        for package in required_packages:
+            try:
+                __import__(package.replace('-', '_'))
+            except ImportError:
+                if self.debug_mode:
+                    self.logger.debug(f"AI dependency '{package}' not found")
+                return False
+        
+        return True
+    
     def is_agent_enabled(self, agent_name: str) -> bool:
         """Check if a specific agent is enabled"""
-        return self.enabled and agent_name in self.agents
+        return self.enabled and self.dependencies_available and agent_name in self.agents
+    
+    def get_status(self) -> Dict[str, any]:
+        """Get the current status of AI agents configuration"""
+        return {
+            "enabled": self.enabled,
+            "dependencies_available": self.dependencies_available,
+            "debug_mode": self.debug_mode,
+            "default_llm": self.default_llm,
+            "max_concurrent_tasks": self.max_concurrent_tasks,
+            "agents_count": len(self.agents),
+            "environment_ready": self.enabled and self.dependencies_available
+        }
 
 # Global instance
 AGENTS_CONFIG = AgentsConfig()

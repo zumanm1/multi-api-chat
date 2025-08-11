@@ -630,20 +630,56 @@
 
         // Load providers from backend
         async function loadProviders() {
-            const response = await fetch('http://localhost:8002/api/providers');
-            state.providers = await response.json();
+            try {
+                const response = await fetch('http://localhost:8002/api/providers');
+                if (!response.ok) {
+                    throw new Error(`Failed to load providers: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                state.providers = data;
+            } catch (error) {
+                console.error('Failed to load providers:', error);
+                // Provide fallback empty providers object
+                state.providers = {};
+                showErrorMessage('Unable to load AI providers. Please check your connection and try again.');
+            }
         }
 
         // Load settings from backend
         async function loadSettings() {
-            const response = await fetch('http://localhost:8002/api/settings');
-            state.settings = await response.json();
+            try {
+                const response = await fetch('http://localhost:8002/api/settings');
+                if (!response.ok) {
+                    throw new Error(`Failed to load settings: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                state.settings = data;
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+                // Provide fallback default settings
+                state.settings = {
+                    default_provider: '',
+                    system_prompt: 'You are a helpful AI assistant.'
+                };
+                showErrorMessage('Unable to load settings. Using default configuration.');
+            }
         }
 
         // Load usage statistics from backend
         async function loadUsage() {
-            const response = await fetch('http://localhost:8002/api/usage');
-            state.usage = await response.json();
+            try {
+                const response = await fetch('http://localhost:8002/api/usage');
+                if (!response.ok) {
+                    throw new Error(`Failed to load usage: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                state.usage = data;
+            } catch (error) {
+                console.error('Failed to load usage statistics:', error);
+                // Provide fallback empty usage object
+                state.usage = {};
+                // Usage stats are not critical, so don't show error to user
+            }
         }
 
         // Set up event listeners
@@ -681,35 +717,109 @@
             // Clear existing options
             elements.providerSelect.innerHTML = '<option value="">Select Provider</option>';
             
+            // Check if we have any providers
+            const availableProviders = Object.entries(state.providers).filter(([id, provider]) => provider.enabled);
+            
+            if (availableProviders.length === 0) {
+                // No providers available
+                const noProviderOption = document.createElement('option');
+                noProviderOption.value = '';
+                noProviderOption.textContent = 'No AI providers configured';
+                noProviderOption.disabled = true;
+                elements.providerSelect.appendChild(noProviderOption);
+                
+                // Disable model select and show appropriate message
+                elements.modelSelect.innerHTML = '<option value="">Configure providers first</option>';
+                elements.modelSelect.disabled = true;
+                
+                // Show informative message to user
+                showErrorMessage('No AI providers are configured. Please add and enable providers in settings.');
+                return;
+            }
+            
             // Add providers to dropdowns
-            for (const [id, provider] of Object.entries(state.providers)) {
-                if (provider.enabled) {
-                    const option = document.createElement('option');
-                    option.value = id;
-                    option.textContent = provider.name;
-                    elements.providerSelect.appendChild(option);
-                }
+            for (const [id, provider] of availableProviders) {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = provider.name;
+                elements.providerSelect.appendChild(option);
             }
             
             // Set default provider selection
             const defaultProvider = state.settings.default_provider || '';
-            elements.providerSelect.value = defaultProvider;
             
-            // Load models for default provider if set
-            if (defaultProvider) {
+            // Validate that default provider exists and is enabled
+            if (defaultProvider && state.providers[defaultProvider]?.enabled) {
+                elements.providerSelect.value = defaultProvider;
                 loadProviderModels(defaultProvider);
+            } else if (availableProviders.length === 1) {
+                // Auto-select if only one provider available
+                const [providerId] = availableProviders[0];
+                elements.providerSelect.value = providerId;
+                loadProviderModels(providerId);
+            } else {
+                // Reset model select to default state
+                elements.modelSelect.innerHTML = '<option value="">Select Model</option>';
+                elements.modelSelect.disabled = true;
             }
+        }
+
+        // Show error message to user
+        function showErrorMessage(message) {
+            // Create error notification if it doesn't exist
+            let errorNotification = document.getElementById('errorNotification');
+            if (!errorNotification) {
+                errorNotification = document.createElement('div');
+                errorNotification.id = 'errorNotification';
+                errorNotification.style.cssText = `
+                    position: fixed;
+                    top: 80px;
+                    right: 20px;
+                    background: var(--apple-red);
+                    color: white;
+                    padding: 16px 20px;
+                    border-radius: var(--border-radius-medium);
+                    box-shadow: var(--shadow-large);
+                    z-index: 1000;
+                    max-width: 400px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    display: none;
+                    backdrop-filter: blur(10px);
+                `;
+                document.body.appendChild(errorNotification);
+            }
+            
+            errorNotification.textContent = message;
+            errorNotification.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorNotification.style.display = 'none';
+            }, 5000);
         }
 
         // Load models for selected provider
         async function loadProviderModels(providerId) {
             try {
-                // Show loading state
+                // Show loading state with animation
                 elements.modelSelect.innerHTML = '<option value="">Loading models...</option>';
-                elements.modelSelect.disabled = false;
+                elements.modelSelect.disabled = true;
+                elements.modelSelect.style.opacity = '0.6';
                 
                 const response = await fetch(`http://localhost:8002/api/providers/${providerId}/models`);
+                
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
+                
+                // Check if response contains error
+                if (data.error) {
+                    throw new Error(data.error);
+                }
                 
                 if (data.models && data.models.length > 0) {
                     // Clear options and populate with models
@@ -723,7 +833,7 @@
                     }
                     
                     // Set default model for the provider
-                    const providerDefaultModel = state.providers[providerId].model;
+                    const providerDefaultModel = state.providers[providerId]?.model;
                     if (providerDefaultModel && data.models.includes(providerDefaultModel)) {
                         elements.modelSelect.value = providerDefaultModel;
                     } else if (data.models.length > 0) {
@@ -731,17 +841,44 @@
                     }
                     
                     elements.modelSelect.disabled = false;
+                    elements.modelSelect.style.opacity = '1';
                     
                     // Add model descriptions for better UX
                     addModelDescriptions(providerId, elements.modelSelect);
                 } else {
-                    elements.modelSelect.innerHTML = '<option value="">No models available</option>';
+                    // No models available case
+                    elements.modelSelect.innerHTML = '<option value="">No models available for this provider</option>';
                     elements.modelSelect.disabled = true;
+                    elements.modelSelect.style.opacity = '1';
+                    showErrorMessage(`No models found for ${state.providers[providerId]?.name || providerId}. Please check provider configuration.`);
                 }
             } catch (error) {
                 console.error('Failed to load models:', error);
-                elements.modelSelect.innerHTML = '<option value="">Error loading models</option>';
-                elements.modelSelect.disabled = true;
+                
+                // Show user-friendly error message
+                let errorMessage = 'Failed to load models. ';
+                if (error.message.includes('fetch')) {
+                    errorMessage += 'Please check your internet connection.';
+                } else if (error.message.includes('500')) {
+                    errorMessage += 'Server error occurred. Please try again later.';
+                } else if (error.message.includes('404')) {
+                    errorMessage += 'Provider not found or not configured properly.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                elements.modelSelect.innerHTML = '<option value="">⚠️ Error loading models - Click to retry</option>';
+                elements.modelSelect.disabled = false;
+                elements.modelSelect.style.opacity = '1';
+                
+                // Add retry functionality
+                const retryHandler = () => {
+                    elements.modelSelect.removeEventListener('focus', retryHandler);
+                    loadProviderModels(providerId);
+                };
+                elements.modelSelect.addEventListener('focus', retryHandler);
+                
+                showErrorMessage(errorMessage);
             }
         }
 

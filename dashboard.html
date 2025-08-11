@@ -918,9 +918,28 @@
         function renderProviderStatus() {
             elements.providerStatus.innerHTML = '';
             
-            for (const [id, provider] of Object.entries(state.providers)) {
-                if (!provider.enabled) continue;
-                
+            const enabledProviders = Object.entries(state.providers).filter(([id, provider]) => provider.enabled);
+            
+            if (enabledProviders.length === 0) {
+                // Show message when no providers are enabled
+                const noProviderMessage = document.createElement('div');
+                noProviderMessage.className = 'provider-item';
+                noProviderMessage.style.cssText = `
+                    text-align: center;
+                    padding: 40px;
+                    color: var(--apple-gray);
+                    font-style: italic;
+                `;
+                noProviderMessage.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔧</div>
+                    <h3 style="margin-bottom: 8px; color: var(--apple-black);">No AI Providers Configured</h3>
+                    <p>Add and enable AI providers in the settings to get started.</p>
+                `;
+                elements.providerStatus.appendChild(noProviderMessage);
+                return;
+            }
+            
+            for (const [id, provider] of enabledProviders) {
                 const providerItem = document.createElement('div');
                 providerItem.className = 'provider-item';
                 providerItem.innerHTML = `
@@ -928,10 +947,10 @@
                         <div class="provider-avatar ${id}-avatar">${provider.name.charAt(0).toUpperCase()}</div>
                         <div class="provider-details">
                             <h3>${provider.name}</h3>
-                            <p>Model: ${provider.model}</p>
+                            <p>Model: ${provider.model || 'Default'}</p>
                         </div>
                     </div>
-                    <div class="status-indicator status-${provider.status}">${provider.status}</div>
+                    <div class="status-indicator status-${provider.status || 'unknown'}">${provider.status || 'unknown'}</div>
                 `;
                 elements.providerStatus.appendChild(providerItem);
             }
@@ -945,13 +964,37 @@
             let totalRequests = 0;
             let totalTokens = 0;
             let totalResponseTime = 0;
+            let hasUsageData = false;
             
             for (const [date, dateUsage] of Object.entries(state.usage)) {
                 for (const [providerId, providerUsage] of Object.entries(dateUsage)) {
-                    totalRequests += providerUsage.requests;
-                    totalTokens += providerUsage.tokens;
-                    totalResponseTime += providerUsage.total_response_time;
+                    if (providerUsage.requests || providerUsage.tokens) {
+                        hasUsageData = true;
+                    }
+                    totalRequests += providerUsage.requests || 0;
+                    totalTokens += providerUsage.tokens || 0;
+                    totalResponseTime += providerUsage.total_response_time || 0;
                 }
+            }
+            
+            if (!hasUsageData) {
+                // Show message when no usage data is available
+                const noUsageMessage = document.createElement('div');
+                noUsageMessage.className = 'stat-item';
+                noUsageMessage.style.cssText = `
+                    grid-column: 1 / -1;
+                    text-align: center;
+                    padding: 40px;
+                    color: var(--apple-gray);
+                    font-style: italic;
+                `;
+                noUsageMessage.innerHTML = `
+                    <div style="font-size: 32px; margin-bottom: 12px;">📊</div>
+                    <div style="font-size: 16px; font-weight: 600; color: var(--apple-black); margin-bottom: 4px;">No Usage Data Available</div>
+                    <div style="font-size: 14px;">Start using the chat to see analytics here.</div>
+                `;
+                elements.usageAnalytics.appendChild(noUsageMessage);
+                return;
             }
             
             // Create stats items
@@ -965,7 +1008,7 @@
             const tokenItem = document.createElement('div');
             tokenItem.className = 'stat-item';
             tokenItem.innerHTML = `
-                <div class="stat-value">${(totalTokens / 1000).toFixed(1)}K</div>
+                <div class="stat-value">${totalTokens > 1000 ? (totalTokens / 1000).toFixed(1) + 'K' : totalTokens}</div>
                 <div class="stat-label">Tokens</div>
             `;
             

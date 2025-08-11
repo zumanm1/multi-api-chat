@@ -7,6 +7,19 @@ import asyncio
 import logging
 from typing import Dict, Any
 
+# Import dependency checker
+try:
+    from ai_agents.utils.dependency_checker import (
+        check_ai_dependencies,
+        log_dependency_status,
+        validate_ai_environment,
+        get_installation_command
+    )
+    DEPENDENCY_CHECKER_AVAILABLE = True
+except ImportError as e:
+    logging.getLogger(__name__).warning(f"Dependency checker not available: {e}")
+    DEPENDENCY_CHECKER_AVAILABLE = False
+
 # Import the simple master agent directly
 import sys
 import os
@@ -24,7 +37,11 @@ class AIBackendIntegration:
     def __init__(self):
         self.enabled = True
         self.logger = logger
+        self.dependency_status = None
         self.logger.info("AI Backend Integration initialized")
+        
+        # Check dependencies at startup
+        self._check_startup_dependencies()
     
     async def process_ai_request(self, request_type: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """Process AI request based on type using simple master agent"""
@@ -104,6 +121,67 @@ class AIBackendIntegration:
             "message": f"AI agents {status}",
             "enabled": self.enabled
         }
+    
+    def _check_startup_dependencies(self):
+        """Check AI dependencies at startup and log status"""
+        if not DEPENDENCY_CHECKER_AVAILABLE:
+            self.logger.warning("Dependency checker not available - skipping dependency check")
+            return
+        
+        try:
+            self.logger.info("Checking AI dependencies at startup...")
+            
+            # Check dependencies
+            self.dependency_status = check_ai_dependencies()
+            environment_status = validate_ai_environment()
+            
+            # Log detailed dependency status
+            log_dependency_status(logging.INFO)
+            
+            # Provide startup recommendations
+            if not self.dependency_status["all_installed"]:
+                missing_count = len(self.dependency_status["missing_packages"])
+                outdated_count = len(self.dependency_status["outdated_packages"])
+                
+                self.logger.warning(
+                    f"AI dependencies not fully satisfied: {missing_count} missing, "
+                    f"{outdated_count} with version issues"
+                )
+                
+                if environment_status["recommendations"]:
+                    self.logger.info("Recommended actions:")
+                    for rec in environment_status["recommendations"]:
+                        self.logger.info(f"  - {rec}")
+            else:
+                self.logger.info("All AI dependencies are satisfied")
+            
+        except Exception as e:
+            self.logger.error(f"Error checking dependencies at startup: {e}")
+            self.dependency_status = {"error": str(e)}
+    
+    def get_dependency_status(self) -> Dict[str, Any]:
+        """Get current dependency status"""
+        if not DEPENDENCY_CHECKER_AVAILABLE:
+            return {
+                "status": "unavailable",
+                "message": "Dependency checker not available"
+            }
+        
+        try:
+            current_status = check_ai_dependencies()
+            environment_status = validate_ai_environment()
+            
+            return {
+                "status": "complete",
+                "dependency_check": current_status,
+                "environment_validation": environment_status,
+                "installation_command": get_installation_command()
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e)
+            }
 
 # Global instance
 ai_backend_integration = AIBackendIntegration()
@@ -138,6 +216,44 @@ def get_ai_integration_status() -> Dict[str, Any]:
 def toggle_ai_agents(enabled: bool = None) -> Dict[str, Any]:
     """Toggle AI agents on/off (synchronous)"""
     return ai_backend_integration.toggle_ai(enabled)
+
+def get_ai_dependency_status() -> Dict[str, Any]:
+    """Get AI dependency status (synchronous)"""
+    return ai_backend_integration.get_dependency_status()
+
+def check_ai_dependencies_sync() -> Dict[str, Any]:
+    """Check AI dependencies synchronously"""
+    if not DEPENDENCY_CHECKER_AVAILABLE:
+        return {
+            "status": "unavailable",
+            "message": "Dependency checker not available"
+        }
+    
+    try:
+        return check_ai_dependencies()
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
+def install_ai_dependencies_sync() -> Dict[str, Any]:
+    """Install AI dependencies synchronously"""
+    if not DEPENDENCY_CHECKER_AVAILABLE:
+        return {
+            "success": False,
+            "message": "Dependency checker not available"
+        }
+    
+    try:
+        from ai_agents.utils.dependency_checker import install_ai_dependencies
+        return install_ai_dependencies()
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Error installing dependencies: {str(e)}",
+            "error": str(e)
+        }
 
 # Test the integration
 if __name__ == "__main__":

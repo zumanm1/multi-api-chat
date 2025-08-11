@@ -1,0 +1,113 @@
+{
+  "test_run_info": {
+    "timestamp": "2025-08-11T09:10:44.478Z",
+    "total_duration": 10477,
+    "tests_run": 7,
+    "tests_passed": 3,
+    "tests_failed": 4
+  },
+  "test_results": [
+    {
+      "test": "Backend Health and AI Status",
+      "success": true,
+      "timestamp": "2025-08-11T09:10:35.420Z",
+      "duration": 1419,
+      "details": {
+        "backend_status": "healthy",
+        "features_enabled": 0
+      },
+      "screenshot": null
+    },
+    {
+      "test": "Backend API Endpoints",
+      "success": false,
+      "timestamp": "2025-08-11T09:10:35.474Z",
+      "duration": 1473,
+      "details": {
+        "endpoints_tested": 3,
+        "successful_endpoints": 2,
+        "results": {
+          "/api/health": {
+            "status": 200,
+            "ok": true,
+            "has_data": true
+          },
+          "/api/ai/status": {
+            "status": 200,
+            "ok": true,
+            "has_data": true
+          },
+          "/api/ai/chat": {
+            "status": 503,
+            "ok": false
+          }
+        }
+      },
+      "screenshot": null
+    },
+    {
+      "test": "Frontend Loading and Initial State",
+      "success": true,
+      "timestamp": "2025-08-11T09:10:38.521Z",
+      "duration": 4520,
+      "details": {
+        "page_title": "Multi-API Chat",
+        "provider_select_loaded": true,
+        "model_select_loaded": true,
+        "chat_messages_loaded": false,
+        "chat_input_loaded": false
+      },
+      "screenshot": "e2e_screenshots/Frontend Loading and Initial State_2025-08-11T09-10-38-243Z.png"
+    },
+    {
+      "test": "Provider Selection and Model Loading",
+      "success": false,
+      "timestamp": "2025-08-11T09:10:38.929Z",
+      "duration": 4928,
+      "details": {
+        "error": "this.page.waitForTimeout is not a function"
+      },
+      "screenshot": "e2e_screenshots/Provider Selection and Model Loading_2025-08-11T09-10-38-575Z.png"
+    },
+    {
+      "test": "AI Chat Functionality (Fallback Mode)",
+      "success": false,
+      "timestamp": "2025-08-11T09:10:44.229Z",
+      "duration": 10228,
+      "details": {
+        "error": "Waiting for selector `.chat-input` failed: Waiting failed: 5000ms exceeded"
+      },
+      "screenshot": "e2e_screenshots/AI Chat Functionality (Fallback Mode)_2025-08-11T09-10-43-933Z.png"
+    },
+    {
+      "test": "Responsive Design and Mobile View",
+      "success": false,
+      "timestamp": "2025-08-11T09:10:44.446Z",
+      "duration": 10445,
+      "details": {
+        "error": "this.page.waitForTimeout is not a function"
+      },
+      "screenshot": "e2e_screenshots/Responsive Design and Mobile View_2025-08-11T09-10-44-241Z.png"
+    },
+    {
+      "test": "Error Handling and Fallback Behavior",
+      "success": true,
+      "timestamp": "2025-08-11T09:10:44.477Z",
+      "duration": 10476,
+      "details": {
+        "invalid_endpoint_handled": false,
+        "invalid_provider_fallback": false,
+        "chat_response_received": false
+      },
+      "screenshot": null
+    }
+  ],
+  "summary": {
+    "backend_health": true,
+    "frontend_loading": true,
+    "provider_selection": false,
+    "chat_functionality": false,
+    "responsive_design": false,
+    "error_handling": true
+  }
+}
