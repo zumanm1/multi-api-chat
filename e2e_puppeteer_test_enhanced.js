@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
   const page = await browser.newPage();
 
   // Test the frontend
-  await page.goto('http://localhost:8001', { waitUntil: 'networkidle2' });
+  await page.goto('http://localhost:7001', { waitUntil: 'networkidle2' });
   console.log('Loaded frontend');
 
   // Check for main UI elements
@@ -291,7 +291,7 @@ const puppeteer = require('puppeteer');
 
   // Test backend API directly
   const backendRes = await page.evaluate(async () => {
-    const res = await fetch('http://localhost:8002/api/health', { method: 'GET' });
+    const res = await fetch('http://localhost:7002/api/health', { method: 'GET' });
     return res.ok;
   });
   if (!backendRes) {

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Multi-API Chat Services Startup Script
-# Frontend: http://localhost:8001
-# Backend: http://localhost:8002
+# Frontend: http://localhost:7001
+# Backend: http://localhost:7002
 
 echo "🚀 Starting Multi-API Chat Services..."
 
@@ -21,7 +21,7 @@ check_port() {
 
 # Function to start backend
 start_backend() {
-    echo "🔧 Starting Backend Server (Port 8002)..."
+    echo "🔧 Starting Backend Server (Port 7002)..."
     
     # Check if backend dependencies are available
     if [ ! -f "backend_server.py" ]; then
@@ -39,8 +39,8 @@ start_backend() {
     sleep 3
     
     # Test backend health
-    if curl -s http://localhost:8002/api/health >/dev/null 2>&1; then
-        echo "✅ Backend Server running on http://localhost:8002"
+    if curl -s http://localhost:7002/api/health >/dev/null 2>&1; then
+        echo "✅ Backend Server running on http://localhost:7002"
         echo "   Process ID: $BACKEND_PID"
         echo "   Log file: backend.log"
     else
@@ -52,7 +52,7 @@ start_backend() {
 
 # Function to start frontend
 start_frontend() {
-    echo "🌐 Starting Frontend Server (Port 8001)..."
+    echo "🌐 Starting Frontend Server (Port 7001)..."
     
     # Check if frontend files exist
     if [ ! -f "index.html" ] && [ ! -f "ai_dashboard.html" ]; then
@@ -61,7 +61,7 @@ start_frontend() {
     fi
     
     # Start frontend server in background
-    python -m http.server 8001 > frontend.log 2>&1 &
+    python -m http.server 7001 > frontend.log 2>&1 &
     FRONTEND_PID=$!
     echo $FRONTEND_PID > frontend.pid
     
@@ -70,8 +70,8 @@ start_frontend() {
     sleep 2
     
     # Test frontend availability
-    if curl -s http://localhost:8001 >/dev/null 2>&1; then
-        echo "✅ Frontend Server running on http://localhost:8001"
+    if curl -s http://localhost:7001 >/dev/null 2>&1; then
+        echo "✅ Frontend Server running on http://localhost:7001"
         echo "   Process ID: $FRONTEND_PID"
         echo "   Log file: frontend.log"
     else
@@ -89,14 +89,14 @@ show_status() {
     
     # Check backend
     if [ -f "backend.pid" ] && kill -0 $(cat backend.pid) 2>/dev/null; then
-        echo "✅ Backend:  Running (PID: $(cat backend.pid)) - http://localhost:8002"
+        echo "✅ Backend:  Running (PID: $(cat backend.pid)) - http://localhost:7002"
     else
         echo "❌ Backend:  Not running"
     fi
     
     # Check frontend
     if [ -f "frontend.pid" ] && kill -0 $(cat frontend.pid) 2>/dev/null; then
-        echo "✅ Frontend: Running (PID: $(cat frontend.pid)) - http://localhost:8001"
+        echo "✅ Frontend: Running (PID: $(cat frontend.pid)) - http://localhost:7001"
     else
         echo "❌ Frontend: Not running"
     fi
@@ -104,16 +104,16 @@ show_status() {
     echo ""
     echo "📱 Available Interfaces:"
     echo "========================"
-    echo "Main Dashboard:     http://localhost:8001"
-    echo "AI Agents Dashboard: http://localhost:8001/ai_dashboard.html"
-    echo "Backend API:        http://localhost:8002/api/health"
+    echo "Main Dashboard:     http://localhost:7001"
+    echo "AI Agents Dashboard: http://localhost:7001/ai_dashboard.html"
+    echo "Backend API:        http://localhost:7002/api/health"
     echo ""
     echo "📋 Quick Commands:"
     echo "=================="
     echo "Stop services:      ./stop_services.sh"
     echo "View backend logs:  tail -f backend.log"
     echo "View frontend logs: tail -f frontend.log"
-    echo "Check API health:   curl http://localhost:8002/api/health"
+    echo "Check API health:   curl http://localhost:7002/api/health"
 }
 
 # Function to test AI agents
@@ -121,7 +121,7 @@ test_ai_agents() {
     echo "🤖 Testing AI Agents Integration..."
     
     # Test AI status endpoint
-    if ai_status=$(curl -s http://localhost:8002/api/ai/status 2>/dev/null); then
+    if ai_status=$(curl -s http://localhost:7002/api/ai/status 2>/dev/null); then
         if echo "$ai_status" | grep -q '"available": true'; then
             echo "✅ AI Agents: Available and active"
         else
@@ -137,8 +137,8 @@ main() {
     # Parse command line arguments
     case "${1:-start}" in
         "start")
-            check_port 8002 "backend"
-            check_port 8001 "frontend"
+            check_port 7002 "backend"
+            check_port 7001 "frontend"
             
             start_backend
             start_frontend
@@ -146,7 +146,7 @@ main() {
             show_status
             
             echo "🎉 All services started successfully!"
-            echo "   Access the application at http://localhost:8001"
+            echo "   Access the application at http://localhost:7001"
             ;;
         "stop")
             echo "🛑 Stopping services..."
@@ -192,14 +192,14 @@ main() {
             echo "🧪 Running Service Tests..."
             
             # Test backend health
-            if curl -s http://localhost:8002/api/health >/dev/null; then
+            if curl -s http://localhost:7002/api/health >/dev/null; then
                 echo "✅ Backend health check passed"
             else
                 echo "❌ Backend health check failed"
             fi
             
             # Test frontend
-            if curl -s http://localhost:8001 >/dev/null; then
+            if curl -s http://localhost:7001 >/dev/null; then
                 echo "✅ Frontend accessibility check passed"
             else
                 echo "❌ Frontend accessibility check failed"
@@ -223,8 +223,8 @@ main() {
             echo "  help      Show this help message"
             echo ""
             echo "Services:"
-            echo "  Frontend: http://localhost:8001"
-            echo "  Backend:  http://localhost:8002"
+            echo "  Frontend: http://localhost:7001"
+            echo "  Backend:  http://localhost:7002"
             ;;
         *)
             echo "❌ Unknown command: $1"

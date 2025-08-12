@@ -1361,13 +1361,13 @@
 
         // Load providers from backend
         async function loadProviders() {
-            const response = await fetch('http://localhost:8002/api/providers');
+            const response = await fetch('http://localhost:7002/api/providers');
             state.providers = await response.json();
         }
 
         // Load settings from backend
         async function loadSettings() {
-            const response = await fetch('http://localhost:8002/api/settings');
+            const response = await fetch('http://localhost:7002/api/settings');
             state.settings = await response.json();
         }
 
@@ -1727,7 +1727,7 @@
             try {
                 // In operations mode, we would also send context about the selected router and use case
                 // For this demo, we'll just use the standard chat endpoint
-                const response = await fetch('http://localhost:8002/api/chat', {
+                const response = await fetch('http://localhost:7002/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -2032,7 +2032,7 @@ All commands executed successfully.
             
             // Simulate API request/response data (in real implementation, this would come from the backend)
             const mockApiRequest = {
-                url: 'http://localhost:8002/api/chat',
+                url: 'http://localhost:7002/api/chat',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

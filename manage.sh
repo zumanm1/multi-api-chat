@@ -22,11 +22,11 @@ case "$CMD" in
     echo "--- PIDs ---"
     [ -f logs/backend.pid ] && echo "Backend PID: $(cat logs/backend.pid)" || echo "Backend PID: (none)"
     [ -f logs/frontend.pid ] && echo "Frontend PID: $(cat logs/frontend.pid)" || echo "Frontend PID: (none)"
-    echo "--- Listening sockets (8001/8002) ---"
+    echo "--- Listening sockets (7001/7002) ---"
     if command -v ss >/dev/null 2>&1; then
-      ss -tulpn | grep -E '(:8001|:8002)' || true
+      ss -tulpn | grep -E '(:7001|:7002)' || true
     else
-      netstat -tulpn 2>/dev/null | grep -E '(:8001|:8002)' || true
+      netstat -tulpn 2>/dev/null | grep -E '(:7001|:7002)' || true
     fi
     ;;
   *)

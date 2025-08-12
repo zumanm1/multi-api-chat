@@ -219,9 +219,9 @@ EOF
     fi
     
     # Test with application (if backend is running)
-    if curl -s http://localhost:8002/api/health >/dev/null 2>&1; then
+    if curl -s http://localhost:7002/api/health >/dev/null 2>&1; then
         print_info "Testing application integration..."
-        if curl -s -X POST http://localhost:8002/api/providers/ollama/test >/dev/null; then
+        if curl -s -X POST http://localhost:7002/api/providers/ollama/test >/dev/null; then
             print_status "Application integration test passed"
         else
             print_warning "Application integration test failed (backend may not be running)"
@@ -246,7 +246,7 @@ EOF
     echo "2. Start the frontend server (in another terminal):"
     echo "   bash start_frontend.sh"
     echo ""
-    echo "3. Open your browser to http://localhost:8001"
+    echo "3. Open your browser to http://localhost:7001"
     echo ""
     echo "4. In the application:"
     echo "   - Go to Settings"
@@ -269,7 +269,7 @@ EOF
     # Show current status
     echo "📊 Current Status:"
     echo "   Ollama Service: $(curl -s http://localhost:11434/api/tags >/dev/null && echo '🟢 Running' || echo '🔴 Not Running')"
-    echo "   Backend Server: $(curl -s http://localhost:8002/api/health >/dev/null && echo '🟢 Running' || echo '🔴 Not Running')"
+    echo "   Backend Server: $(curl -s http://localhost:7002/api/health >/dev/null && echo '🟢 Running' || echo '🔴 Not Running')"
     echo "   Models: $(ollama list | grep -v NAME | wc -l | xargs echo) installed"
 }
 
@@ -298,7 +298,7 @@ case "${1:-}" in
         echo ""
         echo "Ollama Installation: $(command_exists ollama && echo '✅ Installed' || echo '❌ Not Installed')"
         echo "Ollama Service: $(curl -s http://localhost:11434/api/tags >/dev/null && echo '🟢 Running' || echo '🔴 Not Running')"
-        echo "Backend Server: $(curl -s http://localhost:8002/api/health >/dev/null && echo '🟢 Running' || echo '🔴 Not Running')"
+        echo "Backend Server: $(curl -s http://localhost:7002/api/health >/dev/null && echo '🟢 Running' || echo '🔴 Not Running')"
         
         if command_exists ollama; then
             echo ""

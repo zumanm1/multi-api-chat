@@ -124,7 +124,7 @@ echo "Backend PID: $BACKEND_PID"
 
 # Start frontend server (simple HTTP server)
 echo "Starting frontend server..."
-python3 -m http.server 8001 &
+python3 -m http.server 7001 &
 FRONTEND_PID=$!
 echo "Frontend PID: $FRONTEND_PID"
 
@@ -134,13 +134,13 @@ echo
 echo -e "${BLUE}Waiting for Services${NC}"
 echo "==================="
 
-if ! wait_for_service "Backend" "http://localhost:8002/api/health"; then
+if ! wait_for_service "Backend" "http://localhost:7002/api/health"; then
     echo -e "${RED}Backend server failed to start${NC}"
     kill $BACKEND_PID $FRONTEND_PID 2>/dev/null
     exit 1
 fi
 
-if ! wait_for_service "Frontend" "http://localhost:8001"; then
+if ! wait_for_service "Frontend" "http://localhost:7001"; then
     echo -e "${RED}Frontend server failed to start${NC}"
     kill $BACKEND_PID $FRONTEND_PID 2>/dev/null
     exit 1
@@ -216,7 +216,7 @@ sleep 2
 
 # Force kill if still running
 pkill -f "backend_server.py" 2>/dev/null
-pkill -f "python3 -m http.server 8001" 2>/dev/null
+pkill -f "python3 -m http.server 7001" 2>/dev/null
 
 echo -e "${GREEN}✓ Services stopped${NC}"
 

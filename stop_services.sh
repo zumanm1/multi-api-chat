@@ -46,7 +46,7 @@ fi
 
 # Clean up any remaining processes on our ports
 echo "   Cleaning up remaining processes..."
-lsof -ti tcp:8001 | xargs kill -9 2>/dev/null || true
-lsof -ti tcp:8002 | xargs kill -9 2>/dev/null || true
+lsof -ti tcp:7001 | xargs kill -9 2>/dev/null || true
+lsof -ti tcp:7002 | xargs kill -9 2>/dev/null || true
 
 echo "🎉 All services stopped successfully!"

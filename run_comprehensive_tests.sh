@@ -6,8 +6,8 @@
 set -e  # Exit on any error
 
 # Configuration
-BACKEND_PORT=8002
-FRONTEND_PORT=8001
+BACKEND_PORT=7002
+FRONTEND_PORT=7001
 TEST_TIMEOUT=300  # 5 minutes
 PROJECT_DIR="$(pwd)"
 VENV_PATH="${PROJECT_DIR}/.venv"

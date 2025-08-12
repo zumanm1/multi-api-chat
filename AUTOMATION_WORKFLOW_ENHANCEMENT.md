@@ -108,7 +108,7 @@ Successfully implemented comprehensive command history and output tracking for a
 
 ## 🌐 Access the Enhanced Interface
 
-1. **Frontend**: http://localhost:8001/automation.html
+1. **Frontend**: http://localhost:7001/automation.html
 2. **API Endpoints**: 
    - `POST /api/workflows/config-push`
    - `POST /api/workflows/config-retrieval`

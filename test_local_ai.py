@@ -111,7 +111,7 @@ def test_backend_fallback_modes():
     
     try:
         import requests
-        base_url = "http://localhost:8002"
+        base_url = "http://localhost:7002"
         
         # Test configuration endpoint
         try:

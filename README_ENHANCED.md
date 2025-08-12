@@ -255,7 +255,7 @@ await fetch('/api/providers/cerebras', {
 
 2. **Test Failures**
    - Ensure both backend and frontend servers are running
-   - Check port availability (8001, 8002)
+   - Check port availability (7001, 7002)
    - Review test logs in console output
 
 3. **Environment File Issues**
@@ -266,15 +266,15 @@ await fetch('/api/providers/cerebras', {
 ### Debug Commands
 ```bash
 # Check service status
-curl http://localhost:8002/api/health
+curl http://localhost:7002/api/health
 
 # Test specific provider
-curl -X POST http://localhost:8002/api/providers/groq/test \
+curl -X POST http://localhost:7002/api/providers/groq/test \
   -H "Content-Type: application/json" \
   -d '{"include_raw_data": true}'
 
 # Check environment file status
-curl http://localhost:8002/api/env/private
+curl http://localhost:7002/api/env/private
 ```
 
 ## 🤝 Contributing
@@ -320,7 +320,7 @@ python -m pytest test_env_private_backend.py -v
 node enhanced_puppeteer_tests_fixed.js
 
 # Check API health
-curl http://localhost:8002/api/health
+curl http://localhost:7002/api/health
 ```
 
 **🌟 Ready for production deployment with enterprise-grade testing and security!** 🌟

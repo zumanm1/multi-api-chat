@@ -106,7 +106,7 @@ multi-api-chat/
 2. **Install Dependencies**: `pip install -r requirements.txt`
 3. **Start the Application**: `./start_app.sh`
 4. **Run Tests**: `node comprehensive_e2e_test.js`
-5. **Access the UI**: http://localhost:8001
+5. **Access the UI**: http://localhost:7001
 
 ## ✨ **Key Achievements Saved to GitHub**
 - ✅ **Zero circular import issues** - Completely resolved

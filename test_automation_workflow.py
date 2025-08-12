@@ -9,7 +9,7 @@ from datetime import datetime
 def test_automation_workflow():
     """Test the automation workflow with command history tracking"""
     
-    base_url = "http://localhost:8002/api"
+    base_url = "http://localhost:7002/api"
     
     print("🧪 Testing Enhanced Automation Workflow")
     print("=" * 50)

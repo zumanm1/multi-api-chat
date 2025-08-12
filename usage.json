@@ -1,9 +1,19 @@
 {
-  "2025-08-11": {
-    "ollama": {
-      "requests": 5,
-      "tokens": 467,
-      "total_response_time": 13.880627870559692
+  "2025-08-12": {
+    "groq": {
+      "requests": 33,
+      "tokens": 8693,
+      "total_response_time": 53.01813278220696
+    },
+    "test_provider": {
+      "requests": 30,
+      "tokens": 8147,
+      "total_response_time": 48.00533686965865
+    },
+    "openai": {
+      "requests": 37,
+      "tokens": 10680,
+      "total_response_time": 66.17838360438844
     }
   }
 }

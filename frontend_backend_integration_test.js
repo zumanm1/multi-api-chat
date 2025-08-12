@@ -11,8 +11,8 @@ class IntegrationTestSuite {
     constructor() {
         this.browser = null;
         this.page = null;
-        this.baseUrl = 'http://localhost:8001';
-        this.backendUrl = 'http://localhost:8002';
+        this.baseUrl = 'http://localhost:7001';
+        this.backendUrl = 'http://localhost:7002';
         this.testResults = [];
         this.screenshots = [];
         this.startTime = Date.now();
@@ -371,7 +371,7 @@ class IntegrationTestSuite {
             // Check if devices are loaded
             const deviceCount = await this.page.evaluate(async () => {
                 try {
-                    const response = await fetch('http://localhost:8002/api/devices');
+                    const response = await fetch('http://localhost:7002/api/devices');
                     const data = await response.json();
                     return Object.keys(data).length;
                 } catch (error) {
@@ -407,7 +407,7 @@ class IntegrationTestSuite {
                 // Try to fetch usage data
                 let usageData = null;
                 try {
-                    const response = await fetch('http://localhost:8002/api/usage');
+                    const response = await fetch('http://localhost:7002/api/usage');
                     usageData = await response.json();
                 } catch (error) {
                     console.warn('Could not fetch usage data:', error.message);
@@ -465,7 +465,7 @@ class IntegrationTestSuite {
 
                 try {
                     // Try to fetch from non-existent endpoint
-                    const response = await fetch('http://localhost:8002/api/nonexistent');
+                    const response = await fetch('http://localhost:7002/api/nonexistent');
                     return {
                         errorCaught: response.status >= 400,
                         statusCode: response.status,

@@ -68,7 +68,7 @@ class EnhancedPuppeteerTests {
     async testBackendHealth() {
         const testName = 'Backend Health Check with .env.private Status';
         try {
-            const response = await fetch('http://localhost:8002/api/health');
+            const response = await fetch('http://localhost:7002/api/health');
             const data = await response.json();
             
             const requiredFields = ['status', 'providers_enabled', 'env_private_exists', 'timestamp', 'uptime'];
@@ -95,11 +95,11 @@ class EnhancedPuppeteerTests {
         
         try {
             // Navigate to frontend
-            await this.page.goto('http://localhost:8001/index.html');
+            await this.page.goto('http://localhost:7001/index.html');
             await this.page.waitForTimeout(1000);
             
             // Check .env.private API endpoints
-            const envStatusResponse = await fetch('http://localhost:8002/api/env/private');
+            const envStatusResponse = await fetch('http://localhost:7002/api/env/private');
             const envStatus = await envStatusResponse.json();
             
             const hasValidStructure = envStatus.hasOwnProperty('exists') && 
@@ -111,7 +111,7 @@ class EnhancedPuppeteerTests {
             }
             
             // Test refresh functionality
-            const refreshResponse = await fetch('http://localhost:8002/api/env/private/refresh', {
+            const refreshResponse = await fetch('http://localhost:7002/api/env/private/refresh', {
                 method: 'POST'
             });
             const refreshResult = await refreshResponse.json();
@@ -139,11 +139,11 @@ class EnhancedPuppeteerTests {
         let screenshot = null;
         
         try {
-            await this.page.goto('http://localhost:8001/index.html');
+            await this.page.goto('http://localhost:7001/index.html');
             await this.page.waitForTimeout(1000);
             
             // Test provider list endpoint
-            const providersResponse = await fetch('http://localhost:8002/api/providers');
+            const providersResponse = await fetch('http://localhost:7002/api/providers');
             const providers = await providersResponse.json();
             
             if (!providers || typeof providers !== 'object') {
@@ -157,7 +157,7 @@ class EnhancedPuppeteerTests {
                 model: 'llama-3.1-70b-versatile'
             };
             
-            const updateResponse = await fetch('http://localhost:8002/api/providers/groq', {
+            const updateResponse = await fetch('http://localhost:7002/api/providers/groq', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(providerUpdate)
@@ -168,7 +168,7 @@ class EnhancedPuppeteerTests {
             }
             
             // Test enhanced provider testing with raw data
-            const testResponse = await fetch('http://localhost:8002/api/providers/groq/test', {
+            const testResponse = await fetch('http://localhost:7002/api/providers/groq/test', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -213,7 +213,7 @@ class EnhancedPuppeteerTests {
                 include_raw_data: true
             };
             
-            const testResponse = await fetch('http://localhost:8002/api/providers/cerebras/test', {
+            const testResponse = await fetch('http://localhost:7002/api/providers/cerebras/test', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(testPayload)
@@ -258,7 +258,7 @@ class EnhancedPuppeteerTests {
                            providerId === 'openrouter' ? 'openrouter/auto' : 'llama3.2'
                 };
                 
-                const updateResponse = await fetch(`http://localhost:8002/api/providers/${providerId}`, {
+                const updateResponse = await fetch(`http://localhost:7002/api/providers/${providerId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(config)
@@ -266,7 +266,7 @@ class EnhancedPuppeteerTests {
                 
                 if (updateResponse.ok) {
                     // Test the provider
-                    const testResponse = await fetch(`http://localhost:8002/api/providers/${providerId}/test`, {
+                    const testResponse = await fetch(`http://localhost:7002/api/providers/${providerId}/test`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -292,7 +292,7 @@ class EnhancedPuppeteerTests {
             }
             
             // Check .env.private file was updated
-            const envResponse = await fetch('http://localhost:8002/api/env/private');
+            const envResponse = await fetch('http://localhost:7002/api/env/private');
             const envData = await envResponse.json();
             
             screenshot = await this.takeScreenshot(testName, true);

@@ -40,7 +40,7 @@ The application stores provider configurations in `config.json`. You can:
 
 ### 3. Start Backend Server
 
-To start the backend server (on port 8002), run:
+To start the backend server (on port 7002), run:
 ```bash
 python backend_server.py
 ```
@@ -49,13 +49,13 @@ python backend_server.py
 
 In a new terminal:
 ```bash
-bash start_frontend.sh # (serves frontend on port 8001)
+bash start_frontend.sh # (serves frontend on port 7001)
 # For E2E test server use: python3 -m http.server 8180
 ```
 
 ### 5. Access Application
 
-Open your browser to `http://localhost:8001` to use the application.
+Open your browser to `http://localhost:7001` to use the application.
 
 ## 🤖 AI Agent Features (Optional)
 
@@ -214,7 +214,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8002
+EXPOSE 7002
 
 CMD ["python", "backend_server.py"]
 ```
@@ -228,9 +228,9 @@ WORKDIR /app
 
 COPY index.html .
 
-EXPOSE 8001
+EXPOSE 7001
 
-CMD ["python", "-m", "http.server", "8001"]
+CMD ["python", "-m", "http.server", "7001"]
 ```
 
 ### Docker Compose
@@ -241,14 +241,14 @@ services:
   backend:
     build: .
     ports:
-      - "8002:8002"
+      - "7002:7002"
     volumes:
       - ./config.json:/app/config.json
       - ./usage.json:/app/usage.json
   frontend:
     build: .
     ports:
-      - "8001:8001"
+      - "7001:7001"
     depends_on:
       - backend
 ```
@@ -276,10 +276,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ### Backend won't start
 - Check Python version (3.8+)
 - Ensure all dependencies are installed
-- Check if port 8002 is already in use
+- Check if port 7002 is already in use
 
 ### Frontend connection fails
-- Ensure backend is running on port 8002
+- Ensure backend is running on port 7002
 - Check browser console for errors
 
 ### API key errors

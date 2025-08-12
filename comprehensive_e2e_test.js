@@ -9,9 +9,9 @@ class ComprehensiveE2ETest {
         this.page = null;
         this.results = [];
         this.testStartTime = Date.now();
-        this.backend_url = 'http://localhost:8002';
+        this.backend_url = 'http://localhost:7002';
         this.frontend_server = null;
-        this.frontend_port = 8001;
+        this.frontend_port = 7001;
     }
 
     async log(message, type = 'info') {
@@ -28,7 +28,7 @@ class ComprehensiveE2ETest {
         if (!frontendRunning) {
             await this.startFrontendServer();
         } else {
-            await this.log('Using existing frontend server on port 8001');
+            await this.log('Using existing frontend server on port 7001');
         }
         
         // Initialize browser

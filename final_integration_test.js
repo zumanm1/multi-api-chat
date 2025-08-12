@@ -11,8 +11,8 @@ class FinalIntegrationTestSuite {
     constructor() {
         this.browser = null;
         this.page = null;
-        this.baseUrl = 'http://localhost:8001';
-        this.backendUrl = 'http://localhost:8002';
+        this.baseUrl = 'http://localhost:7001';
+        this.backendUrl = 'http://localhost:7002';
         this.testResults = [];
         this.screenshots = [];
         this.startTime = Date.now();

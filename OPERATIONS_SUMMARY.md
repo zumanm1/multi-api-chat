@@ -7,7 +7,7 @@ Multi-API Chat is a GENAI Network Operations platform that provides a unified in
 
 ### Prerequisites
 - Ubuntu system with ability to add PPAs
-- Network ports 8001 and 8002 available
+- Network ports 7001 and 7002 available
 - Internet connectivity for AI provider APIs
 
 ### Installation & Setup
@@ -43,7 +43,7 @@ cp .env.template .env
 
 # Or use individual commands:
 # Backend only: python3.11 backend_server.py
-# Frontend only: python3.11 -m http.server 8001
+# Frontend only: python3.11 -m http.server 7001
 ```
 
 ### Stopping the Application
@@ -55,8 +55,8 @@ cp .env.template .env
 ## Architecture
 
 ### Components
-- **Backend Server**: Flask API server (Port 8002)
-- **Frontend Server**: Static HTTP server (Port 8001)
+- **Backend Server**: Flask API server (Port 7002)
+- **Frontend Server**: Static HTTP server (Port 7001)
 - **Virtual Environment**: Python 3.11 isolated environment
 
 ### File Structure
@@ -95,7 +95,7 @@ OPENROUTER_API_KEY=your_openrouter_key
 # Flask Configuration
 FLASK_ENV=development
 FLASK_DEBUG=true
-FLASK_PORT=8002
+FLASK_PORT=7002
 
 # Application Settings
 DEFAULT_PROVIDER=openai
@@ -134,11 +134,11 @@ LOG_FILE=logs/app.log
 ## Network Ports & URLs
 
 ### Application Access
-- **Frontend Interface**: http://localhost:8001
-- **Backend API**: http://localhost:8002
-- **Settings Page**: http://localhost:8001/settings.html
-- **Dashboard**: http://localhost:8001/dashboard.html
-- **Operations Console**: http://localhost:8001/operations.html
+- **Frontend Interface**: http://localhost:7001
+- **Backend API**: http://localhost:7002
+- **Settings Page**: http://localhost:7001/settings.html
+- **Dashboard**: http://localhost:7001/dashboard.html
+- **Operations Console**: http://localhost:7001/operations.html
 
 ### API Endpoints
 ```
@@ -172,7 +172,7 @@ typing-extensions==4.14.1
 ## Operational Procedures
 
 ### Daily Operations
-1. **Health Check**: Verify services are running on ports 8001/8002
+1. **Health Check**: Verify services are running on ports 7001/7002
 2. **Log Review**: Check `logs/start_app.log` for errors
 3. **Provider Status**: Test AI provider connections via Settings page
 4. **Usage Monitoring**: Review usage statistics on Dashboard
@@ -202,8 +202,8 @@ tail -f logs/start_app.log
 **Port Already in Use**
 ```bash
 # Find process using port
-sudo lsof -i :8001
-sudo lsof -i :8002
+sudo lsof -i :7001
+sudo lsof -i :7002
 
 # Kill process if needed
 sudo kill -9 <PID>

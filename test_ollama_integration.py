@@ -25,7 +25,7 @@ from unittest.mock import patch, MagicMock
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Configuration
-BASE_URL = "http://localhost:8002"
+BASE_URL = "http://localhost:7002"
 OLLAMA_BASE_URL = "http://localhost:11434"
 
 class TestOllamaIntegration:

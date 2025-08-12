@@ -21,8 +21,8 @@ const path = require('path');
 const fs = require('fs');
 
 // Configuration
-const FRONTEND_URL = 'http://localhost:8001';
-const API_URL = 'http://localhost:8002';
+const FRONTEND_URL = 'http://localhost:7001';
+const API_URL = 'http://localhost:7002';
 const TIMEOUT = 30000; // 30 seconds
 
 // Test suite

@@ -132,7 +132,7 @@ python3 test_ollama_integration.py --pytest
 - No external services required
 
 ### For Integration Tests (Optional)
-- Backend server running on port 8002
+- Backend server running on port 7002
 - Ollama server on port 11434 (optional, tests adapt)
 - requests library
 

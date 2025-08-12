@@ -122,19 +122,19 @@ tokens_used = len(response_content.split()) * 1.3  # Rough token estimation
 
 ### List Models
 ```bash
-curl -X GET http://localhost:8002/api/providers/ollama/models
+curl -X GET http://localhost:7002/api/providers/ollama/models
 ```
 
 ### Pull a Model
 ```bash
-curl -X POST http://localhost:8002/api/providers/ollama/pull \
+curl -X POST http://localhost:7002/api/providers/ollama/pull \
   -H "Content-Type: application/json" \
   -d '{"model": "llama3.2:1b"}'
 ```
 
 ### Chat with Ollama
 ```bash
-curl -X POST http://localhost:8002/api/chat \
+curl -X POST http://localhost:7002/api/chat \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Hello, how are you?",

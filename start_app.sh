@@ -2,7 +2,7 @@
 set -e
 
 # Multi-API Chat Application Start Script (Python 3.11 .venv)
-# - Cleans ports 8001 (frontend) and 8002 (backend)
+# - Cleans ports 7001 (frontend) and 7002 (backend)
 # - Ensures .venv (Python 3.11) exists and installs dependencies
 # - Starts backend and frontend in the background
 # - Writes logs and PID files under ./logs
@@ -25,9 +25,9 @@ kill_port_processes() {
     fi
 }
 
-# Kill processes on ports 8002 and 8001
-kill_port_processes 8002 "backend"
-kill_port_processes 8001 "frontend"
+# Kill processes on ports 7002 and 7001
+kill_port_processes 7002 "backend"
+kill_port_processes 7001 "frontend"
 
 # Prepare logs directory
 mkdir -p logs
@@ -74,18 +74,18 @@ if [ ! -f "config.json" ]; then
 EOF
 fi
 
-# Start backend server (port 8002) in background using .venv
-echo "Starting backend server on port 8002..."
+# Start backend server (port 7002) in background using .venv
+echo "Starting backend server on port 7002..."
 nohup ./.venv/bin/python backend_server.py > logs/backend.log 2>&1 &
 echo $! > logs/backend.pid
 
 # Small delay for backend readiness
 sleep 2
 
-# Start frontend static server (port 8001) in background using .venv
-echo "Starting frontend server on port 8001..."
+# Start frontend static server (port 7001) in background using .venv
+echo "Starting frontend server on port 7001..."
 echo "Available pages: index.html (Chat), dashboard.html, operations.html, automation.html, devices.html"
-nohup ./.venv/bin/python -m http.server 8001 > logs/frontend.log 2>&1 &
+nohup ./.venv/bin/python -m http.server 7001 > logs/frontend.log 2>&1 &
 echo $! > logs/frontend.pid
 
 sleep 2
@@ -94,8 +94,8 @@ sleep 2
 echo "Backend PID: $(cat logs/backend.pid)"
 echo "Frontend PID: $(cat logs/frontend.pid)"
 if command -v ss >/dev/null 2>&1; then
-  ss -tulpn | grep -E '(:8001|:8002)' || true
+  ss -tulpn | grep -E '(:7001|:7002)' || true
 fi
 
-echo "Started. Backend: http://localhost:8002  |  Frontend: http://localhost:8001"
+echo "Started. Backend: http://localhost:7002  |  Frontend: http://localhost:7001"
 exit 0

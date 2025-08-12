@@ -25,7 +25,7 @@ run_integration_tests() {
 
 # Function to check if backend server is running
 check_backend() {
-    curl -s http://localhost:8002/api/health > /dev/null 2>&1
+    curl -s http://localhost:7002/api/health > /dev/null 2>&1
     return $?
 }
 

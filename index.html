@@ -631,7 +631,7 @@
         // Load providers from backend
         async function loadProviders() {
             try {
-                const response = await fetch('http://localhost:8002/api/providers');
+                const response = await fetch('http://localhost:7002/api/providers');
                 if (!response.ok) {
                     throw new Error(`Failed to load providers: ${response.status} ${response.statusText}`);
                 }
@@ -648,7 +648,7 @@
         // Load settings from backend
         async function loadSettings() {
             try {
-                const response = await fetch('http://localhost:8002/api/settings');
+                const response = await fetch('http://localhost:7002/api/settings');
                 if (!response.ok) {
                     throw new Error(`Failed to load settings: ${response.status} ${response.statusText}`);
                 }
@@ -668,7 +668,7 @@
         // Load usage statistics from backend
         async function loadUsage() {
             try {
-                const response = await fetch('http://localhost:8002/api/usage');
+                const response = await fetch('http://localhost:7002/api/usage');
                 if (!response.ok) {
                     throw new Error(`Failed to load usage: ${response.status} ${response.statusText}`);
                 }
@@ -807,7 +807,7 @@
                 elements.modelSelect.disabled = true;
                 elements.modelSelect.style.opacity = '0.6';
                 
-                const response = await fetch(`http://localhost:8002/api/providers/${providerId}/models`);
+                const response = await fetch(`http://localhost:7002/api/providers/${providerId}/models`);
                 
                 // Check if response is ok
                 if (!response.ok) {
@@ -947,7 +947,7 @@
                         payload.model = selectedModel;
                     }
                     
-                    const response = await fetch('http://localhost:8002/api/chat', {
+                    const response = await fetch('http://localhost:7002/api/chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -971,7 +971,7 @@
         // Compare message across providers
         async function compareMessage(message) {
             try {
-                const response = await fetch('http://localhost:8002/api/chat/compare', {
+                const response = await fetch('http://localhost:7002/api/chat/compare', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1086,7 +1086,7 @@
         // Check AI agent status
         async function checkAIAgentStatus() {
             try {
-                const response = await fetch('http://localhost:8002/api/ai-agents/status');
+                const response = await fetch('http://localhost:7002/api/ai-agents/status');
                 const status = await response.json();
                 
                 const indicator = document.getElementById('aiAgentIndicator');

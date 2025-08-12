@@ -2,13 +2,13 @@
   "providers": {
     "test_provider": {
       "name": "Test Provider",
-      "enabled": false,
+      "enabled": true,
       "api_key": "updated_key_456",
       "model": "updated-model-v2",
       "base_url": "http://test.provider.com/v1",
-      "status": "disconnected",
-      "last_checked": "",
-      "temperature": 0.8
+      "status": "error",
+      "last_checked": "2025-08-12T18:02:06.056476",
+      "temperature": 0.7167602418125126
     },
     "openai": {
       "name": "OpenAI",
@@ -17,7 +17,7 @@
       "model": "gpt-4o",
       "base_url": "https://api.openai.com/v1",
       "status": "connected",
-      "last_checked": "2025-08-10T15:17:45.734346"
+      "last_checked": "2025-08-12T18:01:48.839431"
     },
     "groq": {
       "name": "Groq",
@@ -31,15 +31,15 @@
     "ollama": {
       "name": "Ollama",
       "enabled": true,
-      "api_key": "updated_key_456",
-      "model": "llama3:latest",
-      "base_url": "http://192.168.3.10:11434/v1",
+      "api_key": "",
+      "model": "llama3.2:1b",
+      "base_url": "http://localhost:11434/v1",
       "status": "connected",
-      "last_checked": "2025-08-11T10:03:37.871297"
+      "last_checked": "2025-08-12T18:02:06.062134"
     }
   },
   "settings": {
-    "default_provider": "ollama",
+    "default_provider": "test_provider",
     "fallback_provider": "openai",
     "temperature": 0.7,
     "max_tokens": 2000,
@@ -61,7 +61,7 @@
       "password": "testpass123",
       "port": 22,
       "status": "offline",
-      "last_checked": "2025-08-10T15:17:45.931245"
+      "last_checked": "2025-08-12T18:01:52.876992"
     },
     "dummy_router": {
       "name": "Dummy Router",

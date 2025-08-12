@@ -129,7 +129,7 @@ def test_backend_core_interaction():
         import time
         
         # Test if server is running
-        base_url = "http://localhost:8002"
+        base_url = "http://localhost:7002"
         
         # Test health endpoint
         try:
@@ -144,7 +144,7 @@ def test_backend_core_interaction():
                 print(f"✗ Backend health check failed: {health_response.status_code}")
                 return False
         except requests.exceptions.ConnectionError:
-            print("✗ Backend server is not running on port 8002")
+            print("✗ Backend server is not running on port 7002")
             return False
         
         # Test AI status endpoint

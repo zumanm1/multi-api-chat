@@ -590,7 +590,7 @@ def get_client(provider_id):
         
         if provider_id == 'openrouter':
             client_kwargs['default_headers'] = {
-                "HTTP-Referer": "http://localhost:8001",
+                "HTTP-Referer": "http://localhost:7001",
                 "X-Title": "Multi-API Chat"
             }
     
@@ -2404,4 +2404,4 @@ def health_check():
 # Start server
 if __name__ == '__main__':
     start_time = time.time()
-    app.run(host='localhost', port=8002, debug=True)
+    app.run(host='localhost', port=7002, debug=True)

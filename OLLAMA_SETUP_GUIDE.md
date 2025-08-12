@@ -211,8 +211,8 @@ ollama show llama3.2:1b
    ```
 
 2. **Open Settings Interface**:
-   - Navigate to `http://localhost:8001`
-   - Click on "Settings" or go to `http://localhost:8001/settings.html`
+   - Navigate to `http://localhost:7001`
+   - Click on "Settings" or go to `http://localhost:7001/settings.html`
 
 3. **Configure Ollama Provider**:
    - Find the "Ollama" provider section
@@ -263,10 +263,10 @@ Alternatively, edit the `config.json` file directly:
 ### Test via API
 ```bash
 # Test provider connection
-curl -X POST http://localhost:8002/api/providers/ollama/test
+curl -X POST http://localhost:7002/api/providers/ollama/test
 
 # Test chat completion
-curl -X POST http://localhost:8002/api/chat \
+curl -X POST http://localhost:7002/api/chat \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Hello, how are you?",
@@ -318,10 +318,10 @@ ollama cp llama3.2:1b my-custom-model
 ### Via Application API
 ```bash
 # List models through the application
-curl http://localhost:8002/api/providers/ollama/models
+curl http://localhost:7002/api/providers/ollama/models
 
 # Pull a new model through the application
-curl -X POST http://localhost:8002/api/providers/ollama/pull \
+curl -X POST http://localhost:7002/api/providers/ollama/pull \
   -H "Content-Type: application/json" \
   -d '{"model": "llama3.2:1b"}'
 ```
@@ -686,7 +686,7 @@ ollama list
 ollama rm llama3.2:1b
 
 # Application test
-curl http://localhost:8002/api/providers/ollama/test
+curl http://localhost:7002/api/providers/ollama/test
 
 # Full test suite
 bash run_ollama_tests.sh

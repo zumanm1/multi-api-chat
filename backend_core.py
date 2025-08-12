@@ -210,7 +210,7 @@ def get_client(provider_id):
         
         if provider_id == 'openrouter':
             client_kwargs['default_headers'] = {
-                "HTTP-Referer": "http://localhost:8001",
+                "HTTP-Referer": "http://localhost:7001",
                 "X-Title": "Multi-API Chat"
             }
     
@@ -487,5 +487,5 @@ def initialize_server():
 if __name__ == '__main__':
     initialize_server()
     start_time = time.time()
-    logger.info("Starting Backend Core Server on port 8002...")
-    app.run(host='localhost', port=8002, debug=True)
+    logger.info("Starting Backend Core Server on port 7002...")
+    app.run(host='localhost', port=7002, debug=True)

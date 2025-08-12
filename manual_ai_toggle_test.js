@@ -7,7 +7,7 @@ const http = require('http');
 
 class ManualAIToggleTest {
     constructor() {
-        this.baseUrl = 'http://localhost:8002';
+        this.baseUrl = 'http://localhost:7002';
         this.results = {
             passed: 0,
             failed: 0,
@@ -267,7 +267,7 @@ class ManualAIToggleTest {
         console.log('⚠️ STEP 5: Error Handling Test');
         console.log('   1. Open browser DevTools (F12)');
         console.log('   2. Go to Network tab');
-        console.log('   3. Set network to "Offline" or block localhost:8002');
+        console.log('   3. Set network to "Offline" or block localhost:7002');
         console.log('   4. Try toggling AI agents');
         console.log('   5. Verify checkbox reverts to previous state');
         console.log('   6. Check for error notification');

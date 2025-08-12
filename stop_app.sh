@@ -3,7 +3,7 @@ set -e
 
 # Multi-API Chat Application Stop Script
 # This script stops the application by attempting PID-based shutdown first,
-# falling back to killing processes listening on ports 8001 and 8002.
+# falling back to killing processes listening on ports 7001 and 7002.
 
 echo "Multi-API Chat Application Stop Script"
 echo "======================================="
@@ -64,7 +64,7 @@ stop_by_pid "$BACKEND_PID_FILE" "backend"
 stop_by_pid "$FRONTEND_PID_FILE" "frontend"
 
 # Fallback to port-based termination
-kill_port_processes 8002 "backend"
-kill_port_processes 8001 "frontend"
+kill_port_processes 7002 "backend"
+kill_port_processes 7001 "frontend"
 
 echo "Application stopped successfully"

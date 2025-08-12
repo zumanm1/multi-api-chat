@@ -1,7 +1,7 @@
 # AI Agent Toggle Functionality - Comprehensive Test Report
 
 **Test Date:** August 10, 2025  
-**Test Environment:** Backend Server on localhost:8002  
+**Test Environment:** Backend Server on localhost:7002  
 **AI Agent Integration:** Available and Active  
 
 ## Executive Summary
@@ -65,7 +65,7 @@ Status maintained consistently across multiple calls
 ```javascript
 // From index.html - Line 950-964
 async function checkAIAgentStatus() {
-    const response = await fetch('http://localhost:8002/api/ai-agents/status');
+    const response = await fetch('http://localhost:7002/api/ai-agents/status');
     const status = await response.json();
     const indicator = document.getElementById('aiAgentIndicator');
     if (status.enabled) {
@@ -84,13 +84,13 @@ async function checkAIAgentStatus() {
 
 #### Status Endpoint Test
 ```bash
-curl http://localhost:8002/api/ai-agents/status
+curl http://localhost:7002/api/ai-agents/status
 ```
 **Result:** ✅ Returns complete status with agent details
 
 #### Toggle Endpoint Test  
 ```bash
-curl -X POST http://localhost:8002/api/ai-agents/toggle \
+curl -X POST http://localhost:7002/api/ai-agents/toggle \
      -H "Content-Type: application/json" \
      -d '{"enabled": false}'
 ```

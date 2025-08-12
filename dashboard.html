@@ -843,7 +843,7 @@
         // Load providers from backend
         async function loadProviders() {
             try {
-                const response = await fetch('http://localhost:8002/api/providers');
+                const response = await fetch('http://localhost:7002/api/providers');
                 state.providers = await response.json();
             } catch (error) {
                 console.error('Failed to load providers:', error);
@@ -880,7 +880,7 @@
         // Load usage statistics from backend
         async function loadUsage() {
             try {
-                const response = await fetch('http://localhost:8002/api/usage');
+                const response = await fetch('http://localhost:7002/api/usage');
                 state.usage = await response.json();
             } catch (error) {
                 console.error('Failed to load usage data:', error);
